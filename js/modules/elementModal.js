@@ -1,10 +1,13 @@
 // ====================================================================
-// elementModal.js — element detail modal
+// elementModal.js — element detail modal with 3D atom (Three.js)
 // ====================================================================
 
 import { getById } from '../data.js';
+import { renderAtom, describeOrbitals } from './threeRenderer.js';
 
 let _modalEl, _bodyEl, _closeBtn, _onClose = null;
+let _activeRenderer = null;
+let _activeMode = 'combined';
 
 export function initElementModal() {
   _modalEl = document.getElementById('element-modal');
@@ -26,15 +29,56 @@ export function openElement(id, onClose) {
   if (!el) return;
 
   _onClose = onClose;
+  _activeMode = 'combined';
   _bodyEl.innerHTML = renderElementModal(el);
   _modalEl.classList.add('active');
   _modalEl.setAttribute('aria-hidden', 'false');
+
+  // Mount 3D renderer after DOM is in place
+  const canvas = _bodyEl.querySelector('#atom-canvas');
+  if (canvas) mount3D(canvas, el);
+
+  // Mode buttons
+  _bodyEl.querySelectorAll('[data-mode]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const newMode = btn.dataset.mode;
+      if (newMode === _activeMode) return;
+      _activeMode = newMode;
+      _bodyEl.querySelectorAll('[data-mode]').forEach(b =>
+        b.classList.toggle('active', b.dataset.mode === newMode)
+      );
+      // Re-mount 3D with new mode
+      if (_activeRenderer) {
+        _activeRenderer.dispose();
+        _activeRenderer = null;
+      }
+      const c = _bodyEl.querySelector('#atom-canvas');
+      if (c) mount3D(c, el);
+    });
+  });
+}
+
+function mount3D(canvas, element) {
+  try {
+    _activeRenderer = renderAtom(canvas, element, { mode: _activeMode });
+  } catch (e) {
+    console.error('3D renderer failed:', e);
+    canvas.parentElement.innerHTML = `
+      <div class="atom-placeholder">
+        <span>3D renderer error: ${e.message}</span>
+        <small>Try the Bohr mode instead.</small>
+      </div>`;
+  }
 }
 
 export function close() {
   if (!_modalEl) return;
   _modalEl.classList.remove('active');
   _modalEl.setAttribute('aria-hidden', 'true');
+  if (_activeRenderer) {
+    _activeRenderer.dispose();
+    _activeRenderer = null;
+  }
   if (typeof _onClose === 'function') _onClose();
   _onClose = null;
 }
@@ -47,6 +91,8 @@ function renderElementModal(el) {
   const physical = L3.physical || {};
   const electronic = L3.electronic || {};
   const history = L4.history || {};
+
+  const orbitals = describeOrbitals(electronic.configuration || '');
 
   return `
     <div class="element-modal-hero">
@@ -64,10 +110,16 @@ function renderElementModal(el) {
           ${L1.valenceElectrons != null ? `<span class="meta-pill">${L1.valenceElectrons} valence e⁻</span>` : ''}
         </div>
         <div class="element-modal-3d">
-          <div class="atom-placeholder">
-            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="13"/></svg>
-            <span>3D atom model — coming in v0.2 (Three.js WebGL)</span>
-            <small style="opacity:0.7;">For now: ${electronic.configuration || '—'}</small>
+          <div class="atom-mode-bar">
+            <button class="atom-mode-btn active" data-mode="combined" title="Bohr + orbital clouds">Combined</button>
+            <button class="atom-mode-btn" data-mode="bohr" title="Bohr shells only">Bohr</button>
+            <button class="atom-mode-btn" data-mode="orbital" title="Valence orbital clouds">SPDF</button>
+            <button class="atom-mode-btn" data-mode="nucleus" title="Nucleus only">Nucleus</button>
+          </div>
+          <canvas id="atom-canvas"></canvas>
+          <div class="atom-3d-overlay">
+            <div class="atom-3d-config">${escapeHtml(electronic.configuration || '—')}</div>
+            <div class="atom-3d-hint">drag to rotate · scroll to zoom</div>
           </div>
         </div>
       </div>
@@ -81,6 +133,7 @@ function renderElementModal(el) {
         <h4>Subatomic Particles</h4>
         <div class="props-grid">
           ${prop('Protons', L2.protons)}
+          ${prop('Neutrons', L2.naturalIsotopes?.reduce((s, iso) => s + parseInt(iso.neutron, 10), 0) || '—')}
           ${prop('Electrons (neutral)', L2.electronsNeutral)}
           ${prop('Atomic Mass (high-school)', L2.mass?.highSchool || '—')}
         </div>
@@ -98,6 +151,7 @@ function renderElementModal(el) {
         <h4>Properties &amp; Structure</h4>
         <div class="props-grid">
           ${prop('Electron Configuration', electronic.configuration)}
+          ${prop('Valence Orbitals (this view)', orbitals)}
           ${prop('Oxidation States (common)', (electronic.oxidationStates?.common || []).join(', ') || '—')}
           ${prop('Electronegativity', physical.electronegativity ?? '—')}
           ${prop('1st Ionization', physical.firstIonization || '—')}
