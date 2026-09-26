@@ -1,0 +1,159 @@
+/* ====================================================================
+   Periodic table grid + element cards
+   ==================================================================== */
+
+.periodic-table {
+  --gap: 4px;
+  display: grid;
+  grid-template-columns: repeat(18, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  gap: var(--gap);
+  padding: 16px 0;
+  width: 100%;
+  /* Each cell sized by min font size in :root --tvmin */
+  font-size: var(--tvmin, 13px);
+}
+
+/* Lanthanides/Actinides: separate series with gap */
+.periodic-table .series-gap-row {
+  /* marker class used to render lanthanide/actinide below the main grid */
+}
+
+.element {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 4px;
+  background: var(--bg-content);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-height: 3.6em;
+  user-select: none;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.element:hover {
+  transform: translateY(-2px) scale(1.05);
+  z-index: 2;
+  box-shadow: var(--shadow-md);
+}
+
+.element .atomic-num {
+  font-size: 0.7em;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  align-self: flex-start;
+  padding-left: 0.2em;
+  line-height: 1;
+}
+
+.element .symbol {
+  font-size: 1.6em;
+  font-weight: 800;
+  line-height: 1;
+  margin: 0.05em 0;
+  letter-spacing: -0.02em;
+}
+
+.element .name {
+  font-size: 0.65em;
+  color: var(--text-secondary);
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.element .mass {
+  font-size: 0.55em;
+  color: var(--text-tertiary);
+  line-height: 1;
+  margin-top: 1px;
+}
+
+/* Category color coding (left accent border) */
+.element {
+  border-left-width: 3px;
+}
+
+.element.cat-alkali-metal { border-left-color: #ff6b6b; background: linear-gradient(90deg, rgba(255,107,107,0.08), var(--bg-content) 30%); }
+.element.cat-alkaline-earth-metal { border-left-color: #ffa94d; background: linear-gradient(90deg, rgba(255,169,77,0.08), var(--bg-content) 30%); }
+.element.cat-transition-metal { border-left-color: #ffd43b; background: linear-gradient(90deg, rgba(255,212,59,0.08), var(--bg-content) 30%); }
+.element.cat-post-transition-metal { border-left-color: #94d82d; background: linear-gradient(90deg, rgba(148,216,45,0.08), var(--bg-content) 30%); }
+.element.cat-metalloid { border-left-color: #69db7c; background: linear-gradient(90deg, rgba(105,219,124,0.08), var(--bg-content) 30%); }
+.element.cat-other-nonmetal { border-left-color: #4dabf7; background: linear-gradient(90deg, rgba(77,171,247,0.08), var(--bg-content) 30%); }
+.element.cat-halogen { border-left-color: #9775fa; background: linear-gradient(90deg, rgba(151,117,250,0.08), var(--bg-content) 30%); }
+.element.cat-noble-gas { border-left-color: #f783ac; background: linear-gradient(90deg, rgba(247,131,172,0.08), var(--bg-content) 30%); }
+.element.cat-lanthanide { border-left-color: #c0aacc; background: linear-gradient(90deg, rgba(192,170,204,0.08), var(--bg-content) 30%); }
+.element.cat-actinide { border-left-color: #a48caf; background: linear-gradient(90deg, rgba(164,140,175,0.08), var(--bg-content) 30%); }
+.element.cat-unknown { border-left-color: #adb5bd; background: linear-gradient(90deg, rgba(173,181,189,0.08), var(--bg-content) 30%); }
+
+html.dark-theme .element {
+  background: var(--bg-content);
+}
+
+/* Element occupancy: use grid-row + grid-column (1..18) to position */
+.element[data-pos] {
+  /* Positions are set via inline grid-row/grid-column in JS */
+}
+
+/* Table legend */
+.table-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: var(--bg-elevated);
+  backdrop-filter: var(--blur-bg);
+  -webkit-backdrop-filter: var(--blur-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  max-width: 720px;
+}
+
+.legend-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid var(--border-color);
+}
+
+/* Responsive: simpler stack on mobile */
+@media (max-width: 768px) {
+  .periodic-table {
+    grid-template-columns: repeat(18, 1fr);
+    font-size: 8px;
+  }
+  .element { padding: 2px; min-height: 2.4em; }
+  .element .name { display: none; }
+  .element .mass { display: none; }
+}
