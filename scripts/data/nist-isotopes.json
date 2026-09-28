@@ -1,0 +1,2480 @@
+{
+ "1": {
+  "symbol": "H",
+  "stdWeight": "[1.007 84, 1.008 11]",
+  "isotopes": [
+   {
+    "A": 1,
+    "mass": 1.00782503223,
+    "abundance": 0.999885
+   },
+   {
+    "A": 2,
+    "mass": 2.01410177812,
+    "abundance": 0.000115
+   },
+   {
+    "A": 3,
+    "mass": 3.0160492779,
+    "abundance": null
+   }
+  ]
+ },
+ "2": {
+  "symbol": "He",
+  "stdWeight": "4.002 602(2)",
+  "isotopes": [
+   {
+    "A": 3,
+    "mass": 3.0160293201,
+    "abundance": 0.00000134
+   },
+   {
+    "A": 4,
+    "mass": 4.00260325413,
+    "abundance": 0.99999866
+   }
+  ]
+ },
+ "3": {
+  "symbol": "Li",
+  "stdWeight": "[6.938, 6.997]",
+  "isotopes": [
+   {
+    "A": 6,
+    "mass": 6.0151228874,
+    "abundance": 0.0759
+   },
+   {
+    "A": 7,
+    "mass": 7.0160034366,
+    "abundance": 0.9241
+   }
+  ]
+ },
+ "4": {
+  "symbol": "Be",
+  "stdWeight": "9.012 1831(5)",
+  "isotopes": [
+   {
+    "A": 9,
+    "mass": 9.012183065,
+    "abundance": 1
+   }
+  ]
+ },
+ "5": {
+  "symbol": "B",
+  "stdWeight": "[10.806, 10.821]",
+  "isotopes": [
+   {
+    "A": 10,
+    "mass": 10.01293695,
+    "abundance": 0.199
+   },
+   {
+    "A": 11,
+    "mass": 11.00930536,
+    "abundance": 0.801
+   }
+  ]
+ },
+ "6": {
+  "symbol": "C",
+  "stdWeight": "[12.0096, 12.0116]",
+  "isotopes": [
+   {
+    "A": 12,
+    "mass": 12,
+    "abundance": 0.9893
+   },
+   {
+    "A": 13,
+    "mass": 13.00335483507,
+    "abundance": 0.0107
+   },
+   {
+    "A": 14,
+    "mass": 14.0032419884,
+    "abundance": null
+   }
+  ]
+ },
+ "7": {
+  "symbol": "N",
+  "stdWeight": "[14.006 43, 14.007 28]",
+  "isotopes": [
+   {
+    "A": 14,
+    "mass": 14.00307400443,
+    "abundance": 0.99636
+   },
+   {
+    "A": 15,
+    "mass": 15.00010889888,
+    "abundance": 0.00364
+   }
+  ]
+ },
+ "8": {
+  "symbol": "O",
+  "stdWeight": "[15.999 03, 15.999 77]",
+  "isotopes": [
+   {
+    "A": 16,
+    "mass": 15.99491461957,
+    "abundance": 0.99757
+   },
+   {
+    "A": 17,
+    "mass": 16.9991317565,
+    "abundance": 0.00038
+   },
+   {
+    "A": 18,
+    "mass": 17.99915961286,
+    "abundance": 0.00205
+   }
+  ]
+ },
+ "9": {
+  "symbol": "F",
+  "stdWeight": "18.998 403 163(6)",
+  "isotopes": [
+   {
+    "A": 19,
+    "mass": 18.99840316273,
+    "abundance": 1
+   }
+  ]
+ },
+ "10": {
+  "symbol": "Ne",
+  "stdWeight": "20.1797(6)",
+  "isotopes": [
+   {
+    "A": 20,
+    "mass": 19.9924401762,
+    "abundance": 0.9048
+   },
+   {
+    "A": 21,
+    "mass": 20.993846685,
+    "abundance": 0.0027
+   },
+   {
+    "A": 22,
+    "mass": 21.991385114,
+    "abundance": 0.0925
+   }
+  ]
+ },
+ "11": {
+  "symbol": "Na",
+  "stdWeight": "22.989 769 28(2)",
+  "isotopes": [
+   {
+    "A": 23,
+    "mass": 22.989769282,
+    "abundance": 1
+   }
+  ]
+ },
+ "12": {
+  "symbol": "Mg",
+  "stdWeight": "[24.304, 24.307]",
+  "isotopes": [
+   {
+    "A": 24,
+    "mass": 23.985041697,
+    "abundance": 0.7899
+   },
+   {
+    "A": 25,
+    "mass": 24.985836976,
+    "abundance": 0.1
+   },
+   {
+    "A": 26,
+    "mass": 25.982592968,
+    "abundance": 0.1101
+   }
+  ]
+ },
+ "13": {
+  "symbol": "Al",
+  "stdWeight": "26.981 5385(7)",
+  "isotopes": [
+   {
+    "A": 27,
+    "mass": 26.98153853,
+    "abundance": 1
+   }
+  ]
+ },
+ "14": {
+  "symbol": "Si",
+  "stdWeight": "[28.084, 28.086]",
+  "isotopes": [
+   {
+    "A": 28,
+    "mass": 27.97692653465,
+    "abundance": 0.92223
+   },
+   {
+    "A": 29,
+    "mass": 28.9764946649,
+    "abundance": 0.04685
+   },
+   {
+    "A": 30,
+    "mass": 29.973770136,
+    "abundance": 0.03092
+   }
+  ]
+ },
+ "15": {
+  "symbol": "P",
+  "stdWeight": "30.973 761 998(5)",
+  "isotopes": [
+   {
+    "A": 31,
+    "mass": 30.97376199842,
+    "abundance": 1
+   }
+  ]
+ },
+ "16": {
+  "symbol": "S",
+  "stdWeight": "[32.059, 32.076]",
+  "isotopes": [
+   {
+    "A": 32,
+    "mass": 31.9720711744,
+    "abundance": 0.9499
+   },
+   {
+    "A": 33,
+    "mass": 32.9714589098,
+    "abundance": 0.0075
+   },
+   {
+    "A": 34,
+    "mass": 33.967867004,
+    "abundance": 0.0425
+   },
+   {
+    "A": 36,
+    "mass": 35.96708071,
+    "abundance": 0.0001
+   }
+  ]
+ },
+ "17": {
+  "symbol": "Cl",
+  "stdWeight": "[35.446, 35.457]",
+  "isotopes": [
+   {
+    "A": 35,
+    "mass": 34.968852682,
+    "abundance": 0.7576
+   },
+   {
+    "A": 37,
+    "mass": 36.965902602,
+    "abundance": 0.2424
+   }
+  ]
+ },
+ "18": {
+  "symbol": "Ar",
+  "stdWeight": "39.948(1)",
+  "isotopes": [
+   {
+    "A": 36,
+    "mass": 35.967545105,
+    "abundance": 0.003336
+   },
+   {
+    "A": 38,
+    "mass": 37.96273211,
+    "abundance": 0.000629
+   },
+   {
+    "A": 40,
+    "mass": 39.9623831237,
+    "abundance": 0.996035
+   }
+  ]
+ },
+ "19": {
+  "symbol": "K",
+  "stdWeight": "39.0983(1)",
+  "isotopes": [
+   {
+    "A": 39,
+    "mass": 38.9637064864,
+    "abundance": 0.932581
+   },
+   {
+    "A": 40,
+    "mass": 39.963998166,
+    "abundance": 0.000117
+   },
+   {
+    "A": 41,
+    "mass": 40.9618252579,
+    "abundance": 0.067302
+   }
+  ]
+ },
+ "20": {
+  "symbol": "Ca",
+  "stdWeight": "40.078(4)",
+  "isotopes": [
+   {
+    "A": 40,
+    "mass": 39.962590863,
+    "abundance": 0.96941
+   },
+   {
+    "A": 42,
+    "mass": 41.95861783,
+    "abundance": 0.00647
+   },
+   {
+    "A": 43,
+    "mass": 42.95876644,
+    "abundance": 0.00135
+   },
+   {
+    "A": 44,
+    "mass": 43.95548156,
+    "abundance": 0.02086
+   },
+   {
+    "A": 46,
+    "mass": 45.953689,
+    "abundance": 0.00004
+   },
+   {
+    "A": 48,
+    "mass": 47.95252276,
+    "abundance": 0.00187
+   }
+  ]
+ },
+ "21": {
+  "symbol": "Sc",
+  "stdWeight": "44.955 908(5)",
+  "isotopes": [
+   {
+    "A": 45,
+    "mass": 44.95590828,
+    "abundance": 1
+   }
+  ]
+ },
+ "22": {
+  "symbol": "Ti",
+  "stdWeight": "47.867(1)",
+  "isotopes": [
+   {
+    "A": 46,
+    "mass": 45.95262772,
+    "abundance": 0.0825
+   },
+   {
+    "A": 47,
+    "mass": 46.95175879,
+    "abundance": 0.0744
+   },
+   {
+    "A": 48,
+    "mass": 47.94794198,
+    "abundance": 0.7372
+   },
+   {
+    "A": 49,
+    "mass": 48.94786568,
+    "abundance": 0.0541
+   },
+   {
+    "A": 50,
+    "mass": 49.94478689,
+    "abundance": 0.0518
+   }
+  ]
+ },
+ "23": {
+  "symbol": "V",
+  "stdWeight": "50.9415(1)",
+  "isotopes": [
+   {
+    "A": 50,
+    "mass": 49.94715601,
+    "abundance": 0.0025
+   },
+   {
+    "A": 51,
+    "mass": 50.94395704,
+    "abundance": 0.9975
+   }
+  ]
+ },
+ "24": {
+  "symbol": "Cr",
+  "stdWeight": "51.9961(6)",
+  "isotopes": [
+   {
+    "A": 50,
+    "mass": 49.94604183,
+    "abundance": 0.04345
+   },
+   {
+    "A": 52,
+    "mass": 51.94050623,
+    "abundance": 0.83789
+   },
+   {
+    "A": 53,
+    "mass": 52.94064815,
+    "abundance": 0.09501
+   },
+   {
+    "A": 54,
+    "mass": 53.93887916,
+    "abundance": 0.02365
+   }
+  ]
+ },
+ "25": {
+  "symbol": "Mn",
+  "stdWeight": "54.938 044(3)",
+  "isotopes": [
+   {
+    "A": 55,
+    "mass": 54.93804391,
+    "abundance": 1
+   }
+  ]
+ },
+ "26": {
+  "symbol": "Fe",
+  "stdWeight": "55.845(2)",
+  "isotopes": [
+   {
+    "A": 54,
+    "mass": 53.93960899,
+    "abundance": 0.05845
+   },
+   {
+    "A": 56,
+    "mass": 55.93493633,
+    "abundance": 0.91754
+   },
+   {
+    "A": 57,
+    "mass": 56.93539284,
+    "abundance": 0.02119
+   },
+   {
+    "A": 58,
+    "mass": 57.93327443,
+    "abundance": 0.00282
+   }
+  ]
+ },
+ "27": {
+  "symbol": "Co",
+  "stdWeight": "58.933 194(4)",
+  "isotopes": [
+   {
+    "A": 59,
+    "mass": 58.93319429,
+    "abundance": 1
+   }
+  ]
+ },
+ "28": {
+  "symbol": "Ni",
+  "stdWeight": "58.6934(4)",
+  "isotopes": [
+   {
+    "A": 58,
+    "mass": 57.93534241,
+    "abundance": 0.68077
+   },
+   {
+    "A": 60,
+    "mass": 59.93078588,
+    "abundance": 0.26223
+   },
+   {
+    "A": 61,
+    "mass": 60.93105557,
+    "abundance": 0.011399
+   },
+   {
+    "A": 62,
+    "mass": 61.92834537,
+    "abundance": 0.036346
+   },
+   {
+    "A": 64,
+    "mass": 63.92796682,
+    "abundance": 0.009255
+   }
+  ]
+ },
+ "29": {
+  "symbol": "Cu",
+  "stdWeight": "63.546(3)",
+  "isotopes": [
+   {
+    "A": 63,
+    "mass": 62.92959772,
+    "abundance": 0.6915
+   },
+   {
+    "A": 65,
+    "mass": 64.9277897,
+    "abundance": 0.3085
+   }
+  ]
+ },
+ "30": {
+  "symbol": "Zn",
+  "stdWeight": "65.38(2)",
+  "isotopes": [
+   {
+    "A": 64,
+    "mass": 63.92914201,
+    "abundance": 0.4917
+   },
+   {
+    "A": 66,
+    "mass": 65.92603381,
+    "abundance": 0.2773
+   },
+   {
+    "A": 67,
+    "mass": 66.92712775,
+    "abundance": 0.0404
+   },
+   {
+    "A": 68,
+    "mass": 67.92484455,
+    "abundance": 0.1845
+   },
+   {
+    "A": 70,
+    "mass": 69.9253192,
+    "abundance": 0.0061
+   }
+  ]
+ },
+ "31": {
+  "symbol": "Ga",
+  "stdWeight": "69.723(1)",
+  "isotopes": [
+   {
+    "A": 69,
+    "mass": 68.9255735,
+    "abundance": 0.60108
+   },
+   {
+    "A": 71,
+    "mass": 70.92470258,
+    "abundance": 0.39892
+   }
+  ]
+ },
+ "32": {
+  "symbol": "Ge",
+  "stdWeight": "72.630(8)",
+  "isotopes": [
+   {
+    "A": 70,
+    "mass": 69.92424875,
+    "abundance": 0.2057
+   },
+   {
+    "A": 72,
+    "mass": 71.922075826,
+    "abundance": 0.2745
+   },
+   {
+    "A": 73,
+    "mass": 72.923458956,
+    "abundance": 0.0775
+   },
+   {
+    "A": 74,
+    "mass": 73.921177761,
+    "abundance": 0.365
+   },
+   {
+    "A": 76,
+    "mass": 75.921402726,
+    "abundance": 0.0773
+   }
+  ]
+ },
+ "33": {
+  "symbol": "As",
+  "stdWeight": "74.921 595(6)",
+  "isotopes": [
+   {
+    "A": 75,
+    "mass": 74.92159457,
+    "abundance": 1
+   }
+  ]
+ },
+ "34": {
+  "symbol": "Se",
+  "stdWeight": "78.971(8)",
+  "isotopes": [
+   {
+    "A": 74,
+    "mass": 73.922475934,
+    "abundance": 0.0089
+   },
+   {
+    "A": 76,
+    "mass": 75.919213704,
+    "abundance": 0.0937
+   },
+   {
+    "A": 77,
+    "mass": 76.919914154,
+    "abundance": 0.0763
+   },
+   {
+    "A": 78,
+    "mass": 77.91730928,
+    "abundance": 0.2377
+   },
+   {
+    "A": 80,
+    "mass": 79.9165218,
+    "abundance": 0.4961
+   },
+   {
+    "A": 82,
+    "mass": 81.9166995,
+    "abundance": 0.0873
+   }
+  ]
+ },
+ "35": {
+  "symbol": "Br",
+  "stdWeight": "[79.901, 79.907]",
+  "isotopes": [
+   {
+    "A": 79,
+    "mass": 78.9183376,
+    "abundance": 0.5069
+   },
+   {
+    "A": 81,
+    "mass": 80.9162897,
+    "abundance": 0.4931
+   }
+  ]
+ },
+ "36": {
+  "symbol": "Kr",
+  "stdWeight": "83.798(2)",
+  "isotopes": [
+   {
+    "A": 78,
+    "mass": 77.92036494,
+    "abundance": 0.00355
+   },
+   {
+    "A": 80,
+    "mass": 79.91637808,
+    "abundance": 0.02286
+   },
+   {
+    "A": 82,
+    "mass": 81.91348273,
+    "abundance": 0.11593
+   },
+   {
+    "A": 83,
+    "mass": 82.91412716,
+    "abundance": 0.115
+   },
+   {
+    "A": 84,
+    "mass": 83.9114977282,
+    "abundance": 0.56987
+   },
+   {
+    "A": 86,
+    "mass": 85.9106106269,
+    "abundance": 0.17279
+   }
+  ]
+ },
+ "37": {
+  "symbol": "Rb",
+  "stdWeight": "85.4678(3)",
+  "isotopes": [
+   {
+    "A": 85,
+    "mass": 84.9117897379,
+    "abundance": 0.7217
+   },
+   {
+    "A": 87,
+    "mass": 86.909180531,
+    "abundance": 0.2783
+   }
+  ]
+ },
+ "38": {
+  "symbol": "Sr",
+  "stdWeight": "87.62(1)",
+  "isotopes": [
+   {
+    "A": 84,
+    "mass": 83.9134191,
+    "abundance": 0.0056
+   },
+   {
+    "A": 86,
+    "mass": 85.9092606,
+    "abundance": 0.0986
+   },
+   {
+    "A": 87,
+    "mass": 86.9088775,
+    "abundance": 0.07
+   },
+   {
+    "A": 88,
+    "mass": 87.9056125,
+    "abundance": 0.8258
+   }
+  ]
+ },
+ "39": {
+  "symbol": "Y",
+  "stdWeight": "88.905 84(2)",
+  "isotopes": [
+   {
+    "A": 89,
+    "mass": 88.9058403,
+    "abundance": 1
+   }
+  ]
+ },
+ "40": {
+  "symbol": "Zr",
+  "stdWeight": "91.224(2)",
+  "isotopes": [
+   {
+    "A": 90,
+    "mass": 89.9046977,
+    "abundance": 0.5145
+   },
+   {
+    "A": 91,
+    "mass": 90.9056396,
+    "abundance": 0.1122
+   },
+   {
+    "A": 92,
+    "mass": 91.9050347,
+    "abundance": 0.1715
+   },
+   {
+    "A": 94,
+    "mass": 93.9063108,
+    "abundance": 0.1738
+   },
+   {
+    "A": 96,
+    "mass": 95.9082714,
+    "abundance": 0.028
+   }
+  ]
+ },
+ "41": {
+  "symbol": "Nb",
+  "stdWeight": "92.906 37(2)",
+  "isotopes": [
+   {
+    "A": 93,
+    "mass": 92.906373,
+    "abundance": 1
+   }
+  ]
+ },
+ "42": {
+  "symbol": "Mo",
+  "stdWeight": "95.95(1)",
+  "isotopes": [
+   {
+    "A": 92,
+    "mass": 91.90680796,
+    "abundance": 0.1453
+   },
+   {
+    "A": 94,
+    "mass": 93.9050849,
+    "abundance": 0.0915
+   },
+   {
+    "A": 95,
+    "mass": 94.90583877,
+    "abundance": 0.1584
+   },
+   {
+    "A": 96,
+    "mass": 95.90467612,
+    "abundance": 0.1667
+   },
+   {
+    "A": 97,
+    "mass": 96.90601812,
+    "abundance": 0.096
+   },
+   {
+    "A": 98,
+    "mass": 97.90540482,
+    "abundance": 0.2439
+   },
+   {
+    "A": 100,
+    "mass": 99.9074718,
+    "abundance": 0.0982
+   }
+  ]
+ },
+ "43": {
+  "symbol": "Tc",
+  "stdWeight": "[98]",
+  "isotopes": [
+   {
+    "A": 97,
+    "mass": 96.9063667,
+    "abundance": null
+   },
+   {
+    "A": 98,
+    "mass": 97.9072124,
+    "abundance": null
+   },
+   {
+    "A": 99,
+    "mass": 98.9062508,
+    "abundance": null
+   }
+  ]
+ },
+ "44": {
+  "symbol": "Ru",
+  "stdWeight": "101.07(2)",
+  "isotopes": [
+   {
+    "A": 96,
+    "mass": 95.90759025,
+    "abundance": 0.0554
+   },
+   {
+    "A": 98,
+    "mass": 97.9052868,
+    "abundance": 0.0187
+   },
+   {
+    "A": 99,
+    "mass": 98.9059341,
+    "abundance": 0.1276
+   },
+   {
+    "A": 100,
+    "mass": 99.9042143,
+    "abundance": 0.126
+   },
+   {
+    "A": 101,
+    "mass": 100.9055769,
+    "abundance": 0.1706
+   },
+   {
+    "A": 102,
+    "mass": 101.9043441,
+    "abundance": 0.3155
+   },
+   {
+    "A": 104,
+    "mass": 103.9054275,
+    "abundance": 0.1862
+   }
+  ]
+ },
+ "45": {
+  "symbol": "Rh",
+  "stdWeight": "102.905 50(2)",
+  "isotopes": [
+   {
+    "A": 103,
+    "mass": 102.905498,
+    "abundance": 1
+   }
+  ]
+ },
+ "46": {
+  "symbol": "Pd",
+  "stdWeight": "106.42(1)",
+  "isotopes": [
+   {
+    "A": 102,
+    "mass": 101.9056022,
+    "abundance": 0.0102
+   },
+   {
+    "A": 104,
+    "mass": 103.9040305,
+    "abundance": 0.1114
+   },
+   {
+    "A": 105,
+    "mass": 104.9050796,
+    "abundance": 0.2233
+   },
+   {
+    "A": 106,
+    "mass": 105.9034804,
+    "abundance": 0.2733
+   },
+   {
+    "A": 108,
+    "mass": 107.9038916,
+    "abundance": 0.2646
+   },
+   {
+    "A": 110,
+    "mass": 109.9051722,
+    "abundance": 0.1172
+   }
+  ]
+ },
+ "47": {
+  "symbol": "Ag",
+  "stdWeight": "107.8682(2)",
+  "isotopes": [
+   {
+    "A": 107,
+    "mass": 106.9050916,
+    "abundance": 0.51839
+   },
+   {
+    "A": 109,
+    "mass": 108.9047553,
+    "abundance": 0.48161
+   }
+  ]
+ },
+ "48": {
+  "symbol": "Cd",
+  "stdWeight": "112.414(4)",
+  "isotopes": [
+   {
+    "A": 106,
+    "mass": 105.9064599,
+    "abundance": 0.0125
+   },
+   {
+    "A": 108,
+    "mass": 107.9041834,
+    "abundance": 0.0089
+   },
+   {
+    "A": 110,
+    "mass": 109.90300661,
+    "abundance": 0.1249
+   },
+   {
+    "A": 111,
+    "mass": 110.90418287,
+    "abundance": 0.128
+   },
+   {
+    "A": 112,
+    "mass": 111.90276287,
+    "abundance": 0.2413
+   },
+   {
+    "A": 113,
+    "mass": 112.90440813,
+    "abundance": 0.1222
+   },
+   {
+    "A": 114,
+    "mass": 113.90336509,
+    "abundance": 0.2873
+   },
+   {
+    "A": 116,
+    "mass": 115.90476315,
+    "abundance": 0.0749
+   }
+  ]
+ },
+ "49": {
+  "symbol": "In",
+  "stdWeight": "114.818(1)",
+  "isotopes": [
+   {
+    "A": 113,
+    "mass": 112.90406184,
+    "abundance": 0.0429
+   },
+   {
+    "A": 115,
+    "mass": 114.903878776,
+    "abundance": 0.9571
+   }
+  ]
+ },
+ "50": {
+  "symbol": "Sn",
+  "stdWeight": "118.710(7)",
+  "isotopes": [
+   {
+    "A": 112,
+    "mass": 111.90482387,
+    "abundance": 0.0097
+   },
+   {
+    "A": 114,
+    "mass": 113.9027827,
+    "abundance": 0.0066
+   },
+   {
+    "A": 115,
+    "mass": 114.903344699,
+    "abundance": 0.0034
+   },
+   {
+    "A": 116,
+    "mass": 115.9017428,
+    "abundance": 0.1454
+   },
+   {
+    "A": 117,
+    "mass": 116.90295398,
+    "abundance": 0.0768
+   },
+   {
+    "A": 118,
+    "mass": 117.90160657,
+    "abundance": 0.2422
+   },
+   {
+    "A": 119,
+    "mass": 118.90331117,
+    "abundance": 0.0859
+   },
+   {
+    "A": 120,
+    "mass": 119.90220163,
+    "abundance": 0.3258
+   },
+   {
+    "A": 122,
+    "mass": 121.9034438,
+    "abundance": 0.0463
+   },
+   {
+    "A": 124,
+    "mass": 123.9052766,
+    "abundance": 0.0579
+   }
+  ]
+ },
+ "51": {
+  "symbol": "Sb",
+  "stdWeight": "121.760(1)",
+  "isotopes": [
+   {
+    "A": 121,
+    "mass": 120.903812,
+    "abundance": 0.5721
+   },
+   {
+    "A": 123,
+    "mass": 122.9042132,
+    "abundance": 0.4279
+   }
+  ]
+ },
+ "52": {
+  "symbol": "Te",
+  "stdWeight": "127.60(3)",
+  "isotopes": [
+   {
+    "A": 120,
+    "mass": 119.9040593,
+    "abundance": 0.0009
+   },
+   {
+    "A": 122,
+    "mass": 121.9030435,
+    "abundance": 0.0255
+   },
+   {
+    "A": 123,
+    "mass": 122.9042698,
+    "abundance": 0.0089
+   },
+   {
+    "A": 124,
+    "mass": 123.9028171,
+    "abundance": 0.0474
+   },
+   {
+    "A": 125,
+    "mass": 124.9044299,
+    "abundance": 0.0707
+   },
+   {
+    "A": 126,
+    "mass": 125.9033109,
+    "abundance": 0.1884
+   },
+   {
+    "A": 128,
+    "mass": 127.90446128,
+    "abundance": 0.3174
+   },
+   {
+    "A": 130,
+    "mass": 129.906222748,
+    "abundance": 0.3408
+   }
+  ]
+ },
+ "53": {
+  "symbol": "I",
+  "stdWeight": "126.904 47(3)",
+  "isotopes": [
+   {
+    "A": 127,
+    "mass": 126.9044719,
+    "abundance": 1
+   }
+  ]
+ },
+ "54": {
+  "symbol": "Xe",
+  "stdWeight": "131.293(6)",
+  "isotopes": [
+   {
+    "A": 124,
+    "mass": 123.905892,
+    "abundance": 0.000952
+   },
+   {
+    "A": 126,
+    "mass": 125.9042983,
+    "abundance": 0.00089
+   },
+   {
+    "A": 128,
+    "mass": 127.903531,
+    "abundance": 0.019102
+   },
+   {
+    "A": 129,
+    "mass": 128.9047808611,
+    "abundance": 0.264006
+   },
+   {
+    "A": 130,
+    "mass": 129.903509349,
+    "abundance": 0.04071
+   },
+   {
+    "A": 131,
+    "mass": 130.90508406,
+    "abundance": 0.212324
+   },
+   {
+    "A": 132,
+    "mass": 131.9041550856,
+    "abundance": 0.269086
+   },
+   {
+    "A": 134,
+    "mass": 133.90539466,
+    "abundance": 0.104357
+   },
+   {
+    "A": 136,
+    "mass": 135.907214484,
+    "abundance": 0.088573
+   }
+  ]
+ },
+ "55": {
+  "symbol": "Cs",
+  "stdWeight": "132.905 451 96(6)",
+  "isotopes": [
+   {
+    "A": 133,
+    "mass": 132.905451961,
+    "abundance": 1
+   }
+  ]
+ },
+ "56": {
+  "symbol": "Ba",
+  "stdWeight": "137.327(7)",
+  "isotopes": [
+   {
+    "A": 130,
+    "mass": 129.9063207,
+    "abundance": 0.00106
+   },
+   {
+    "A": 132,
+    "mass": 131.9050611,
+    "abundance": 0.00101
+   },
+   {
+    "A": 134,
+    "mass": 133.90450818,
+    "abundance": 0.02417
+   },
+   {
+    "A": 135,
+    "mass": 134.90568838,
+    "abundance": 0.06592
+   },
+   {
+    "A": 136,
+    "mass": 135.90457573,
+    "abundance": 0.07854
+   },
+   {
+    "A": 137,
+    "mass": 136.90582714,
+    "abundance": 0.11232
+   },
+   {
+    "A": 138,
+    "mass": 137.905247,
+    "abundance": 0.71698
+   }
+  ]
+ },
+ "57": {
+  "symbol": "La",
+  "stdWeight": "138.905 47(7)",
+  "isotopes": [
+   {
+    "A": 138,
+    "mass": 137.9071149,
+    "abundance": 0.0008881
+   },
+   {
+    "A": 139,
+    "mass": 138.9063563,
+    "abundance": 0.9991119
+   }
+  ]
+ },
+ "58": {
+  "symbol": "Ce",
+  "stdWeight": "140.116(1)",
+  "isotopes": [
+   {
+    "A": 136,
+    "mass": 135.90712921,
+    "abundance": 0.00185
+   },
+   {
+    "A": 138,
+    "mass": 137.905991,
+    "abundance": 0.00251
+   },
+   {
+    "A": 140,
+    "mass": 139.9054431,
+    "abundance": 0.8845
+   },
+   {
+    "A": 142,
+    "mass": 141.9092504,
+    "abundance": 0.11114
+   }
+  ]
+ },
+ "59": {
+  "symbol": "Pr",
+  "stdWeight": "140.907 66(2)",
+  "isotopes": [
+   {
+    "A": 141,
+    "mass": 140.9076576,
+    "abundance": 1
+   }
+  ]
+ },
+ "60": {
+  "symbol": "Nd",
+  "stdWeight": "144.242(3)",
+  "isotopes": [
+   {
+    "A": 142,
+    "mass": 141.907729,
+    "abundance": 0.27152
+   },
+   {
+    "A": 143,
+    "mass": 142.90982,
+    "abundance": 0.12174
+   },
+   {
+    "A": 144,
+    "mass": 143.910093,
+    "abundance": 0.23798
+   },
+   {
+    "A": 145,
+    "mass": 144.9125793,
+    "abundance": 0.08293
+   },
+   {
+    "A": 146,
+    "mass": 145.9131226,
+    "abundance": 0.17189
+   },
+   {
+    "A": 148,
+    "mass": 147.9168993,
+    "abundance": 0.05756
+   },
+   {
+    "A": 150,
+    "mass": 149.9209022,
+    "abundance": 0.05638
+   }
+  ]
+ },
+ "61": {
+  "symbol": "Pm",
+  "stdWeight": "[145]",
+  "isotopes": [
+   {
+    "A": 145,
+    "mass": 144.9127559,
+    "abundance": null
+   },
+   {
+    "A": 147,
+    "mass": 146.915145,
+    "abundance": null
+   }
+  ]
+ },
+ "62": {
+  "symbol": "Sm",
+  "stdWeight": "150.36(2)",
+  "isotopes": [
+   {
+    "A": 144,
+    "mass": 143.9120065,
+    "abundance": 0.0307
+   },
+   {
+    "A": 147,
+    "mass": 146.9149044,
+    "abundance": 0.1499
+   },
+   {
+    "A": 148,
+    "mass": 147.9148292,
+    "abundance": 0.1124
+   },
+   {
+    "A": 149,
+    "mass": 148.9171921,
+    "abundance": 0.1382
+   },
+   {
+    "A": 150,
+    "mass": 149.9172829,
+    "abundance": 0.0738
+   },
+   {
+    "A": 152,
+    "mass": 151.9197397,
+    "abundance": 0.2675
+   },
+   {
+    "A": 154,
+    "mass": 153.9222169,
+    "abundance": 0.2275
+   }
+  ]
+ },
+ "63": {
+  "symbol": "Eu",
+  "stdWeight": "151.964(1)",
+  "isotopes": [
+   {
+    "A": 151,
+    "mass": 150.9198578,
+    "abundance": 0.4781
+   },
+   {
+    "A": 153,
+    "mass": 152.921238,
+    "abundance": 0.5219
+   }
+  ]
+ },
+ "64": {
+  "symbol": "Gd",
+  "stdWeight": "157.25(3)",
+  "isotopes": [
+   {
+    "A": 152,
+    "mass": 151.9197995,
+    "abundance": 0.002
+   },
+   {
+    "A": 154,
+    "mass": 153.9208741,
+    "abundance": 0.0218
+   },
+   {
+    "A": 155,
+    "mass": 154.9226305,
+    "abundance": 0.148
+   },
+   {
+    "A": 156,
+    "mass": 155.9221312,
+    "abundance": 0.2047
+   },
+   {
+    "A": 157,
+    "mass": 156.9239686,
+    "abundance": 0.1565
+   },
+   {
+    "A": 158,
+    "mass": 157.9241123,
+    "abundance": 0.2484
+   },
+   {
+    "A": 160,
+    "mass": 159.9270624,
+    "abundance": 0.2186
+   }
+  ]
+ },
+ "65": {
+  "symbol": "Tb",
+  "stdWeight": "158.925 35(2)",
+  "isotopes": [
+   {
+    "A": 159,
+    "mass": 158.9253547,
+    "abundance": 1
+   }
+  ]
+ },
+ "66": {
+  "symbol": "Dy",
+  "stdWeight": "162.500(1)",
+  "isotopes": [
+   {
+    "A": 156,
+    "mass": 155.9242847,
+    "abundance": 0.00056
+   },
+   {
+    "A": 158,
+    "mass": 157.9244159,
+    "abundance": 0.00095
+   },
+   {
+    "A": 160,
+    "mass": 159.9252046,
+    "abundance": 0.02329
+   },
+   {
+    "A": 161,
+    "mass": 160.9269405,
+    "abundance": 0.18889
+   },
+   {
+    "A": 162,
+    "mass": 161.9268056,
+    "abundance": 0.25475
+   },
+   {
+    "A": 163,
+    "mass": 162.9287383,
+    "abundance": 0.24896
+   },
+   {
+    "A": 164,
+    "mass": 163.9291819,
+    "abundance": 0.2826
+   }
+  ]
+ },
+ "67": {
+  "symbol": "Ho",
+  "stdWeight": "164.930 33(2)",
+  "isotopes": [
+   {
+    "A": 165,
+    "mass": 164.9303288,
+    "abundance": 1
+   }
+  ]
+ },
+ "68": {
+  "symbol": "Er",
+  "stdWeight": "167.259(3)",
+  "isotopes": [
+   {
+    "A": 162,
+    "mass": 161.9287884,
+    "abundance": 0.00139
+   },
+   {
+    "A": 164,
+    "mass": 163.9292088,
+    "abundance": 0.01601
+   },
+   {
+    "A": 166,
+    "mass": 165.9302995,
+    "abundance": 0.33503
+   },
+   {
+    "A": 167,
+    "mass": 166.9320546,
+    "abundance": 0.22869
+   },
+   {
+    "A": 168,
+    "mass": 167.9323767,
+    "abundance": 0.26978
+   },
+   {
+    "A": 170,
+    "mass": 169.9354702,
+    "abundance": 0.1491
+   }
+  ]
+ },
+ "69": {
+  "symbol": "Tm",
+  "stdWeight": "168.934 22(2)",
+  "isotopes": [
+   {
+    "A": 169,
+    "mass": 168.9342179,
+    "abundance": 1
+   }
+  ]
+ },
+ "70": {
+  "symbol": "Yb",
+  "stdWeight": "173.054(5)",
+  "isotopes": [
+   {
+    "A": 168,
+    "mass": 167.9338896,
+    "abundance": 0.00123
+   },
+   {
+    "A": 170,
+    "mass": 169.9347664,
+    "abundance": 0.02982
+   },
+   {
+    "A": 171,
+    "mass": 170.9363302,
+    "abundance": 0.1409
+   },
+   {
+    "A": 172,
+    "mass": 171.9363859,
+    "abundance": 0.2168
+   },
+   {
+    "A": 173,
+    "mass": 172.9382151,
+    "abundance": 0.16103
+   },
+   {
+    "A": 174,
+    "mass": 173.9388664,
+    "abundance": 0.32026
+   },
+   {
+    "A": 176,
+    "mass": 175.9425764,
+    "abundance": 0.12996
+   }
+  ]
+ },
+ "71": {
+  "symbol": "Lu",
+  "stdWeight": "174.9668(1)",
+  "isotopes": [
+   {
+    "A": 175,
+    "mass": 174.9407752,
+    "abundance": 0.97401
+   },
+   {
+    "A": 176,
+    "mass": 175.9426897,
+    "abundance": 0.02599
+   }
+  ]
+ },
+ "72": {
+  "symbol": "Hf",
+  "stdWeight": "178.49(2)",
+  "isotopes": [
+   {
+    "A": 174,
+    "mass": 173.9400461,
+    "abundance": 0.0016
+   },
+   {
+    "A": 176,
+    "mass": 175.9414076,
+    "abundance": 0.0526
+   },
+   {
+    "A": 177,
+    "mass": 176.9432277,
+    "abundance": 0.186
+   },
+   {
+    "A": 178,
+    "mass": 177.9437058,
+    "abundance": 0.2728
+   },
+   {
+    "A": 179,
+    "mass": 178.9458232,
+    "abundance": 0.1362
+   },
+   {
+    "A": 180,
+    "mass": 179.946557,
+    "abundance": 0.3508
+   }
+  ]
+ },
+ "73": {
+  "symbol": "Ta",
+  "stdWeight": "180.947 88(2)",
+  "isotopes": [
+   {
+    "A": 180,
+    "mass": 179.9474648,
+    "abundance": 0.0001201
+   },
+   {
+    "A": 181,
+    "mass": 180.9479958,
+    "abundance": 0.9998799
+   }
+  ]
+ },
+ "74": {
+  "symbol": "W",
+  "stdWeight": "183.84(1)",
+  "isotopes": [
+   {
+    "A": 180,
+    "mass": 179.9467108,
+    "abundance": 0.0012
+   },
+   {
+    "A": 182,
+    "mass": 181.94820394,
+    "abundance": 0.265
+   },
+   {
+    "A": 183,
+    "mass": 182.95022275,
+    "abundance": 0.1431
+   },
+   {
+    "A": 184,
+    "mass": 183.95093092,
+    "abundance": 0.3064
+   },
+   {
+    "A": 186,
+    "mass": 185.9543628,
+    "abundance": 0.2843
+   }
+  ]
+ },
+ "75": {
+  "symbol": "Re",
+  "stdWeight": "186.207(1)",
+  "isotopes": [
+   {
+    "A": 185,
+    "mass": 184.9529545,
+    "abundance": 0.374
+   },
+   {
+    "A": 187,
+    "mass": 186.9557501,
+    "abundance": 0.626
+   }
+  ]
+ },
+ "76": {
+  "symbol": "Os",
+  "stdWeight": "190.23(3)",
+  "isotopes": [
+   {
+    "A": 184,
+    "mass": 183.9524885,
+    "abundance": 0.0002
+   },
+   {
+    "A": 186,
+    "mass": 185.953835,
+    "abundance": 0.0159
+   },
+   {
+    "A": 187,
+    "mass": 186.9557474,
+    "abundance": 0.0196
+   },
+   {
+    "A": 188,
+    "mass": 187.9558352,
+    "abundance": 0.1324
+   },
+   {
+    "A": 189,
+    "mass": 188.9581442,
+    "abundance": 0.1615
+   },
+   {
+    "A": 190,
+    "mass": 189.9584437,
+    "abundance": 0.2626
+   },
+   {
+    "A": 192,
+    "mass": 191.961477,
+    "abundance": 0.4078
+   }
+  ]
+ },
+ "77": {
+  "symbol": "Ir",
+  "stdWeight": "192.217(3)",
+  "isotopes": [
+   {
+    "A": 191,
+    "mass": 190.9605893,
+    "abundance": 0.373
+   },
+   {
+    "A": 193,
+    "mass": 192.9629216,
+    "abundance": 0.627
+   }
+  ]
+ },
+ "78": {
+  "symbol": "Pt",
+  "stdWeight": "195.084(9)",
+  "isotopes": [
+   {
+    "A": 190,
+    "mass": 189.9599297,
+    "abundance": 0.00012
+   },
+   {
+    "A": 192,
+    "mass": 191.9610387,
+    "abundance": 0.00782
+   },
+   {
+    "A": 194,
+    "mass": 193.9626809,
+    "abundance": 0.3286
+   },
+   {
+    "A": 195,
+    "mass": 194.9647917,
+    "abundance": 0.3378
+   },
+   {
+    "A": 196,
+    "mass": 195.96495209,
+    "abundance": 0.2521
+   },
+   {
+    "A": 198,
+    "mass": 197.9678949,
+    "abundance": 0.07356
+   }
+  ]
+ },
+ "79": {
+  "symbol": "Au",
+  "stdWeight": "196.966 569(5)",
+  "isotopes": [
+   {
+    "A": 197,
+    "mass": 196.96656879,
+    "abundance": 1
+   }
+  ]
+ },
+ "80": {
+  "symbol": "Hg",
+  "stdWeight": "200.592(3)",
+  "isotopes": [
+   {
+    "A": 196,
+    "mass": 195.9658326,
+    "abundance": 0.0015
+   },
+   {
+    "A": 198,
+    "mass": 197.9667686,
+    "abundance": 0.0997
+   },
+   {
+    "A": 199,
+    "mass": 198.96828064,
+    "abundance": 0.1687
+   },
+   {
+    "A": 200,
+    "mass": 199.96832659,
+    "abundance": 0.231
+   },
+   {
+    "A": 201,
+    "mass": 200.97030284,
+    "abundance": 0.1318
+   },
+   {
+    "A": 202,
+    "mass": 201.9706434,
+    "abundance": 0.2986
+   },
+   {
+    "A": 204,
+    "mass": 203.97349398,
+    "abundance": 0.0687
+   }
+  ]
+ },
+ "81": {
+  "symbol": "Tl",
+  "stdWeight": "[204.382, 204.385]",
+  "isotopes": [
+   {
+    "A": 203,
+    "mass": 202.9723446,
+    "abundance": 0.2952
+   },
+   {
+    "A": 205,
+    "mass": 204.9744278,
+    "abundance": 0.7048
+   }
+  ]
+ },
+ "82": {
+  "symbol": "Pb",
+  "stdWeight": "207.2(1)",
+  "isotopes": [
+   {
+    "A": 204,
+    "mass": 203.973044,
+    "abundance": 0.014
+   },
+   {
+    "A": 206,
+    "mass": 205.9744657,
+    "abundance": 0.241
+   },
+   {
+    "A": 207,
+    "mass": 206.9758973,
+    "abundance": 0.221
+   },
+   {
+    "A": 208,
+    "mass": 207.9766525,
+    "abundance": 0.524
+   }
+  ]
+ },
+ "83": {
+  "symbol": "Bi",
+  "stdWeight": "208.980 40(1)",
+  "isotopes": [
+   {
+    "A": 209,
+    "mass": 208.9803991,
+    "abundance": 1
+   }
+  ]
+ },
+ "84": {
+  "symbol": "Po",
+  "stdWeight": "[209]",
+  "isotopes": [
+   {
+    "A": 209,
+    "mass": 208.9824308,
+    "abundance": null
+   },
+   {
+    "A": 210,
+    "mass": 209.9828741,
+    "abundance": null
+   }
+  ]
+ },
+ "85": {
+  "symbol": "At",
+  "stdWeight": "[210]",
+  "isotopes": [
+   {
+    "A": 210,
+    "mass": 209.9871479,
+    "abundance": null
+   },
+   {
+    "A": 211,
+    "mass": 210.9874966,
+    "abundance": null
+   }
+  ]
+ },
+ "86": {
+  "symbol": "Rn",
+  "stdWeight": "[222]",
+  "isotopes": [
+   {
+    "A": 211,
+    "mass": 210.9906011,
+    "abundance": null
+   },
+   {
+    "A": 220,
+    "mass": 220.0113941,
+    "abundance": null
+   },
+   {
+    "A": 222,
+    "mass": 222.0175782,
+    "abundance": null
+   }
+  ]
+ },
+ "87": {
+  "symbol": "Fr",
+  "stdWeight": "[223]",
+  "isotopes": [
+   {
+    "A": 223,
+    "mass": 223.019736,
+    "abundance": null
+   }
+  ]
+ },
+ "88": {
+  "symbol": "Ra",
+  "stdWeight": "[226]",
+  "isotopes": [
+   {
+    "A": 223,
+    "mass": 223.0185023,
+    "abundance": null
+   },
+   {
+    "A": 224,
+    "mass": 224.020212,
+    "abundance": null
+   },
+   {
+    "A": 226,
+    "mass": 226.0254103,
+    "abundance": null
+   },
+   {
+    "A": 228,
+    "mass": 228.0310707,
+    "abundance": null
+   }
+  ]
+ },
+ "89": {
+  "symbol": "Ac",
+  "stdWeight": "[227]",
+  "isotopes": [
+   {
+    "A": 227,
+    "mass": 227.0277523,
+    "abundance": null
+   }
+  ]
+ },
+ "90": {
+  "symbol": "Th",
+  "stdWeight": "232.037 7(4)",
+  "isotopes": [
+   {
+    "A": 230,
+    "mass": 230.0331341,
+    "abundance": null
+   },
+   {
+    "A": 232,
+    "mass": 232.0380558,
+    "abundance": 1
+   }
+  ]
+ },
+ "91": {
+  "symbol": "Pa",
+  "stdWeight": "231.035 88(2)",
+  "isotopes": [
+   {
+    "A": 231,
+    "mass": 231.0358842,
+    "abundance": 1
+   }
+  ]
+ },
+ "92": {
+  "symbol": "U",
+  "stdWeight": "238.028 91(3)",
+  "isotopes": [
+   {
+    "A": 233,
+    "mass": 233.0396355,
+    "abundance": null
+   },
+   {
+    "A": 234,
+    "mass": 234.0409523,
+    "abundance": 0.000054
+   },
+   {
+    "A": 235,
+    "mass": 235.0439301,
+    "abundance": 0.007204
+   },
+   {
+    "A": 236,
+    "mass": 236.0455682,
+    "abundance": null
+   },
+   {
+    "A": 238,
+    "mass": 238.0507884,
+    "abundance": 0.992742
+   }
+  ]
+ },
+ "93": {
+  "symbol": "Np",
+  "stdWeight": "[237]",
+  "isotopes": [
+   {
+    "A": 236,
+    "mass": 236.04657,
+    "abundance": null
+   },
+   {
+    "A": 237,
+    "mass": 237.0481736,
+    "abundance": null
+   }
+  ]
+ },
+ "94": {
+  "symbol": "Pu",
+  "stdWeight": "[244]",
+  "isotopes": [
+   {
+    "A": 238,
+    "mass": 238.0495601,
+    "abundance": null
+   },
+   {
+    "A": 239,
+    "mass": 239.0521636,
+    "abundance": null
+   },
+   {
+    "A": 240,
+    "mass": 240.0538138,
+    "abundance": null
+   },
+   {
+    "A": 241,
+    "mass": 241.0568517,
+    "abundance": null
+   },
+   {
+    "A": 242,
+    "mass": 242.0587428,
+    "abundance": null
+   },
+   {
+    "A": 244,
+    "mass": 244.0642053,
+    "abundance": null
+   }
+  ]
+ },
+ "95": {
+  "symbol": "Am",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 241,
+    "mass": 241.0568293,
+    "abundance": null
+   },
+   {
+    "A": 243,
+    "mass": 243.0613813,
+    "abundance": null
+   }
+  ]
+ },
+ "96": {
+  "symbol": "Cm",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 243,
+    "mass": 243.0613893,
+    "abundance": null
+   },
+   {
+    "A": 244,
+    "mass": 244.0627528,
+    "abundance": null
+   },
+   {
+    "A": 245,
+    "mass": 245.0654915,
+    "abundance": null
+   },
+   {
+    "A": 246,
+    "mass": 246.0672238,
+    "abundance": null
+   },
+   {
+    "A": 247,
+    "mass": 247.0703541,
+    "abundance": null
+   },
+   {
+    "A": 248,
+    "mass": 248.0723499,
+    "abundance": null
+   }
+  ]
+ },
+ "97": {
+  "symbol": "Bk",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 247,
+    "mass": 247.0703073,
+    "abundance": null
+   },
+   {
+    "A": 249,
+    "mass": 249.0749877,
+    "abundance": null
+   }
+  ]
+ },
+ "98": {
+  "symbol": "Cf",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 249,
+    "mass": 249.0748539,
+    "abundance": null
+   },
+   {
+    "A": 250,
+    "mass": 250.0764062,
+    "abundance": null
+   },
+   {
+    "A": 251,
+    "mass": 251.0795886,
+    "abundance": null
+   },
+   {
+    "A": 252,
+    "mass": 252.0816272,
+    "abundance": null
+   }
+  ]
+ },
+ "99": {
+  "symbol": "Es",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 252,
+    "mass": 252.08298,
+    "abundance": null
+   }
+  ]
+ },
+ "100": {
+  "symbol": "Fm",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 257,
+    "mass": 257.0951061,
+    "abundance": null
+   }
+  ]
+ },
+ "101": {
+  "symbol": "Md",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 258,
+    "mass": 258.0984315,
+    "abundance": null
+   },
+   {
+    "A": 260,
+    "mass": 260.10365,
+    "abundance": null
+   }
+  ]
+ },
+ "102": {
+  "symbol": "No",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 259,
+    "mass": 259.10103,
+    "abundance": null
+   }
+  ]
+ },
+ "103": {
+  "symbol": "Lr",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 262,
+    "mass": 262.10961,
+    "abundance": null
+   }
+  ]
+ },
+ "104": {
+  "symbol": "Rf",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 267,
+    "mass": 267.12179,
+    "abundance": null
+   }
+  ]
+ },
+ "105": {
+  "symbol": "Db",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 268,
+    "mass": 268.12567,
+    "abundance": null
+   }
+  ]
+ },
+ "106": {
+  "symbol": "Sg",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 271,
+    "mass": 271.13393,
+    "abundance": null
+   }
+  ]
+ },
+ "107": {
+  "symbol": "Bh",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 272,
+    "mass": 272.13826,
+    "abundance": null
+   }
+  ]
+ },
+ "108": {
+  "symbol": "Hs",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 270,
+    "mass": 270.13429,
+    "abundance": null
+   }
+  ]
+ },
+ "109": {
+  "symbol": "Mt",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 276,
+    "mass": 276.15159,
+    "abundance": null
+   }
+  ]
+ },
+ "110": {
+  "symbol": "Ds",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 281,
+    "mass": 281.16451,
+    "abundance": null
+   }
+  ]
+ },
+ "111": {
+  "symbol": "Rg",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 280,
+    "mass": 280.16514,
+    "abundance": null
+   }
+  ]
+ },
+ "112": {
+  "symbol": "Cn",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 285,
+    "mass": 285.17712,
+    "abundance": null
+   }
+  ]
+ },
+ "113": {
+  "symbol": "Nh",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 284,
+    "mass": 284.17873,
+    "abundance": null
+   }
+  ]
+ },
+ "114": {
+  "symbol": "Fl",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 289,
+    "mass": 289.19042,
+    "abundance": null
+   }
+  ]
+ },
+ "115": {
+  "symbol": "Mc",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 288,
+    "mass": 288.19274,
+    "abundance": null
+   }
+  ]
+ },
+ "116": {
+  "symbol": "Lv",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 293,
+    "mass": 293.20449,
+    "abundance": null
+   }
+  ]
+ },
+ "117": {
+  "symbol": "Ts",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 292,
+    "mass": 292.20746,
+    "abundance": null
+   }
+  ]
+ },
+ "118": {
+  "symbol": "Og",
+  "stdWeight": null,
+  "isotopes": [
+   {
+    "A": 294,
+    "mass": 294.21392,
+    "abundance": null
+   }
+  ]
+ }
+}

@@ -1,88 +1,94 @@
-# Zperiod — Interactive Periodic Table Clone
+# Zperiod
 
-A from-scratch clone of [zperiod.app](https://zperiod.app), the Grade 9-12 chemistry learning platform: 118 elements, 3D atom models, chemistry tools, and worksheet generator. This first build delivers the desktop app skeleton + all four core chemistry tools + worksheet studio with PDF export. Mobile + 3D atom + card customizer + 40-language i18n are scheduled for the next sessions.
+An interactive periodic table and chemistry workspace for Grade 9–12: 118
+elements, 3D atoms and orbital probability clouds, 66 ions, five chemistry
+tools, a worksheet studio with PDF export, 40 languages, and a spaced-repetition
+learning path.
 
-## What's in v0.1.0
+A replica of [zperiod.app](https://zperiod.app).
 
-### ✅ Working now
-- **118-element periodic table** with category color-coding (Alkali, Alkaline Earth, Transition Metal, Lanthanide, Actinide, Metalloid, Nonmetal, Halogen, Noble Gas, Post-transition Metal)
-- **Element detail modal** — 4-level data (basic / atomic / properties / history), isotopes, oxidation states, common uses, hazards, and chemistry notes
-- **Dark / light theme** toggle, persisted in localStorage
-- **Welcome modal** on first visit
-- **4 chemistry tools**, all in working order:
-  1. **Equation Balancer** — pure-JS rational arithmetic, Gaussian elimination over nullspace. Handles nested parentheses, multiple reactants/products, redox. Tries `H2 + O2 -> H2O`, `Fe + O2 -> Fe2O3`, `C2H6 + O2 -> CO2 + H2O`, `KMnO4 + HCl -> KCl + MnCl2 + H2O + Cl2`, etc.
-  2. **Molar Mass Calculator** — same parser as balancer; element-by-element breakdown with subtotals. Handles `Ca(OH)2`, `Fe2(SO4)3`, `K3[Fe(CN)6]`, etc.
-  3. **Solubility Reference** — Grade-9-12 rules with examples for the 10 most-tested anions + cation notes. Quick-check input for common compounds.
-  4. **Virtual Lab** — 2D Canvas beaker with adjustable tilt / particle density / speed. Placeholder for the full reaction engine (next session).
-- **Worksheet Studio** — Generate balanced-equation practice worksheets. 3 exercise modes (Balance / Identify Type / Combined), 5 reaction types (Synthesis / Decomposition / Single / Double Replacement / Combustion), 5/10/20/30 question counts, 3 difficulty levels. **PDF export** with answer key.
-
-### 🚧 Next sessions (planned)
-- 3D atom models (Three.js WebGL — Bohr shells + orbital probability density)
-- Card layout customizer (presets / per-cell font size / color / radius / background tint)
-- i18n framework — start with EN + ZH; expand toward the full 40-language matrix
-- Ion reference (50+ monatomic + polyatomic ions, flame-test hints)
-- Mobile-first landing page (iPad portrait rotate-prompt + iPhone app teaser)
-- Settings FAB + Changelog modal + Feedback ("Send a Suggestion")
-- Apple-style polished animations (Vite + native, no React)
-
-## Quick Start
+## Quick start
 
 ```bash
 npm install
-npm run dev          # start dev server at http://localhost:5173
-npm run build        # production build to dist/
-npm run preview      # preview production build at http://localhost:4173
+npm run dev        # http://localhost:5173
+npm run build      # -> dist/
+npm run serve      # serve the built site on :4173
 ```
 
-## Project Structure
+## Scripts
 
-```
-zperiod/
-├── data/
-│   └── elements.json            # 118 elements, parsed from zperiod.app's bundle
-├── public/
-│   └── logo.svg                  # Zperiod logo
-├── css/
-│   ├── base.css                  # Tokens, layout, navigation, modal overlay
-│   ├── grid.css                  # Periodic table grid + element cards
-│   ├── modal.css                 # Element detail + tool modals
-│   └── tools.css                 # Chemistry tools + Worksheet page
-├── js/
-│   ├── main.js                   # Entry point
-│   ├── css-import.js             # Central CSS imports
-│   ├── data.js                   # Loader + period/group layout map
-│   └── modules/
-│       ├── periodicTable.js      # Renders the 18×10 grid
-│       ├── elementModal.js       # Element detail card
-│       ├── theme.js              # Dark/light toggle
-│       ├── welcome.js            # First-visit modal
-│       ├── navigation.js         # Top-nav page switcher
-│       ├── toolLauncher.js       # Opens chemistry tools in shared modal
-│       ├── equationBalancer.js   # Parser + linear-algebra balancer
-│       ├── molarMass.js          # Molar mass calculator
-│       ├── solubility.js         # Solubility reference
-│       ├── virtualLab.js         # 2D Canvas beaker (basic particle sim)
-│       ├── worksheet.js          # Worksheet page wiring
-│       ├── worksheetGenerator.js # Question pool + generator
-│       └── pdfExport.js          # jsPDF export
-├── index.html
-├── package.json
-└── vite.config.js
+| script | what it does |
+|---|---|
+| `npm run dev` | Vite dev server |
+| `npm run build` | `verify` → `tsc` → `vite build` |
+| `npm test` | 170 unit tests (chemistry engine + orbital physics) |
+| `npm run test:browser` | 146 assertions in real Chromium against the built site |
+| `npm run verify` | data repairs, data checks, i18n checks, unit tests, typecheck |
+| `npm run check:data` | validates `src/data/*.json` (118 elements, ions, solubility) |
+| `npm run check:i18n` | validates all 40 locale dictionaries |
+| `npm run audit:browser` | measures load time, type sizes, occlusion, overflow |
+
+`test:browser` needs a served build:
+
+```bash
+npm run build
+npm run serve &            # :4173
+TEST_IGNORE_CERTS=1 npm run test:browser   # add the flag for a freshly-issued CDN cert
 ```
 
-## Data Source
+## Architecture
 
-The 118-element dataset is **extracted from zperiod.app's production JS bundle** (`assets/index-DDOWLW_R.js`). The bundle embeds the full `nr = { 1: {…}, 2: {…}, … }` object inline. Extraction is done via brace-matching over the minified file, then `eval` to obtain a live object (handles `.98`, `undefined`, `NaN`), then `JSON.stringify` with all non-finite numbers mapped to `null`.
+```
+src/
+├─ types/chem.ts          the domain contract everything else is written against
+├─ data/
+│  ├─ elements.json       118 elements, full reference data
+│  ├─ ions.json           66 monatomic + polyatomic ions
+│  ├─ solubility.json     42 aqueous-solubility rules
+│  ├─ lessons.ts          10-lesson learning path with quizzes
+│  └─ elementNames/*.json element names in 40 languages
+├─ lib/
+│  ├─ chem/               formula parser, balancer, molar mass,
+│  │                      solubility, 488-reaction bank, worksheet + PDF
+│  ├─ chem3d/             real spherical harmonics, Laguerre radial
+│  │                      functions, Slater screening, SPDF point sampling
+│  └─ units.ts            temperature / density / energy conversion
+├─ i18n/                 40 dictionaries, lazy-loaded, RTL-aware
+├─ state/store.tsx        settings, favourites, SM-2 review cards, layout
+├─ components/            table, detail panel, 3D atom, orbital atlas,
+│                         virtual lab, solubility chart, compare tray
+└─ views/                 route-level, code-split
+```
 
-If you need to re-extract (e.g. bundle hash changes), see `scripts/extract-elements.js` (TODO: not yet committed; inline script in chat history).
+## Notable implementation details
+
+**The balancer is exact.** Gaussian elimination over rationals, never floats, so
+`H2 + O2 -> H2O` is `2 : 1 : 2` and not `1 : 0.5 : 1`. Rank-deficient equations
+(`C + O2 -> CO + CO2`) are reported as under-determined rather than silently
+answered with one arbitrary member of the solution family.
+
+**The orbital renderer is real physics.** Point clouds satisfy
+`P(r,θ,φ) = R²(r)·|Y(θ,φ)|² > threshold` with the hydrogen-like radial function
+from the generalised Laguerre polynomials and exact real spherical harmonics for
+s, p, d and f. `src/lib/chem3d/__tests__/cross-check.test.ts` verifies the
+implementation against independently derived closed forms.
+
+**The data is checked, not trusted.** `scripts/fix-*.mjs` repair known generator
+defects idempotently and `scripts/check-data.mjs` asserts element counts,
+electron configurations, phase-at-STP consistency, isotope abundance sums and
+ion arithmetic.
+
+**Everything is lazy.** The entry chunk is ~53 kB gzipped; three.js (116 kB),
+jsPDF (114 kB), the 118-element dataset and every locale arrive only when used.
+
+## Data sources
+
+Element data is compiled from NIST / CIAAW standard references. Ions and
+solubility rules are the conventional textbook tables. IUPAC/CIAAW
+isotopic-composition tables are published to two decimals and do not always sum
+to 100 %; those residuals are documented rather than "corrected".
 
 ## License
 
-MIT — derived dataset is factual element data (atomic masses, configurations, etc.) and is in the public domain.
-
-## Acknowledgments
-
-- [zperiod.app](https://zperiod.app) by Philip Zhao (zperiod.app)
-- [Zperiod legacy repo](https://github.com/Zhilips/Zperiod) on GitHub (MIT) — referenced for project structure
-- [Three.js](https://threejs.org/) (planned for v0.2 3D atom models)
-- [jsPDF](https://github.com/parallax/jsPDF) — worksheet PDF export
+MIT

@@ -1,0 +1,388 @@
+{
+  "_meta": {
+    "generatedAt": "2026-02-14T00:00:00.000Z",
+    "schema": "Zperiod data layer v1 (src/types/chem.ts)",
+    "source": "Standard aqueous solubility rules for high school general chemistry (Opus 15 / Atkins style solubility table).",
+    "ionPlainConvention": "ionPlain is the ASCII form the solubility UI parses, e.g. \"SO4^2-\", \"OH-\", \"NH4+\". ionFormula is the display form with unicode superscripts."
+  },
+  "rules": [
+    {
+      "ionFormula": "Li+",
+      "ionPlain": "Li+",
+      "kind": "cation",
+      "rule": "All group 1 metal cations form soluble compounds",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": "Li2CO3 is the least soluble of the group 1 carbonates"
+    },
+    {
+      "ionFormula": "Na+",
+      "ionPlain": "Na+",
+      "kind": "cation",
+      "rule": "All group 1 metal cations form soluble compounds",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": "The only common exception is insoluble sodium magnesium carbonate in cold concentrated solution"
+    },
+    {
+      "ionFormula": "K+",
+      "ionPlain": "K+",
+      "kind": "cation",
+      "rule": "All group 1 metal cations form soluble compounds",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": null
+    },
+    {
+      "ionFormula": "Rb+",
+      "ionPlain": "Rb+",
+      "kind": "cation",
+      "rule": "All group 1 metal cations form soluble compounds",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": null
+    },
+    {
+      "ionFormula": "Cs+",
+      "ionPlain": "Cs+",
+      "kind": "cation",
+      "rule": "All group 1 metal cations form soluble compounds",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": null
+    },
+    {
+      "ionFormula": "NH4+",
+      "ionPlain": "NH4+",
+      "kind": "cation",
+      "rule": "All ammonium salts are soluble in water",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": null
+    },
+    {
+      "ionFormula": "Be2+",
+      "ionPlain": "Be2+",
+      "kind": "cation",
+      "rule": "Beryllium compounds are soluble but Be2+ hydrolyses water and turns solutions acidic",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": "Be(OH)2 is insoluble, so strongly basic solutions give a white precipitate"
+    },
+    {
+      "ionFormula": "Mg2+",
+      "ionPlain": "Mg2+",
+      "kind": "cation",
+      "rule": "Most magnesium salts are soluble",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": "Magnesium hydroxide is only slightly soluble"
+    },
+    {
+      "ionFormula": "Ca2+",
+      "ionPlain": "Ca2+",
+      "kind": "cation",
+      "rule": "Most calcium salts are soluble, including the chloride, nitrate and sulfate",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": "Calcium carbonate, phosphate, sulfite, hydroxide and oxalate are insoluble"
+    },
+    {
+      "ionFormula": "Sr2+",
+      "ionPlain": "Sr2+",
+      "kind": "cation",
+      "rule": "Most strontium salts are soluble",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": "Strontium carbonate, phosphate, sulfate and hydroxide are insoluble or slightly soluble"
+    },
+    {
+      "ionFormula": "Ba2+",
+      "ionPlain": "Ba2+",
+      "kind": "cation",
+      "rule": "Most barium salts are soluble",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": "Barium sulfate and barium carbonate are insoluble, which is why barium meals show up on X-rays"
+    },
+    {
+      "ionFormula": "NO3-",
+      "ionPlain": "NO3-",
+      "kind": "anion",
+      "rule": "All nitrates are soluble in water",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": "Nitrates are the most soluble group of salts"
+    },
+    {
+      "ionFormula": "NO2-",
+      "ionPlain": "NO2-",
+      "kind": "anion",
+      "rule": "All nitrites are soluble in water",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": null
+    },
+    {
+      "ionFormula": "C2H3O2-",
+      "ionPlain": "C2H3O2-",
+      "kind": "anion",
+      "rule": "All acetates are soluble in water",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": "Silver and mercury acetates are only slightly soluble"
+    },
+    {
+      "ionFormula": "ClO3-",
+      "ionPlain": "ClO3-",
+      "kind": "anion",
+      "rule": "All chlorates are soluble in water",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": "Potassium chlorate is only sparingly soluble in cold water"
+    },
+    {
+      "ionFormula": "ClO4-",
+      "ionPlain": "ClO4-",
+      "kind": "anion",
+      "rule": "All perchlorates are soluble in water",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": null
+    },
+    {
+      "ionFormula": "CN-",
+      "ionPlain": "CN-",
+      "kind": "anion",
+      "rule": "All cyanides are soluble in water",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": "Heavy metal cyanides such as AgCN and CuCN are insoluble"
+    },
+    {
+      "ionFormula": "SCN-",
+      "ionPlain": "SCN-",
+      "kind": "anion",
+      "rule": "Most thiocyanates are soluble",
+      "exceptions": "exceptions: Ag⁺, Pb²⁺, Hg²⁺",
+      "outcome": "soluble",
+      "note": "Silver thiocyanate is insoluble"
+    },
+    {
+      "ionFormula": "SO4^2-",
+      "ionPlain": "SO4^2-",
+      "kind": "anion",
+      "rule": "Most sulfates are soluble in water",
+      "exceptions": "exceptions: Ba²⁺, Sr²⁺, Pb²⁺, Ca²⁺, Ag⁺",
+      "outcome": "soluble",
+      "note": "Barium sulfate is so insoluble it stays white in the stomach and shows on an X-ray"
+    },
+    {
+      "ionFormula": "SO3^2-",
+      "ionPlain": "SO3^2-",
+      "kind": "anion",
+      "rule": "Sulfites of the group 1 metals and ammonium are soluble; most other sulfites are not",
+      "exceptions": "exceptions: group 1 and NH₄⁺",
+      "outcome": "reacts",
+      "note": "Sulfites decompose in acid, releasing sulphur dioxide gas"
+    },
+    {
+      "ionFormula": "HSO4-",
+      "ionPlain": "HSO4-",
+      "kind": "anion",
+      "rule": "Hydrogen sulfate is soluble and is the acidic form of sulfate",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": "Converts to sulfate when the solution is made alkaline"
+    },
+    {
+      "ionFormula": "Cl-",
+      "ionPlain": "Cl-",
+      "kind": "anion",
+      "rule": "Most chlorides are soluble in water",
+      "exceptions": "exceptions: Ag⁺, Pb²⁺, Hg₂²⁺",
+      "outcome": "soluble",
+      "note": "Silver chloride precipitates white and dissolves in ammonia"
+    },
+    {
+      "ionFormula": "Br-",
+      "ionPlain": "Br-",
+      "kind": "anion",
+      "rule": "Most bromides are soluble in water",
+      "exceptions": "exceptions: Ag⁺, Pb²⁺, Hg₂²⁺",
+      "outcome": "soluble",
+      "note": "Silver bromide is a pale yellow precipitate used in photographic film"
+    },
+    {
+      "ionFormula": "I-",
+      "ionPlain": "I-",
+      "kind": "anion",
+      "rule": "Most iodides are soluble in water",
+      "exceptions": "exceptions: Ag⁺, Pb²⁺, Hg₂²⁺, Cu²⁺",
+      "outcome": "soluble",
+      "note": "Silver iodide is yellow and insoluble even in ammonia"
+    },
+    {
+      "ionFormula": "F-",
+      "ionPlain": "F-",
+      "kind": "anion",
+      "rule": "Most fluorides are soluble, but the alkaline earth and lead fluorides are not",
+      "exceptions": "exceptions: Ca²⁺, Sr²⁺, Ba²⁺, Pb²⁺",
+      "outcome": "soluble",
+      "note": "Barium fluoride is sparingly soluble and is used in toothpaste"
+    },
+    {
+      "ionFormula": "OH-",
+      "ionPlain": "OH-",
+      "kind": "anion",
+      "rule": "Most hydroxides are insoluble",
+      "exceptions": "exceptions: group 1 and NH₄⁺, slightly soluble Sr²⁺ and Ba²⁺",
+      "outcome": "insoluble",
+      "note": "Group 1 hydroxides are strong bases, so they dissolve freely"
+    },
+    {
+      "ionFormula": "S^2-",
+      "ionPlain": "S^2-",
+      "kind": "anion",
+      "rule": "Most sulfides are insoluble",
+      "exceptions": "exceptions: group 1, NH₄⁺ and several heavy transition metals",
+      "outcome": "reacts",
+      "note": "Sulfides of the group 1 metals react with water to give hydrogen sulfide"
+    },
+    {
+      "ionFormula": "CO3^2-",
+      "ionPlain": "CO3^2-",
+      "kind": "anion",
+      "rule": "Most carbonates are insoluble",
+      "exceptions": "exceptions: group 1 and NH₄⁺",
+      "outcome": "insoluble",
+      "note": "Carbonate reacts with acid to give the fizzing carbon dioxide test"
+    },
+    {
+      "ionFormula": "HCO3-",
+      "ionPlain": "HCO3-",
+      "kind": "anion",
+      "rule": "Bicarbonates dissolve only as their dissolved solid, so the ion is stable in solution but unstable as a salt",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": "Heating bicarbonate gives the carbonate, water and carbon dioxide"
+    },
+    {
+      "ionFormula": "PO4^3-",
+      "ionPlain": "PO4^3-",
+      "kind": "anion",
+      "rule": "Most phosphates are insoluble",
+      "exceptions": "exceptions: group 1 and NH₄⁺",
+      "outcome": "insoluble",
+      "note": "Phosphate is the main nutrient in bone and tooth enamel"
+    },
+    {
+      "ionFormula": "HPO4^2-",
+      "ionPlain": "HPO4^2-",
+      "kind": "anion",
+      "rule": "Hydrogen phosphate salts are mostly insoluble",
+      "exceptions": "exceptions: group 1 and NH₄⁺",
+      "outcome": "insoluble",
+      "note": "This is the dominant phosphate species at neutral pH"
+    },
+    {
+      "ionFormula": "H2PO4-",
+      "ionPlain": "H2PO4-",
+      "kind": "anion",
+      "rule": "Dihydrogen phosphate salts are soluble in water",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": "The acid form of phosphate, used in food and buffers"
+    },
+    {
+      "ionFormula": "AsO4^3-",
+      "ionPlain": "AsO4^3-",
+      "kind": "anion",
+      "rule": "Arsenates mostly follow the phosphate rules",
+      "exceptions": "exceptions: group 1 and NH₄⁺",
+      "outcome": "insoluble",
+      "note": "Silver arsenate is a chocolate brown precipitate used in the Marsh test"
+    },
+    {
+      "ionFormula": "C2O4^2-",
+      "ionPlain": "C2O4^2-",
+      "kind": "anion",
+      "rule": "Most oxalates are insoluble or slightly soluble",
+      "exceptions": "exceptions: group 1, NH₄⁺; Ca²⁺ is slightly soluble",
+      "outcome": "insoluble",
+      "note": "Calcium oxalate is the insoluble core of many kidney stones"
+    },
+    {
+      "ionFormula": "CrO4^2-",
+      "ionPlain": "CrO4^2-",
+      "kind": "anion",
+      "rule": "Most chromates are insoluble",
+      "exceptions": "exceptions: group 1 and NH₄⁺",
+      "outcome": "insoluble",
+      "note": "Silver chromate is brick red and changes to dichromate in acid"
+    },
+    {
+      "ionFormula": "Cr2O7^2-",
+      "ionPlain": "Cr2O7^2-",
+      "kind": "anion",
+      "rule": "Dichromates are mostly soluble",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": "Chromate and dichromate interconvert in acid and alkali"
+    },
+    {
+      "ionFormula": "IO3-",
+      "ionPlain": "IO3-",
+      "kind": "anion",
+      "rule": "Most iodates are insoluble",
+      "exceptions": "exceptions: group 1 and NH₄⁺",
+      "outcome": "insoluble",
+      "note": "Silver iodate is a white precipitate"
+    },
+    {
+      "ionFormula": "MnO4-",
+      "ionPlain": "MnO4-",
+      "kind": "anion",
+      "rule": "Potassium and sodium permanganate are soluble",
+      "exceptions": "exceptions: BaMnO₄ and Ca(MnO₄)₂",
+      "outcome": "soluble",
+      "note": "The ion is deeply purple and self indicating in titrations"
+    },
+    {
+      "ionFormula": "BO3^3-",
+      "ionPlain": "BO3^3-",
+      "kind": "anion",
+      "rule": "Borates of the group 1 metals and ammonium are soluble",
+      "exceptions": "exceptions: Ca²⁺, Sr²⁺, Ba²⁺, Pb²⁺",
+      "outcome": "soluble",
+      "note": "Boric acid is a weak acid that acts as a Lewis acid"
+    },
+    {
+      "ionFormula": "SiO3^2-",
+      "ionPlain": "SiO3^2-",
+      "kind": "anion",
+      "rule": "Most silicates are insoluble",
+      "exceptions": "exceptions: group 1 and NH₄⁺",
+      "outcome": "insoluble",
+      "note": "Water glass is sodium silicate solution, and silica is a very weak acid"
+    },
+    {
+      "ionFormula": "S2O3^2-",
+      "ionPlain": "S2O3^2-",
+      "kind": "anion",
+      "rule": "Thiosulfates of the group 1 metals and ammonium are soluble",
+      "exceptions": null,
+      "outcome": "soluble",
+      "note": "Decomposes slowly to give a yellow sulphur precipitate"
+    },
+    {
+      "ionFormula": "C6H5O-",
+      "ionPlain": "C6H5O-",
+      "kind": "anion",
+      "rule": "Most phenoxides are soluble in water",
+      "exceptions": "exceptions: several heavy metal cations",
+      "outcome": "soluble",
+      "note": "Phenoxide is a much weaker base than hydroxide"
+    }
+  ]
+}
