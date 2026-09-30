@@ -114,8 +114,17 @@ for (const [sym, A, pct, why] of [
   const iso = e.isotopes.find((i) => i.massNumber === A);
   if (iso) {
     iso.stable = false;
-    e.hazards = e.hazards
-      ? `${e.hazards} (weakly radioactive: ${sym}-${A}, ${why})`
+    // Idempotence: strip every previously-appended copy of this note first, then
+    // append exactly one. Without this, each `npm run fix:data` (which `verify`
+    // runs before every `build`) added another copy, so the deployed site showed
+    // the same sentence 20+ times and the corruption was committed to git.
+    const note = `(weakly radioactive: ${sym}-${A}, ${why})`;
+    const base = (e.hazards ?? '')
+      .split(note)
+      .join('')
+      .trim();
+    e.hazards = base
+      ? `${base} ${note}`
       : `Naturally occurring ${sym}-${A} is weakly radioactive (${why}).`;
     changes.push(`${sym}-${A} marked radioactive (${pct}%)`);
   } else {
