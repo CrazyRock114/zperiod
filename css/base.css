@@ -67,7 +67,7 @@ body {
 
 #global-nav {
   position: fixed;
-  top: 12px;
+  top: calc(var(--igcse-nav-height, 52px) + 12px);
   left: 50%;
   transform: translateX(-50%) scale(var(--global-nav-scale, 1));
   transform-origin: top center;
@@ -147,7 +147,7 @@ html.dark-theme .nav-pill-btn.theme-toggle .icon-moon { display: block; }
    ==================================================================== */
 
 #main-container {
-  padding-top: 80px;
+  padding-top: calc(var(--igcse-nav-height, 52px) + 80px);
   padding-bottom: 32px;
   padding-left: 16px;
   padding-right: 16px;
@@ -342,7 +342,7 @@ html.dark-theme .feature-pill {
   display: none;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 999999;
   padding: 24px;
 }
 
@@ -398,6 +398,6 @@ html.welcome-active { overflow: hidden; }
 @media (max-width: 768px) {
   #global-nav { padding: 6px 10px; gap: 8px; }
   .nav-pill-btn span { display: none; }
-  #main-container { padding-top: 64px; }
+  #main-container { padding-top: calc(var(--igcse-nav-height, 52px) + 64px); }
   .modal-content { padding: 20px; max-width: 100%; }
 }

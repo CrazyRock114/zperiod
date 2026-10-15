@@ -18,7 +18,7 @@ export function renderPeriodicTable(container, elements, onElementClick) {
     const [row, col] = pos.split(',').map(Number);
     const el = elements[id];
     if (!el) continue;
-    const node = createElementNode(el, row, col);
+    const node = createElementNode(el, row, col, onElementClick);
     frag.appendChild(node);
   }
 
@@ -66,7 +66,7 @@ export function renderPeriodicTable(container, elements, onElementClick) {
   _rendered = true;
 }
 
-function createElementNode(el, row, col) {
+function createElementNode(el, row, col, onElementClick) {
   const node = document.createElement('button');
   node.className = `element ${categoryClass(el.level1_basic?.type)}`;
   node.style.gridRow = row;
@@ -75,6 +75,10 @@ function createElementNode(el, row, col) {
   node.dataset.symbol = el.symbol;
   node.dataset.pos = `${row},${col}`;
   node.setAttribute('aria-label', `${el.name} (${el.symbol}, atomic number ${el.id})`);
+
+  if (typeof onElementClick === 'function') {
+    node.addEventListener('click', () => onElementClick(el.id));
+  }
 
   const num = document.createElement('span');
   num.className = 'atomic-num';

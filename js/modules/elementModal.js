@@ -7,7 +7,7 @@ import { renderAtom, describeOrbitals } from './threeRenderer.js';
 
 let _modalEl, _bodyEl, _closeBtn, _onClose = null;
 let _activeRenderer = null;
-let _activeMode = 'combined';
+let _activeMode = 'bohr';
 
 export function initElementModal() {
   _modalEl = document.getElementById('element-modal');
@@ -29,7 +29,7 @@ export function openElement(id, onClose) {
   if (!el) return;
 
   _onClose = onClose;
-  _activeMode = 'combined';
+  _activeMode = 'bohr';
   _bodyEl.innerHTML = renderElementModal(el);
   _modalEl.classList.add('active');
   _modalEl.setAttribute('aria-hidden', 'false');
@@ -111,8 +111,8 @@ function renderElementModal(el) {
         </div>
         <div class="element-modal-3d">
           <div class="atom-mode-bar">
-            <button class="atom-mode-btn active" data-mode="combined" title="Bohr + orbital clouds">Combined</button>
-            <button class="atom-mode-btn" data-mode="bohr" title="Bohr shells only">Bohr</button>
+            <button class="atom-mode-btn active" data-mode="bohr" title="Bohr shells only">Bohr</button>
+            <button class="atom-mode-btn" data-mode="combined" title="Bohr + orbital clouds">Combined</button>
             <button class="atom-mode-btn" data-mode="orbital" title="Valence orbital clouds">SPDF</button>
             <button class="atom-mode-btn" data-mode="nucleus" title="Nucleus only">Nucleus</button>
           </div>

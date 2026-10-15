@@ -179,8 +179,10 @@ function Y(l, m, theta, phi) {
   function sp3() { return sp * sp * sp; }
 }
 
-// Radial R_nl(r) for hydrogen (atomic units).
+// Radial R_nl(r) for hydrogen / Slater-type orbitals (atomic units).
 function R(n, l, r) {
+  if (r < 0 || !Number.isFinite(r)) return 0;
+
   // Use Slater-type approximations consistent with principal quantum number n.
   // Coefficients are matched to the hydrogen-atom analytic solutions.
   switch (n) {
@@ -200,6 +202,16 @@ function R(n, l, r) {
       if (l === 2) return 0.02 * r * r * Math.exp(-r / 4);
       if (l === 3) return 0.005 * r * r * r * Math.exp(-r / 4);
       break;
+    default: {
+      // Generalized Slater-type radial envelope for high n (n >= 5: periods 5, 6, 7 and transactinides)
+      // Produces smooth radial decay r^l * exp(-r/n) matching atomic shell distance scale ~ n
+      const safeN = Math.max(1, n);
+      const safeL = Math.max(0, Math.min(l, 3));
+      const scale = safeN;
+      const poly = safeL === 0 ? 1 : Math.pow(r, safeL);
+      const coeff = 0.05 / Math.pow(scale, safeL + 1);
+      return coeff * poly * Math.exp(-r / scale);
+    }
   }
   return 0;
 }
@@ -208,29 +220,51 @@ function R(n, l, r) {
 function psi2(n, l, m, r, theta, phi) {
   const Rnl = R(n, l, r);
   const Ylm = Y(l, m, theta, phi);
-  return Rnl * Rnl * Ylm * Ylm;
+  const val = Rnl * Rnl * Ylm * Ylm;
+  return Number.isFinite(val) ? Math.max(0, val) : 0;
 }
 
 // Sample one point (x, y, z) from the density |ψ|² for (n, l, m) using
 // rejection sampling within a bounding box. `box` is the half-extent in a₀.
 // `u` is the maximum density inside the box (precomputed estimate).
+// Strict safeguard: bounded maxAttempts to guarantee zero UI lockup.
 function sampleOrbital(n, l, m, box, u) {
-  while (true) {
+  const safeU = (Number.isFinite(u) && u > 1e-9) ? u : 1e-4;
+  const maxAttempts = 50;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const x = (Math.random() * 2 - 1) * box;
     const y = (Math.random() * 2 - 1) * box;
     const z = (Math.random() * 2 - 1) * box;
     const r = Math.hypot(x, y, z);
-    if (r < 1e-6) continue;
+    if (r < 1e-6 || r > box) continue;
+
     const phi = Math.atan2(y, x);
-    const theta = Math.acos(z / r);
+    const theta = Math.acos(Math.max(-1, Math.min(1, z / r)));
     const p = psi2(n, l, m, r, theta, phi);
-    if (Math.random() < p / u) return [x, y, z];
+    if (!Number.isFinite(p) || p <= 0) continue;
+
+    if (Math.random() < p / safeU) {
+      return [x, y, z];
+    }
   }
+
+  // Graceful fallback if maxAttempts reached: generate a point in an orbital shell
+  // Distributed near radial peak r ~ n * (0.7 + 0.8 * random) with random orientation
+  const rFallback = Math.max(1, n) * (0.7 + Math.random() * 0.8);
+  const uCosth = Math.random() * 2 - 1;
+  const sinth = Math.sqrt(Math.max(0, 1 - uCosth * uCosth));
+  const randPhi = Math.random() * Math.PI * 2;
+  return [
+    rFallback * sinth * Math.cos(randPhi),
+    rFallback * sinth * Math.sin(randPhi),
+    rFallback * uCosth
+  ];
 }
 
 // Find the maximum of |ψ|² for (n, l, m) inside a box of half-extent `box`
-// by Monte-Carlo probing. Cheap and robust.
-function probeMax(n, l, m, box, samples = 5000) {
+// by Monte-Carlo probing. Cheap, robust, and zero-risk.
+function probeMax(n, l, m, box, samples = 1200) {
   let u = 0;
   for (let i = 0; i < samples; i++) {
     const x = (Math.random() * 2 - 1) * box;
@@ -239,9 +273,12 @@ function probeMax(n, l, m, box, samples = 5000) {
     const r = Math.hypot(x, y, z);
     if (r < 1e-6) continue;
     const phi = Math.atan2(y, x);
-    const theta = Math.acos(z / r);
+    const theta = Math.acos(Math.max(-1, Math.min(1, z / r)));
     const p = psi2(n, l, m, r, theta, phi);
     if (p > u) u = p;
+  }
+  if (!Number.isFinite(u) || u <= 1e-9) {
+    return 1e-4;
   }
   return u;
 }
@@ -249,11 +286,11 @@ function probeMax(n, l, m, box, samples = 5000) {
 // Build a Points cloud for one orbital.
 function buildOrbitalPoints(n, l, m, options = {}) {
   const {
-    candidates = 2500,
-    box = n * 4,        // bigger box for higher n
+    candidates = 1800,
+    box = Math.max(6, n * 3.5),
     color = 0x818cf8
   } = options;
-  const u = probeMax(n, l, m, box, 2000);
+  const u = probeMax(n, l, m, box, 1200);
   const positions = new Float32Array(candidates * 3);
   let count = 0;
   for (let i = 0; i < candidates; i++) {
@@ -398,7 +435,7 @@ function parseValenceOrbitals(configuration) {
 
 export function renderAtom(canvas, element, options = {}) {
   const {
-    mode = 'auto',
+    mode = 'bohr',
     autoRotate = true,
     theme = 'dark'
   } = options;
@@ -443,7 +480,7 @@ export function renderAtom(canvas, element, options = {}) {
   // Determine effective mode
   let effectiveMode = mode;
   if (mode === 'auto') {
-    effectiveMode = 'combined';
+    effectiveMode = 'bohr';
   }
 
   // Build nucleus

@@ -49,42 +49,47 @@ export function buildLayout() {
   // Period 1: H(1,1), He(1,18)
   grid.set('1,1', 1);
   grid.set('1,18', 2);
-  // Period 2: Li..Ne
-  for (let g = 1; g <= 2; g++) grid.set(`2,${g}`, 2 + g);
-  for (let g = 13; g <= 18; g++) grid.set(`2,${g}`, g - 10); // B=5, C=6, N=7, O=8, F=9, Ne=10
-  // Period 3: Na..Ar
-  for (let g = 1; g <= 2; g++) grid.set(`3,${g}`, 10 + g);
-  for (let g = 13; g <= 18; g++) grid.set(`3,${g}`, g - 2); // Al=13..Ar=18
-  // Period 4: K..Kr (id 19..36)
+
+  // Period 2: Li(3)..Ne(10)
+  grid.set('2,1', 3);
+  grid.set('2,2', 4);
+  for (let g = 13; g <= 18; g++) grid.set(`2,${g}`, g - 8); // B=5..Ne=10
+
+  // Period 3: Na(11)..Ar(18)
+  grid.set('3,1', 11);
+  grid.set('3,2', 12);
+  for (let g = 13; g <= 18; g++) grid.set(`3,${g}`, g); // Al=13..Ar=18
+
+  // Period 4: K(19)..Kr(36)
   grid.set('4,1', 19);
   grid.set('4,2', 20);
-  for (let g = 3; g <= 12; g++) grid.set(`4,${g}`, 16 + g); // Sc=21..Zn=30
-  for (let g = 13; g <= 18; g++) grid.set(`4,${g}`, 17 + g); // Ga=31..Kr=36
-  // Period 5: Rb..Xe (id 37..54)
+  for (let g = 3; g <= 18; g++) grid.set(`4,${g}`, 18 + g); // Sc=21..Kr=36
+
+  // Period 5: Rb(37)..Xe(54)
   grid.set('5,1', 37);
   grid.set('5,2', 38);
-  for (let g = 3; g <= 12; g++) grid.set(`5,${g}`, 34 + g); // Y=39..Cd=48
-  for (let g = 13; g <= 18; g++) grid.set(`5,${g}`, 35 + g); // In=49..Xe=54
-  // Period 6: Cs..Rn (id 55..86) — La (57) is the lanthanide indicator at (6,3)
+  for (let g = 3; g <= 18; g++) grid.set(`5,${g}`, 36 + g); // Y=39..Xe=54
+
+  // Period 6: Cs(55)..Rn(86) — (6,3) is lanthanides indicator
   grid.set('6,1', 55);  // Cs
   grid.set('6,2', 56);  // Ba
-  // (6,3) is occupied by the lanthanide indicator placeholder (no real element).
-  for (let g = 4; g <= 12; g++) grid.set(`6,${g}`, 53 + g); // Hf=72..Hg=80
-  for (let g = 13; g <= 18; g++) grid.set(`6,${g}`, 54 + g); // Tl=81..Rn=86
-  // Period 7: Fr..Og (id 87..118) — Ac (89) is the actinide indicator at (7,3)
+  for (let g = 4; g <= 18; g++) grid.set(`6,${g}`, 68 + g); // Hf=72..Rn=86
+
+  // Period 7: Fr(87)..Og(118) — (7,3) is actinides indicator
   grid.set('7,1', 87);  // Fr
   grid.set('7,2', 88);  // Ra
-  for (let g = 4; g <= 12; g++) grid.set(`7,${g}`, 84 + g); // Rf=104..Cn=112
-  for (let g = 13; g <= 18; g++) grid.set(`7,${g}`, 85 + g); // Nh=113..Og=118
-  // Lanthanides row 9
-  for (let i = 0; i < LANTHANIDE_IDS.length; i++) grid.set(`9,${i + 3}`, LANTHANIDE_IDS[i]);
-  // Actinides row 10
-  for (let i = 0; i < ACTINIDE_IDS.length; i++) grid.set(`10,${i + 3}`, ACTINIDE_IDS[i]);
+  for (let g = 4; g <= 18; g++) grid.set(`7,${g}`, 100 + g); // Rf=104..Og=118
+
+  // Lanthanides row 9: La(57)..Lu(71) -> cols 4..18
+  for (let i = 0; i < LANTHANIDE_IDS.length; i++) grid.set(`9,${i + 4}`, LANTHANIDE_IDS[i]);
+
+  // Actinides row 10: Ac(89)..Lr(103) -> cols 4..18
+  for (let i = 0; i < ACTINIDE_IDS.length; i++) grid.set(`10,${i + 4}`, ACTINIDE_IDS[i]);
 
   return {
     grid,
-    lanthanideIndicator: { row: 8, col: 2, targetSeries: 'lanthanide', fromIds: [57], toIds: [71] },
-    actinideIndicator: { row: 8, col: 3, targetSeries: 'actinide', fromIds: [89], toIds: [103] }
+    lanthanideIndicator: { row: 6, col: 3, targetSeries: 'lanthanide', fromIds: [57], toIds: [71] },
+    actinideIndicator: { row: 7, col: 3, targetSeries: 'actinide', fromIds: [89], toIds: [103] }
   };
 }
 
