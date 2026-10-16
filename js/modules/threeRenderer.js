@@ -426,7 +426,12 @@ function parseValenceOrbitals(configuration) {
   }
   if (!orbitals.length) return [];
   const maxN = Math.max(...orbitals.map(o => o.n));
-  return orbitals.filter(o => o.n === maxN);
+  // Retain outermost shell (n = maxN) plus chemically active (n-1)d and (n-2)f subshells
+  return orbitals.filter(o =>
+    o.n === maxN ||
+    (o.n === maxN - 1 && o.l >= 2) ||
+    (o.n === maxN - 2 && o.l === 3)
+  );
 }
 
 // ====================================================================

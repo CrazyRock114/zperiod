@@ -67,7 +67,13 @@ export function parseEquation(eq) {
     throw new Error('Equation must have exactly one arrow (->, →, =, ==)');
   }
   const splitSide = side =>
-    side.split('+').map(s => s.trim()).filter(Boolean).map(parseCompound);
+    side.split('+')
+      .map(s => s.trim())
+      .filter(Boolean)
+      .map(rawFormula => ({
+        rawFormula,
+        counts: parseCompound(rawFormula)
+      }));
   return {
     reactants: splitSide(sides[0]),
     products: splitSide(sides[1])
@@ -171,14 +177,16 @@ function fracsToInts(v) {
   // Multiply by LCM of denominators to get integers.
   const denLCM = v.reduce((acc, f) => lcm(acc, f.den), 1);
   let ints = v.map(f => f.num * (denLCM / f.den));
-  // Make all non-negative by flipping sign if needed.
-  const negs = ints.filter(x => x < 0).length;
-  if (negs > ints.length / 2) ints = ints.map(x => -x);
+  // If all elements are non-positive and some negative, flip signs
+  if (ints.every(x => x <= 0) && ints.some(x => x < 0)) {
+    ints = ints.map(x => -x);
+  } else if (ints.filter(x => x < 0).length > ints.length / 2) {
+    ints = ints.map(x => -x);
+  }
   // Reduce by GCD.
-  let g = Math.abs(ints[0]);
+  let g = 0;
   for (const x of ints) g = gcd(g, Math.abs(x));
   if (g > 1) ints = ints.map(x => x / g);
-  // Normalize: ensure at least one coefficient is 1.
   return ints;
 }
 
@@ -189,52 +197,78 @@ export function balanceEquation(eqString) {
   const allCompounds = [...reactants, ...products];
   const n = allCompounds.length;
   if (n < 2) throw new Error('Need at least two compounds');
+  if (reactants.length === 0 || products.length === 0) {
+    throw new Error('Equation must have at least one reactant and one product');
+  }
+
   // Collect element universe
   const elementSet = new Set();
-  for (const c of [...reactants, ...products]) {
-    for (const el of Object.keys(c)) elementSet.add(el);
+  for (const c of allCompounds) {
+    for (const el of Object.keys(c.counts)) elementSet.add(el);
   }
   const elements = [...elementSet];
+
+  // Verify same elements on both sides
+  const leftElements = new Set();
+  for (const c of reactants) {
+    for (const el of Object.keys(c.counts)) leftElements.add(el);
+  }
+  const rightElements = new Set();
+  for (const c of products) {
+    for (const el of Object.keys(c.counts)) rightElements.add(el);
+  }
+  for (const el of leftElements) {
+    if (!rightElements.has(el)) {
+      throw new Error(`Element ${el} appears on the left but not on the right`);
+    }
+  }
+  for (const el of rightElements) {
+    if (!leftElements.has(el)) {
+      throw new Error(`Element ${el} appears on the right but not on the left`);
+    }
+  }
+
   // Build matrix M: row = element, col = compound.
   // Left compounds have +count, right compounds have -count.
   // Coefficients satisfy M·x = 0.
   const M = elements.map(el => {
     const row = [];
-    for (let i = 0; i < reactants.length; i++) row.push(reactants[i][el] || 0);
-    for (let i = 0; i < products.length; i++) row.push(-(products[i][el] || 0));
+    for (let i = 0; i < reactants.length; i++) row.push(reactants[i].counts[el] || 0);
+    for (let i = 0; i < products.length; i++) row.push(-(products[i].counts[el] || 0));
     return row;
   });
-  // Validate: same element set on both sides? (warning, not error — sometimes
-  // OK if there's e.g. free electrons in redox, but we report.)
+
   const basis = solveNullspace(M);
   if (basis.length === 0) {
-    throw new Error('Equation cannot be balanced (no non-trivial solution)');
+    throw new Error('Equation cannot be balanced (no solution)');
   }
-  // Pick the basis vector with smallest maximum |coef|.
-  let best = null;
-  let bestScore = Infinity;
-  for (const v of basis) {
-    const ints = fracsToInts(v);
-    const max = Math.max(...ints.map(Math.abs));
-    if (max < bestScore) { bestScore = max; best = ints; }
+  if (basis.length > 1) {
+    throw new Error('Equation cannot be uniquely balanced (multiple independent reactions)');
   }
-  if (!best) throw new Error('No integer solution found');
+
+  const ints = fracsToInts(basis[0]);
+  if (!ints.every(c => Number.isInteger(c) && c > 0)) {
+    throw new Error('Equation cannot be balanced with positive integer coefficients');
+  }
+
   return {
-    reactants: reactants.map((c, i) => ({ compound: compoundToString(c), coefficient: best[i] })),
-    products: products.map((c, i) => ({ compound: compoundToString(c), coefficient: best[reactants.length + i] }))
+    reactants: reactants.map((c, i) => ({ compound: c.rawFormula, coefficient: ints[i] })),
+    products: products.map((c, i) => ({ compound: c.rawFormula, coefficient: ints[reactants.length + i] }))
   };
 }
 
-function compoundToString(c) {
+export function compoundToString(c) {
   // Pretty-print parsed compound back to a chemical formula.
-  // Preserve ordering from data structure (insertion order).
   return Object.entries(c).map(([el, n]) => n === 1 ? el : `${el}${n}`).join('');
 }
 
 export function formatBalanced(result) {
-  const fmt = (s) => s.compound + (s.coefficient === 1 ? '' : `${s.coefficient > 0 ? '' : ''}`);
-  // Show coefficients explicitly even when 1 (clearer for output)
-  const fmtCoeff = (s) => `${s.coefficient > 1 ? s.coefficient : ''}${s.compound}`;
+  const fmtCoeff = (s) => {
+    if (s.coefficient <= 0 || !Number.isInteger(s.coefficient)) {
+      throw new Error(`Invalid coefficient: ${s.coefficient}`);
+    }
+    return `${s.coefficient > 1 ? s.coefficient : ''}${s.compound}`;
+  };
   return `${result.reactants.map(fmtCoeff).join(' + ')} → ${result.products.map(fmtCoeff).join(' + ')}`;
 }
 

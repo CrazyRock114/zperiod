@@ -133,7 +133,18 @@ function renderElementModal(el) {
         <h4>Subatomic Particles</h4>
         <div class="props-grid">
           ${prop('Protons', L2.protons)}
-          ${prop('Neutrons', L2.naturalIsotopes?.reduce((s, iso) => s + parseInt(iso.neutron, 10), 0) || '—')}
+          ${prop('Neutrons', (() => {
+            const rawMass = String(L2.mass?.highSchool || L1.atomicMass || '').replace(/[\[\]]/g, '');
+            const mass = parseFloat(rawMass);
+            if (!Number.isNaN(mass)) {
+              return Math.max(0, Math.round(mass - el.id));
+            }
+            if (L2.naturalIsotopes && L2.naturalIsotopes.length > 0) {
+              const best = [...L2.naturalIsotopes].sort((a, b) => (parseFloat(b.percent) || 0) - (parseFloat(a.percent) || 0))[0];
+              if (best && best.neutron != null) return parseInt(best.neutron, 10);
+            }
+            return '—';
+          })())}
           ${prop('Electrons (neutral)', L2.electronsNeutral)}
           ${prop('Atomic Mass (high-school)', L2.mass?.highSchool || '—')}
         </div>
