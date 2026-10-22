@@ -54,7 +54,13 @@ const CATION_NOTES = [
 // Look up solubility for a compound by evaluating canonical high-school rules.
 export function lookupSolubility(formula) {
   if (!formula || typeof formula !== 'string') {
-    return { result: 'Invalid', rationale: 'Please enter a valid chemical formula.' };
+    return {
+      result: 'Invalid',
+      rationale: 'Please enter a valid chemical formula.',
+      isPrecipitate: false,
+      precipitateColor: null,
+      hexColor: null
+    };
   }
   const norm = formula.trim().replace(/\s+/g, '');
 
@@ -63,7 +69,10 @@ export function lookupSolubility(formula) {
   if (nobleGases.includes(norm)) {
     return {
       result: 'Non-ionic',
-      rationale: `${norm} is a noble gas element, not an ionic compound.`
+      rationale: `${norm} is a noble gas element, not an ionic compound.`,
+      isPrecipitate: false,
+      precipitateColor: null,
+      hexColor: null
     };
   }
 
@@ -71,7 +80,10 @@ export function lookupSolubility(formula) {
   if (['H2O', 'CO2', 'CO', 'CH4', 'O2', 'N2', 'H2'].includes(norm)) {
     return {
       result: 'Molecular',
-      rationale: `${norm} is a covalent molecule, not an ionic salt.`
+      rationale: `${norm} is a covalent molecule, not an ionic salt.`,
+      isPrecipitate: false,
+      precipitateColor: null,
+      hexColor: null
     };
   }
 
@@ -80,7 +92,10 @@ export function lookupSolubility(formula) {
   if (isAlwaysSolubleAnion) {
     return {
       result: 'Soluble (aq)',
-      rationale: 'All common nitrates, acetates, and chlorates are soluble in water.'
+      rationale: 'All common nitrates, acetates, and chlorates are soluble in water.',
+      isPrecipitate: false,
+      precipitateColor: null,
+      hexColor: null
     };
   }
 
@@ -90,7 +105,10 @@ export function lookupSolubility(formula) {
   if (isGroup1OrNH4) {
     return {
       result: 'Soluble (aq)',
-      rationale: 'All salts of Group 1 alkali metals (Li⁺, Na⁺, K⁺, etc.) and ammonium (NH₄⁺) are soluble.'
+      rationale: 'All salts of Group 1 alkali metals (Li⁺, Na⁺, K⁺, etc.) and ammonium (NH₄⁺) are soluble.',
+      isPrecipitate: false,
+      precipitateColor: null,
+      hexColor: null
     };
   }
 
@@ -98,26 +116,45 @@ export function lookupSolubility(formula) {
   const isHalide = /Cl(?![a-z0-9]*O)|Br(?![a-z0-9]*O)|I(?![a-z0-9]*O)/.test(norm) && !/ClO/i.test(norm);
   if (isHalide) {
     if (/Ag(?![a-z])/.test(norm)) {
+      const isBr = /Br/.test(norm);
+      const isI = /I(?![a-z])/.test(norm);
+      const colorDesc = isI ? 'Yellow (黄色沉淀)' : isBr ? 'Cream (乳黄色沉淀)' : 'White (白色沉淀)';
+      const hex = isI ? '#facc15' : isBr ? '#fef08a' : '#f8fafc';
       return {
         result: 'Insoluble (s)',
-        rationale: 'Silver halides (AgCl, AgBr, AgI) are insoluble precipitates (AgCl is white, AgBr cream, AgI yellow).'
+        rationale: `Silver halide (${norm}) is an insoluble precipitate. In qualitative analysis: AgCl is white, AgBr is cream, AgI is yellow.`,
+        isPrecipitate: true,
+        precipitateColor: colorDesc,
+        hexColor: hex
       };
     }
     if (/Pb(?![a-z])/.test(norm)) {
+      const isI = /I(?![a-z])/.test(norm);
+      const colorDesc = isI ? 'Bright Golden-Yellow (明黄色沉淀)' : 'White (微溶白色沉淀)';
+      const hex = isI ? '#facc15' : '#f8fafc';
       return {
         result: 'Insoluble (s)',
-        rationale: 'Lead(II) halides (PbCl₂, PbBr₂, PbI₂) are insoluble in cold water (PbI₂ forms bright yellow precipitate).'
+        rationale: `Lead(II) halide (${norm}) is insoluble in cold water (${isI ? 'PbI₂ forms bright golden-yellow spangles' : 'PbCl₂ dissolves in hot water'}).`,
+        isPrecipitate: true,
+        precipitateColor: colorDesc,
+        hexColor: hex
       };
     }
     if (/Hg(?![a-z])/.test(norm)) {
       return {
         result: 'Insoluble (s)',
-        rationale: 'Mercury(I) halides (e.g. Hg₂Cl₂) are insoluble precipitates.'
+        rationale: 'Mercury(I) halides (e.g. Hg₂Cl₂) are insoluble precipitates.',
+        isPrecipitate: true,
+        precipitateColor: 'White (白色沉淀)',
+        hexColor: '#f8fafc'
       };
     }
     return {
       result: 'Soluble (aq)',
-      rationale: 'Most chlorides, bromides, and iodides are soluble, except with Ag⁺, Pb²⁺, and Hg₂²⁺.'
+      rationale: 'Most chlorides, bromides, and iodides are soluble, except with Ag⁺, Pb²⁺, and Hg₂²⁺.',
+      isPrecipitate: false,
+      precipitateColor: null,
+      hexColor: null
     };
   }
 
@@ -126,32 +163,50 @@ export function lookupSolubility(formula) {
     if (/Ba(?![a-z])/.test(norm)) {
       return {
         result: 'Insoluble (s)',
-        rationale: 'Barium sulfate (BaSO₄) is a dense white insoluble precipitate (standard qualitative test for sulfate).'
+        rationale: 'Barium sulfate (BaSO₄) is a dense white insoluble precipitate (essential qualitative test for sulfate with BaCl₂/Ba(NO₃)₂ and dilute acid).',
+        isPrecipitate: true,
+        precipitateColor: 'Dense White (致密白色沉淀)',
+        hexColor: '#f8fafc'
       };
     }
     if (/Pb(?![a-z])/.test(norm)) {
       return {
         result: 'Insoluble (s)',
-        rationale: 'Lead(II) sulfate (PbSO₄) is an insoluble white precipitate.'
+        rationale: 'Lead(II) sulfate (PbSO₄) is an insoluble white precipitate.',
+        isPrecipitate: true,
+        precipitateColor: 'White (白色沉淀)',
+        hexColor: '#f8fafc'
       };
     }
     if (/Ca(?![a-z])|Sr(?![a-z])/.test(norm)) {
       return {
         result: 'Slightly soluble (s/aq)',
-        rationale: 'Calcium and strontium sulfates are sparingly / slightly soluble in water.'
+        rationale: 'Calcium and strontium sulfates are sparingly / slightly soluble in water.',
+        isPrecipitate: true,
+        precipitateColor: 'White (微溶白色沉淀)',
+        hexColor: '#f8fafc'
       };
     }
     return {
       result: 'Soluble (aq)',
-      rationale: 'Most sulfates are soluble, with key exceptions being Ba²⁺, Pb²⁺, and sparingly soluble Ca²⁺/Sr²⁺.'
+      rationale: 'Most sulfates are soluble, with key exceptions being Ba²⁺, Pb²⁺, and sparingly soluble Ca²⁺/Sr²⁺.',
+      isPrecipitate: false,
+      precipitateColor: null,
+      hexColor: null
     };
   }
 
   // 7. Carbonates (CO3²⁻) & Phosphates (PO4³⁻)
   if (/CO3|PO4/i.test(norm)) {
+    const isCu = /Cu(?![a-z])/.test(norm);
+    const colorDesc = isCu ? 'Green (绿色沉淀)' : 'White (白色沉淀 · 大理石/石灰石)';
+    const hex = isCu ? '#22c55e' : '#f8fafc';
     return {
       result: 'Insoluble (s)',
-      rationale: 'Most carbonates and phosphates (e.g. CaCO₃, BaCO₃, CuCO₃) are insoluble precipitates (except Group 1 & NH₄⁺).'
+      rationale: 'Most carbonates and phosphates (e.g. CaCO₃, BaCO₃, CuCO₃) are insoluble precipitates (except Group 1 & NH₄⁺). CaCO₃ reacts with acid to release CO₂.',
+      isPrecipitate: true,
+      precipitateColor: colorDesc,
+      hexColor: hex
     };
   }
 
@@ -160,18 +215,38 @@ export function lookupSolubility(formula) {
     if (/Ba(?![a-z])/.test(norm)) {
       return {
         result: 'Soluble (aq)',
-        rationale: 'Barium hydroxide Ba(OH)₂ is a soluble strong base.'
+        rationale: 'Barium hydroxide Ba(OH)₂ is a soluble strong base.',
+        isPrecipitate: false,
+        precipitateColor: null,
+        hexColor: null
       };
     }
     if (/Ca(?![a-z])|Sr(?![a-z])/.test(norm)) {
       return {
         result: 'Slightly soluble (s/aq)',
-        rationale: 'Calcium hydroxide Ca(OH)₂ is slightly soluble (saturated solution is limewater).'
+        rationale: 'Calcium hydroxide Ca(OH)₂ is slightly soluble in water (the filtered saturated solution is limewater, used to test CO₂).',
+        isPrecipitate: true,
+        precipitateColor: 'White (微溶白色沉淀/石灰水)',
+        hexColor: '#f8fafc'
       };
     }
+    const isFe3 = /Fe/i.test(norm) && /3/.test(norm);
+    const isFe2 = /Fe/i.test(norm) && !/3/.test(norm);
+    const isCu = /Cu(?![a-z])/.test(norm);
+    const colorDesc = isFe3
+      ? 'Red-brown (红褐色沉淀)'
+      : isFe2
+      ? 'Dirty green (暗绿色沉淀)'
+      : isCu
+      ? 'Light blue (浅蓝色絮状沉淀)'
+      : 'White (白色沉淀)';
+    const hex = isFe3 ? '#b45309' : isFe2 ? '#15803d' : isCu ? '#38bdf8' : '#f8fafc';
     return {
       result: 'Insoluble (s)',
-      rationale: 'Most metal hydroxides (e.g. Fe(OH)₃, Fe(OH)₂, Cu(OH)₂, Al(OH)₃, Mg(OH)₂) are insoluble precipitates.'
+      rationale: 'Most metal hydroxides (e.g. Fe(OH)₃, Fe(OH)₂, Cu(OH)₂, Al(OH)₃, Mg(OH)₂) are insoluble precipitates.',
+      isPrecipitate: true,
+      precipitateColor: colorDesc,
+      hexColor: hex
     };
   }
 
@@ -179,11 +254,20 @@ export function lookupSolubility(formula) {
   if (/S(?![a-z0-9]*O)/.test(norm) && !/SO/i.test(norm)) {
     return {
       result: 'Insoluble (s)',
-      rationale: 'Most transition metal sulfides (e.g. CuS, FeS, PbS, Ag₂S) are insoluble precipitates.'
+      rationale: 'Most transition metal sulfides (e.g. CuS, FeS, PbS, Ag₂S) are insoluble black precipitates.',
+      isPrecipitate: true,
+      precipitateColor: 'Black (黑色沉淀)',
+      hexColor: '#1e293b'
     };
   }
 
-  return { result: 'See table', rationale: 'Look up the cation + anion pair in the table below.' };
+  return {
+    result: 'See table',
+    rationale: 'Look up the cation + anion pair in the table below.',
+    isPrecipitate: false,
+    precipitateColor: null,
+    hexColor: null
+  };
 }
 
 export function renderSolubilityTool(bodyEl) {
@@ -194,10 +278,49 @@ export function renderSolubilityTool(bodyEl) {
     </div>
     <p style="color:var(--text-secondary);font-size:14px;line-height:1.6;">
       High-school solubility rules: classify common ionic compounds by whether they dissolve in water.
-      Memorize the rules in the first column — they apply to virtually every problem you'll see.
+      Essential for Cambridge 0620 Paper 5/6 qualitative analysis and precipitation reactions.
     </p>
 
-    <h3 style="margin-top:18px;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);">Anion rules</h3>
+    <!-- Sky G8 Focus Compounds Fast Quick-Check Pills -->
+    <div class="g8-sol-presets" style="margin: 16px 0; padding: 12px 14px; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 8px;">
+      <div style="font-size: 12px; font-weight: 700; color: #3b82f6; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+        <span>⚡ Sky G8 Unit 2: 核心考点沉淀与溶解度秒查</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+        <button type="button" class="btn-sol-pill" data-compound="BaSO4" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
+          ⚪ BaSO₄ (硫酸钡·白沉淀)
+        </button>
+        <button type="button" class="btn-sol-pill" data-compound="CaCO3" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
+          ⚪ CaCO₃ (碳酸钙·白沉淀)
+        </button>
+        <button type="button" class="btn-sol-pill" data-compound="AgCl" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
+          ⚪ AgCl (氯化银·白沉淀)
+        </button>
+        <button type="button" class="btn-sol-pill" data-compound="PbI2" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
+          🟡 PbI₂ (碘化铅·黄沉淀)
+        </button>
+        <button type="button" class="btn-sol-pill" data-compound="Cu(OH)2" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
+          🔵 Cu(OH)₂ (氢氧化铜·蓝沉淀)
+        </button>
+        <button type="button" class="btn-sol-pill" data-compound="Fe(OH)3" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
+          🟤 Fe(OH)₃ (氢氧化铁·红褐沉淀)
+        </button>
+        <button type="button" class="btn-sol-pill" data-compound="NaCl" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
+          💧 NaCl (氯化钠·易溶)
+        </button>
+      </div>
+    </div>
+
+    <div class="tool-row">
+      <label for="sol-input">Enter a compound formula (秒级即时检索):</label>
+      <input id="sol-input" class="tool-input" type="text" value="AgCl" placeholder="e.g. BaSO4, CaCO3, AgCl, PbI2">
+    </div>
+    <div class="tool-actions">
+      <button class="btn-primary" id="sol-check">Check Solubility</button>
+    </div>
+    <div id="sol-output" class="tool-output"></div>
+
+    <h3 style="margin-top:24px;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);">Anion rules</h3>
     <table class="coeffs-table">
       <thead><tr><th>Anion</th><th>Name</th><th>Solubility</th><th>Example</th></tr></thead>
       <tbody>
@@ -221,20 +344,52 @@ export function renderSolubilityTool(bodyEl) {
         `).join('')}
       </tbody>
     </table>
-
-    <h3 style="margin-top:24px;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);">Quick check</h3>
-    <div class="tool-row">
-      <label for="sol-input">Enter a compound formula:</label>
-      <input id="sol-input" class="tool-input" type="text" value="AgCl" placeholder="e.g. PbSO4, Na2CO3">
-    </div>
-    <button class="btn-primary" id="sol-check">Check</button>
-    <div id="sol-output" class="tool-output"></div>
   `;
+
   const input = bodyEl.querySelector('#sol-input');
   const out = bodyEl.querySelector('#sol-output');
-  bodyEl.querySelector('#sol-check').addEventListener('click', () => {
-    const { result, rationale } = lookupSolubility(input.value);
-    out.className = 'tool-output';
-    out.innerHTML = `<b>${result}</b><br>${rationale}`;
+  const checkBtn = bodyEl.querySelector('#sol-check');
+
+  function update() {
+    const val = input.value.trim();
+    if (!val) {
+      out.className = 'tool-output';
+      out.innerHTML = 'Enter a compound formula above to check solubility.';
+      return;
+    }
+    const info = lookupSolubility(val);
+    const isSoluble = info.result.startsWith('Soluble');
+    const isInsoluble = info.result.startsWith('Insoluble');
+
+    out.className = `tool-output ${isSoluble ? 'success' : isInsoluble ? 'error' : ''}`;
+    let colorBadge = '';
+    if (info.precipitateColor) {
+      colorBadge = `
+        <div style="margin-top:6px; display:inline-flex; align-items:center; gap:8px; padding:3px 10px; border-radius:6px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);">
+          <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:${info.hexColor || '#fff'}; border:1px solid rgba(0,0,0,0.3); box-shadow:0 0 4px ${info.hexColor || '#fff'}"></span>
+          <span style="font-size:12px; font-weight:700; color:var(--text-primary);">沉淀颜色: ${info.precipitateColor}</span>
+        </div>
+      `;
+    }
+    out.innerHTML = `
+      <div style="font-size:15px; font-weight:bold; margin-bottom:4px;">${info.result}</div>
+      ${colorBadge}
+      <div style="margin-top:6px; font-size:13px; line-height:1.5; color:var(--text-secondary);">${info.rationale}</div>
+    `;
+  }
+
+  // Real-time instant check on typing ("秒级提示")
+  input.addEventListener('input', update);
+  checkBtn.addEventListener('click', update);
+
+  // Quick pills click
+  bodyEl.querySelectorAll('.btn-sol-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      input.value = btn.getAttribute('data-compound');
+      update();
+    });
   });
+
+  // Initial trigger
+  update();
 }

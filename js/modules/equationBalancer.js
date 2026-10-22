@@ -59,9 +59,25 @@ export function parseCompound(formula) {
   return counts;
 }
 
+const G8_SHORTCUTS = {
+  'hcl+naoh': 'HCl + NaOH -> NaCl + H2O',
+  'naoh+hcl': 'HCl + NaOH -> NaCl + H2O',
+  'h2so4+mg': 'H2SO4 + Mg -> MgSO4 + H2',
+  'mg+h2so4': 'H2SO4 + Mg -> MgSO4 + H2',
+  'hno3+caco3': 'HNO3 + CaCO3 -> Ca(NO3)2 + H2O + CO2',
+  'caco3+hno3': 'HNO3 + CaCO3 -> Ca(NO3)2 + H2O + CO2',
+  'cuo+h2so4': 'CuO + H2SO4 -> CuSO4 + H2O',
+  'h2so4+cuo': 'CuO + H2SO4 -> CuSO4 + H2O',
+};
+
 export function parseEquation(eq) {
+  let normalized = eq.trim();
+  const lowerKey = normalized.replace(/\s+/g, '').toLowerCase();
+  if (G8_SHORTCUTS[lowerKey]) {
+    normalized = G8_SHORTCUTS[lowerKey];
+  }
   // Split on "->", "→", "=", or "=="
-  const norm = eq.replace(/[→]+|==/g, '->').replace(/=/g, '->');
+  const norm = normalized.replace(/[→]+|==/g, '->').replace(/=/g, '->');
   const sides = norm.split('->');
   if (sides.length !== 2) {
     throw new Error('Equation must have exactly one arrow (->, →, =, ==)');
@@ -284,6 +300,28 @@ export function renderBalancerTool(bodyEl) {
       <label for="eq-input">Enter an unbalanced equation (use → or = for the arrow):</label>
       <input id="eq-input" class="tool-input" type="text" value="H2 + O2 -> H2O" placeholder="e.g. Fe + O2 -> Fe2O3">
     </div>
+
+    <!-- Sky G8 Acids & Bases Key Reactions Presets -->
+    <div class="g8-presets-box" style="margin: 10px 0; padding: 10px 12px; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 8px;">
+      <div style="font-size: 12px; font-weight: 700; color: #3b82f6; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+        <span>⚡ Sky G8 Unit 2: Acids & Bases 核心反应快捷填入</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+        <button type="button" class="btn-g8-eq" data-eq="HCl + NaOH -> NaCl + H2O" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
+          🧪 HCl + NaOH (中和)
+        </button>
+        <button type="button" class="btn-g8-eq" data-eq="H2SO4 + Mg -> MgSO4 + H2" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
+          ⚡ H₂SO₄ + Mg (酸+金属)
+        </button>
+        <button type="button" class="btn-g8-eq" data-eq="HNO3 + CaCO3 -> Ca(NO3)2 + H2O + CO2" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
+          💨 HNO₃ + CaCO₃ (酸+碳酸盐)
+        </button>
+        <button type="button" class="btn-g8-eq" data-eq="CuO + H2SO4 -> CuSO4 + H2O" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
+          ⚗️ CuO + H₂SO₄ (酸+金属氧化物)
+        </button>
+      </div>
+    </div>
+
     <div class="tool-actions">
       <button class="btn-primary" id="eq-balance">Balance</button>
       <button class="btn-secondary" id="eq-example">Try example</button>
@@ -292,7 +330,9 @@ export function renderBalancerTool(bodyEl) {
   `;
   const input = bodyEl.querySelector('#eq-input');
   const out = bodyEl.querySelector('#eq-output');
-  bodyEl.querySelector('#eq-balance').addEventListener('click', () => {
+  const balanceBtn = bodyEl.querySelector('#eq-balance');
+
+  balanceBtn.addEventListener('click', () => {
     try {
       const result = balanceEquation(input.value);
       out.className = 'tool-output success';
@@ -307,6 +347,13 @@ export function renderBalancerTool(bodyEl) {
       out.className = 'tool-output error';
       out.textContent = `⚠ ${e.message}`;
     }
+  });
+
+  bodyEl.querySelectorAll('.btn-g8-eq').forEach(btn => {
+    btn.addEventListener('click', () => {
+      input.value = btn.getAttribute('data-eq');
+      balanceBtn.click();
+    });
   });
   bodyEl.querySelector('#eq-example').addEventListener('click', () => {
     const examples = [
