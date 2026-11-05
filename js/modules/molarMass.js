@@ -65,7 +65,8 @@ export function renderMolarMassTool(bodyEl) {
     const all = getAllElements();
     const examples = [
       'H2O', 'CO2', 'NaCl', 'C6H12O6', 'Ca(OH)2', 'Fe2(SO4)3',
-      'C8H10N4O2', 'Al2(SO4)3', 'K3[Fe(CN)6]', 'CH3COOH'
+      'C8H10N4O2', 'Al2(SO4)3', 'K3[Fe(CN)6]', 'CH3COOH',
+      'CuSO4·5H2O', 'Na2CO3·10H2O', 'MgSO4.7H2O'
     ];
     input.value = examples[Math.floor(Math.random() * examples.length)];
   });

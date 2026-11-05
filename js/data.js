@@ -3,7 +3,7 @@
 // Pure ESM module, no side effects beyond cache.
 // ====================================================================
 
-import elementsData from '../data/elements.json';
+import elementsData from '../data/elements.json' with { type: 'json' };
 
 let _cache = null;
 let _bySymbol = null;

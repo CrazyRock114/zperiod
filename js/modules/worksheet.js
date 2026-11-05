@@ -44,12 +44,14 @@ export function initWorksheet() {
   answerKeyBtn.addEventListener('click', () => {
     if (!_currentQuestions.length) return;
     const outputEl = document.getElementById('ws-output');
-    const existing = outputEl.innerHTML;
-    renderAnswerKey({ innerHTML: '' }, _currentQuestions);
-    // Append after existing questions
+    // Remove existing answer key section if present to prevent duplicate appends
+    outputEl.querySelectorAll('.ws-answer-key, .answer-key-section').forEach(el => el.remove());
+    // Append answer key
     const div = document.createElement('div');
     renderAnswerKey(div, _currentQuestions);
-    outputEl.appendChild(div.firstChild || div);
+    const keyNode = div.firstElementChild || div;
+    keyNode.classList.add('answer-key-section');
+    outputEl.appendChild(keyNode);
   });
 
   printBtn.addEventListener('click', () => window.print());

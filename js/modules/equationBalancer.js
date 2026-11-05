@@ -15,23 +15,47 @@
 
 // ---------- Parser ----------
 
-export function parseCompound(formula) {
-  // Returns { element: count } for a single compound like "Ca(OH)2"
+export const VALID_ELEMENTS = new Set([
+  'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',
+  'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar', 'K', 'Ca',
+  'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn',
+  'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr', 'Rb', 'Sr', 'Y', 'Zr',
+  'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn',
+  'Sb', 'Te', 'I', 'Xe', 'Cs', 'Ba', 'La', 'Ce', 'Pr', 'Nd',
+  'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb',
+  'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg',
+  'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn', 'Fr', 'Ra', 'Ac', 'Th',
+  'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm',
+  'Md', 'No', 'Lr', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Ds',
+  'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'
+]);
+
+export function parseSingleCompound(formula) {
+  let s = formula.trim();
+  // Strip optional leading stoichiometric coefficient if present (e.g. "2H2O" -> "H2O")
+  s = s.replace(/^[0-9]+\s*/, '');
+  if (!s) {
+    throw new Error(`Invalid formula: empty compound in "${formula}"`);
+  }
+
   const counts = {};
   let i = 0;
   const stack = [counts];
-  while (i < formula.length) {
-    const ch = formula[i];
+
+  while (i < s.length) {
+    const ch = s[i];
     if (ch === '(' || ch === '[') {
       const inner = {};
       stack.push(inner);
       i++;
     } else if (ch === ')' || ch === ']') {
+      if (stack.length <= 1) {
+        throw new Error(`Unbalanced parenthesis: unexpected "${ch}" in "${formula}"`);
+      }
       i++;
-      // read multiplier
       let num = '';
-      while (i < formula.length && /[0-9]/.test(formula[i])) {
-        num += formula[i++];
+      while (i < s.length && /[0-9]/.test(s[i])) {
+        num += s[i++];
       }
       const mult = num ? parseInt(num, 10) : 1;
       const inner = stack.pop();
@@ -42,21 +66,66 @@ export function parseCompound(formula) {
     } else if (/[A-Z]/.test(ch)) {
       let sym = ch;
       i++;
-      if (i < formula.length && /[a-z]/.test(formula[i])) {
-        sym += formula[i++];
+      if (i < s.length && /[a-z]/.test(s[i])) {
+        sym += s[i++];
+      }
+      if (!VALID_ELEMENTS.has(sym)) {
+        throw new Error(`Unknown or invalid element symbol "${sym}" in "${formula}"`);
       }
       let num = '';
-      while (i < formula.length && /[0-9]/.test(formula[i])) {
-        num += formula[i++];
+      while (i < s.length && /[0-9]/.test(s[i])) {
+        num += s[i++];
       }
       const mult = num ? parseInt(num, 10) : 1;
       const top = stack[stack.length - 1];
       top[sym] = (top[sym] || 0) + mult;
-    } else {
+    } else if (/\s/.test(ch)) {
       i++;
+    } else {
+      throw new Error(`Unexpected character "${ch}" in chemical formula "${formula}"`);
     }
   }
+
+  if (stack.length !== 1) {
+    throw new Error(`Unbalanced parenthesis: unclosed "(" in "${formula}"`);
+  }
+  if (Object.keys(counts).length === 0) {
+    throw new Error(`No valid chemical elements found in "${formula}"`);
+  }
   return counts;
+}
+
+export function parseCompound(formula) {
+  if (!formula || !formula.trim()) {
+    throw new Error('Empty formula');
+  }
+  // Support hydrate notation: CuSO4·5H2O, CuSO4.5H2O, CuSO4*5H2O
+  // Split on hydrate dot delimiters: ·, *, •, or . (when followed by numbers/element)
+  const parts = formula.trim().split(/[·*•]|\.(?=[0-9]*[A-Z])/);
+  if (parts.length > 1) {
+    const combined = {};
+    for (let idx = 0; idx < parts.length; idx++) {
+      const part = parts[idx].trim();
+      if (!part) continue;
+      let mult = 1;
+      let comp = part;
+      // In hydrate suffixes like "5H2O", extract the multiplier
+      const m = part.match(/^([0-9]+)\s*(.+)$/);
+      if (m && idx > 0) {
+        mult = parseInt(m[1], 10);
+        comp = m[2];
+      }
+      const subCounts = parseSingleCompound(comp);
+      for (const [el, c] of Object.entries(subCounts)) {
+        combined[el] = (combined[el] || 0) + c * mult;
+      }
+    }
+    if (Object.keys(combined).length === 0) {
+      throw new Error(`No valid chemical elements found in "${formula}"`);
+    }
+    return combined;
+  }
+  return parseSingleCompound(formula);
 }
 
 const G8_SHORTCUTS = {
@@ -304,20 +373,20 @@ export function renderBalancerTool(bodyEl) {
     <!-- Sky G8 Acids & Bases Key Reactions Presets -->
     <div class="g8-presets-box" style="margin: 10px 0; padding: 10px 12px; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 8px;">
       <div style="font-size: 12px; font-weight: 700; color: #3b82f6; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-        <span>⚡ Sky G8 Unit 2: Acids & Bases 核心反应快捷填入</span>
+        <span>⚡ Sky G8 Unit 2: Core Acid-Base Reaction Presets</span>
       </div>
       <div style="display: flex; flex-wrap: wrap; gap: 6px;">
         <button type="button" class="btn-g8-eq" data-eq="HCl + NaOH -> NaCl + H2O" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
-          🧪 HCl + NaOH (中和)
+          🧪 HCl + NaOH (Neutralisation)
         </button>
         <button type="button" class="btn-g8-eq" data-eq="H2SO4 + Mg -> MgSO4 + H2" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
-          ⚡ H₂SO₄ + Mg (酸+金属)
+          ⚡ H₂SO₄ + Mg (Acid + Metal)
         </button>
         <button type="button" class="btn-g8-eq" data-eq="HNO3 + CaCO3 -> Ca(NO3)2 + H2O + CO2" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
-          💨 HNO₃ + CaCO₃ (酸+碳酸盐)
+          💨 HNO₃ + CaCO₃ (Acid + Carbonate)
         </button>
         <button type="button" class="btn-g8-eq" data-eq="CuO + H2SO4 -> CuSO4 + H2O" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
-          ⚗️ CuO + H₂SO₄ (酸+金属氧化物)
+          ⚗️ CuO + H₂SO₄ (Acid + Metal Oxide)
         </button>
       </div>
     </div>

@@ -5,7 +5,7 @@
 import { renderBalancerTool } from './equationBalancer.js';
 import { renderMolarMassTool } from './molarMass.js';
 import { renderSolubilityTool } from './solubility.js';
-import { renderVirtualLabTool } from './virtualLab.js';
+import { renderVirtualLabTool, stopVirtualLab } from './virtualLab.js';
 
 let _modalEl, _bodyEl, _closeBtn;
 
@@ -44,6 +44,7 @@ export function initToolLauncher() {
 
 export function openTool(toolId) {
   if (!_modalEl) return;
+  stopVirtualLab();
   const renderer = RENDERERS[toolId];
   if (!renderer) {
     console.warn('Unknown tool:', toolId);
@@ -57,6 +58,7 @@ export function openTool(toolId) {
 
 export function close() {
   if (!_modalEl) return;
+  stopVirtualLab();
   _modalEl.classList.remove('active');
   _modalEl.setAttribute('aria-hidden', 'true');
   _bodyEl.innerHTML = '';

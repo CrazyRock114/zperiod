@@ -5,7 +5,17 @@
 // scheduled for v0.3.)
 // ====================================================================
 
+let _animId = null;
+
+export function stopVirtualLab() {
+  if (_animId !== null) {
+    cancelAnimationFrame(_animId);
+    _animId = null;
+  }
+}
+
 export function renderVirtualLabTool(bodyEl) {
+  stopVirtualLab();
   bodyEl.innerHTML = `
     <div class="tool-modal-header">
       <span class="tool-num-badge">4</span>
@@ -134,7 +144,7 @@ export function renderVirtualLabTool(bodyEl) {
       keepInside(p, poly);
     }
     draw(poly);
-    requestAnimationFrame(step);
+    _animId = requestAnimationFrame(step);
   }
 
   function draw(poly) {

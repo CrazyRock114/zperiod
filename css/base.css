@@ -401,3 +401,71 @@ html.welcome-active { overflow: hidden; }
   #main-container { padding-top: calc(var(--igcse-nav-height, 52px) + 64px); }
   .modal-content { padding: 20px; max-width: 100%; }
 }
+
+/* ====================================================================
+   Desktop-only mobile overlay (dismissible)
+   ==================================================================== */
+
+.desktop-only-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999999;
+  background: rgba(10, 10, 12, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+@media (max-width: 768px) {
+  body:not(.mobile-bypassed) .desktop-only-overlay {
+    display: flex;
+  }
+}
+
+.desktop-only-content {
+  background: var(--bg-content);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 32px 24px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.desktop-only-content h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 12px;
+  color: var(--text-primary);
+}
+
+.desktop-only-content p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0 0 24px;
+}
+
+.mobile-continue-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 20px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mobile-continue-btn:hover {
+  background: var(--accent-hover);
+}

@@ -71,15 +71,14 @@ const TYPE_LABELS = {
   combustion: 'Combustion'
 };
 
-function pickReaction(types, difficulty) {
+function getReactionsPool(types, difficulty) {
   const pool = [];
   for (const t of types) {
     for (const r of (REACTION_POOL[t] || [])) {
       if (r.difficulty <= difficulty) pool.push({ type: t, ...r });
     }
   }
-  if (!pool.length) return null;
-  return pool[Math.floor(Math.random() * pool.length)];
+  return pool;
 }
 
 function shuffle(arr) {
@@ -98,10 +97,17 @@ function identifyDistractors(correctType) {
 }
 
 export function generateWorksheet({ type, count, difficulty, enabledTypes }) {
+  const pool = getReactionsPool(enabledTypes, difficulty);
+  if (!pool.length) throw new Error('No matching reactions for the selected filters');
+
+  // Sample without replacement; cycle through reshuffled pools if count > pool.length
+  let deck = shuffle([...pool]);
   const questions = [];
   for (let i = 0; i < count; i++) {
-    const picked = pickReaction(enabledTypes, difficulty);
-    if (!picked) throw new Error('No matching reactions for the selected filters');
+    if (deck.length === 0) {
+      deck = shuffle([...pool]);
+    }
+    const picked = deck.pop();
     const balanced = balanceEquation(
       picked.reactants.join(' + ') + ' -> ' + picked.products.join(' + ')
     );

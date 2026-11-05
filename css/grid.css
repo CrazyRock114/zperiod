@@ -147,13 +147,21 @@ html.dark-theme .element {
   border: 1px solid var(--border-color);
 }
 
-/* Responsive: simpler stack on mobile */
+.page-table {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+/* Responsive: horizontal scroll on mobile */
 @media (max-width: 768px) {
   .periodic-table {
     grid-template-columns: repeat(18, 1fr);
-    font-size: 8px;
+    min-width: 760px;
+    font-size: 10px;
+    overflow-x: auto;
   }
-  .element { padding: 2px; min-height: 2.4em; }
-  .element .name { display: none; }
+  .element { padding: 4px 2px; min-height: 2.8em; }
+  .element .name { display: block; font-size: 0.6em; }
   .element .mass { display: none; }
 }

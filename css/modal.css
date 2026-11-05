@@ -393,3 +393,30 @@ html.dark-theme .notes-box {
   letter-spacing: 0.08em;
   color: var(--text-tertiary);
 }
+
+/* ====================================================================
+   Ion detail modal rows
+   ==================================================================== */
+
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.info-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.info-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: 'SF Mono', Monaco, Consolas, monospace;
+}

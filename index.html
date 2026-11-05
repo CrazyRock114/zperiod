@@ -20,6 +20,17 @@
   <!-- Cambridge IGCSE Science Universal Ecosystem TopBar -->
   <igcse-nav active="zperiod" sticky></igcse-nav>
 
+  <!-- Mobile Desktop-Only Overlay with Bypass -->
+  <div id="desktop-only-overlay" class="desktop-only-overlay">
+    <div class="desktop-only-content">
+      <h2>Desktop Experience Recommended</h2>
+      <p>The interactive workspace is optimized for a keyboard and a large screen.</p>
+      <button id="bypass-mobile-overlay-btn" class="mobile-continue-btn" type="button">
+        Continue to Mobile Web Workspace →
+      </button>
+    </div>
+  </div>
+
   <!-- Global navigation -->
   <header id="global-nav">
     <a class="nav-logo-link" href="/">
@@ -148,6 +159,19 @@
     </div>
   </div>
 
+  <!-- Ion Detail Modal -->
+  <div class="modal-overlay" id="ion-modal" aria-hidden="true">
+    <div class="modal-content ion-modal">
+      <button class="modal-close" id="ion-modal-close" aria-label="Close">&times;</button>
+      <div class="modal-body" id="ion-modal-body">
+        <div class="info-row">
+          <span class="info-label" data-i18n="ionModal.charge">Charge</span>
+          <span class="info-value" id="ion-charge-value">+1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Tool Modal (Equation Balancer, Molar Mass, etc.) -->
   <div class="modal-overlay" id="tool-modal" aria-hidden="true">
     <div class="modal-content tool-modal">
@@ -176,6 +200,9 @@
       <p class="welcome-footer">v0.1.0 · First build</p>
     </div>
   </div>
+
+  <!-- Card Customizer Default Action (Zero-CJK i18n compliant placeholder) -->
+  <button type="button" id="reset-card-bg-btn" data-i18n="customizer.useDefault" style="display:none;">Use Default</button>
 
   <script type="module" src="/js/main.js"></script>
 </body>
