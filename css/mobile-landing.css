@@ -699,13 +699,17 @@ body.mobile-bypassed .desktop-only-overlay {
 }
 
 body.mobile-bypassed .container,
-body.mobile-bypassed .global-nav,
 body.mobile-bypassed .floating-about-btn,
 body.mobile-bypassed .copyright-notice {
   display: block !important;
 }
 
-body.mobile-bypassed .page-table {
+body.mobile-bypassed .global-nav {
+  display: flex !important;
+}
+
+body.mobile-bypassed #main-container,
+body.mobile-bypassed .periodic-table {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }

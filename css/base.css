@@ -113,6 +113,24 @@ body {
   padding-top: 40px;
 }
 
+/* Ecosystem Nav Integration Adjustments */
+body:has(igcse-nav) {
+  --igcse-nav-h: 52px;
+}
+body:has(igcse-nav) .global-nav {
+  top: calc(12px + var(--igcse-nav-h, 52px));
+  z-index: 99995;
+}
+body:has(igcse-nav) #main-container {
+  padding-top: calc(80px + var(--igcse-nav-h, 52px));
+}
+body:has(igcse-nav) .blank-page {
+  padding-top: calc(60px + var(--igcse-nav-h, 52px));
+}
+body:has(igcse-nav) .modal-overlay {
+  z-index: 100000;
+}
+
 /* =========================================
    Global Fixed Navigation Pill
    ========================================= */

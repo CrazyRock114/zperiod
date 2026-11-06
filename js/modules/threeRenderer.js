@@ -187,7 +187,7 @@ export function init3DScene(container) {
         msg.style.cssText =
           "color:#333;display:flex;justify-content:center;align-items:center;height:100%;flex-direction:column;text-align:center;padding:20px;";
         msg.innerHTML =
-          '<div style="font-size:1.2rem;margin-bottom:10px;">3D View Unavailable</div><div style="font-size:0.8rem;opacity:0.7;">请在Chrome地址栏输入 chrome://settings/system<br>确保"使用硬件加速"已开启，然后刷新页面</div>';
+          '<div style="font-size:1.2rem;margin-bottom:10px;">3D View Unavailable</div><div style="font-size:0.8rem;opacity:0.7;">Please enable "Hardware Acceleration" in your browser settings (chrome://settings/system) and refresh the page.</div>';
         _container.appendChild(msg);
         return;
       }
@@ -573,6 +573,10 @@ export function reset3DView() {
 // ===== Animation Loop =====
 export function animateAtom() {
   if (!renderer) return;
+  if (animationId) {
+    cancelAnimationFrame(animationId);
+    animationId = null;
+  }
   animationId = requestAnimationFrame(animateAtom);
 
   const isPaused = window._zperiodAnimPaused || false;
@@ -763,11 +767,24 @@ export function cleanup3D(full) {
   }
 }
 
-// ===== Helper: Clear current atom =====
+// ===== Helper: Clear current atom with geometry & material disposal =====
 export function clearCurrentAtom() {
   if (atomGroup) {
     while (atomGroup.children.length > 0) {
-      atomGroup.remove(atomGroup.children[0]);
+      const child = atomGroup.children[0];
+      atomGroup.remove(child);
+      child.traverse((obj) => {
+        if (obj.geometry && !obj.geometry.userData?.cached) {
+          obj.geometry.dispose();
+        }
+        if (obj.material) {
+          if (Array.isArray(obj.material)) {
+            obj.material.forEach((m) => m && m.dispose && m.dispose());
+          } else if (obj.material.dispose) {
+            obj.material.dispose();
+          }
+        }
+      });
     }
   }
   _nucleusGroupRef = null;

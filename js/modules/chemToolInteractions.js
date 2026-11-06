@@ -7,6 +7,7 @@ import {
   normalizeSymbol,
   formatFormulaHTML,
   atomicMasses,
+  parseFormulaStrict,
 } from "./chemistryTools.js";
 import { formatReactionError } from "./equationBalancer.js";
 import { predictReaction } from "./reactionPredictor.js";
@@ -85,7 +86,7 @@ function attachBalancerListeners() {
 
   let selectedReactionType = null;
 
-  // Parse formula into atom counts (supports both space and + as separators)
+  // Parse formula into atom counts (supports hydrates, brackets, and typing fallbacks)
   function parseFormula(formula) {
     if (!formula.trim()) return {};
     const atoms = {};
@@ -96,36 +97,36 @@ function attachBalancerListeners() {
       .filter((s) => s);
 
     compounds.forEach((compound) => {
+      try {
+        const counts = parseFormulaStrict(compound);
+        for (const [el, num] of Object.entries(counts)) {
+          atoms[el] = (atoms[el] || 0) + num;
+        }
+        return;
+      } catch {
+        // Active typing fallback: strip unclosed trailing brackets
+        try {
+          const sanitized = compound.replace(/[\([{]+$/, "");
+          if (sanitized) {
+            const counts = parseFormulaStrict(sanitized);
+            for (const [el, num] of Object.entries(counts)) {
+              atoms[el] = (atoms[el] || 0) + num;
+            }
+            return;
+          }
+        } catch {
+          // Fall through to regex match for incomplete partial inputs
+        }
+      }
+
       // Extract coefficient
       const match = compound.match(/^(\d*)/);
       const coef = match && match[1] ? parseInt(match[1]) : 1;
       const formulaPart = compound.replace(/^\d*/, "");
 
-      // Parse elements with better handling for parentheses
-      let expandedFormula = formulaPart;
-
-      // Handle parentheses like (OH)2
-      const parenRegex = /\(([^)]+)\)(\d*)/g;
-      let parenMatch;
-      while ((parenMatch = parenRegex.exec(formulaPart)) !== null) {
-        const innerFormula = parenMatch[1];
-        const multiplier = parenMatch[2] ? parseInt(parenMatch[2]) : 1;
-
-        const innerRegex = /([A-Z][a-z]?)(\d*)/g;
-        let innerMatch;
-        while ((innerMatch = innerRegex.exec(innerFormula)) !== null) {
-          const element = innerMatch[1];
-          const count = innerMatch[2] ? parseInt(innerMatch[2]) : 1;
-          atoms[element] = (atoms[element] || 0) + count * multiplier * coef;
-        }
-      }
-
-      // Remove parentheses parts and parse the rest
-      expandedFormula = formulaPart.replace(/\([^)]+\)\d*/g, "");
-
       const elementRegex = /([A-Z][a-z]?)(\d*)/g;
       let elemMatch;
-      while ((elemMatch = elementRegex.exec(expandedFormula)) !== null) {
+      while ((elemMatch = elementRegex.exec(formulaPart)) !== null) {
         const element = elemMatch[1];
         const count = elemMatch[2] ? parseInt(elemMatch[2]) : 1;
         atoms[element] = (atoms[element] || 0) + count * coef;

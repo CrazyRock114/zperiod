@@ -254,6 +254,7 @@ function initWelcomeModal() {
     showChangelogBtn.addEventListener("click", () => {
       // Hide welcome modal and open changelog directly
       if (welcomeModal) welcomeModal.classList.remove("active");
+      if (window._heroCleanup) window._heroCleanup();
       openChangelogModal();
     });
   }

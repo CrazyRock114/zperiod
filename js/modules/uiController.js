@@ -1083,7 +1083,10 @@ export function buildPeriodicTable(tableContainer) {
           cell.addEventListener("click", toggleRangeHighlight);
           bindKeyboardActivation(cell, toggleRangeHighlight);
         } else {
-          const openElementModal = () => showModal(element);
+          const openElementModal = () => {
+            if (window._zperiodIsDragging) return;
+            showModal(element);
+          };
           cell.setAttribute(
             "aria-label",
             `${localizeElementName(element)} (${element.symbol}), atomic number ${element.number}`,
@@ -2779,10 +2782,15 @@ export function showModal(element) {
   if (element.number <= 118) {
     atomContainer.classList.add("visible");
     cleanup3D();
+    if (window._pending3DInitTimer) {
+      clearTimeout(window._pending3DInitTimer);
+      window._pending3DInitTimer = null;
+    }
     clearCurrentAtom();
     renderScene();
     void atomContainer.offsetWidth;
-    setTimeout(async () => {
+    window._pending3DInitTimer = setTimeout(async () => {
+      window._pending3DInitTimer = null;
       try {
         await ensureThreeLibLoaded();
         const contentHeight =
