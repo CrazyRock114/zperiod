@@ -46,3 +46,9 @@ coverage/
 *.local
 .history/
 .vercel
+.env*
+
+# Python
+__pycache__/
+*.pyc
+

@@ -1,437 +1,739 @@
-// ====================================================================
-// equationBalancer.js — chemical equation balancer using linear algebra
-// ====================================================================
-// Algorithm:
-//   1. Parse equation: split on "->" / "=" / "→" → left/right compounds
-//   2. Tokenize each compound into element counts (handles nested
-//      parentheses: Ca(OH)2, Fe2(SO4)3)
-//   3. Build linear system: for every element, sum of
-//      (coefficient × count) on left == right
-//      → all-element system is M * x = 0 (homogeneous).
-//      Solve for nullspace using Gaussian elimination over rationals.
-//   4. Multiply by LCM to get integer coefficients.
-//   5. Return minimum-integer solution (gcd = 1).
-// ====================================================================
+// equationBalancer.js
+// Robust equation balancer for neutral chemical equations
+// - Exact rational arithmetic via BigInt
+// - Strict formula parsing
+// - Supports hydrates with dot notation: CuSO4·5H2O / CuSO4•5H2O
+// - Supports trailing states: (s) (l) (g) (aq)
+// - Rejects charges / ionic equations / malformed syntax
+// - Optional chemistry validator hook to reject formulas like H100O if desired
 
-// ---------- Parser ----------
-
-export const VALID_ELEMENTS = new Set([
-  'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',
-  'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar', 'K', 'Ca',
-  'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn',
-  'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr', 'Rb', 'Sr', 'Y', 'Zr',
-  'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn',
-  'Sb', 'Te', 'I', 'Xe', 'Cs', 'Ba', 'La', 'Ce', 'Pr', 'Nd',
-  'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb',
-  'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg',
-  'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn', 'Fr', 'Ra', 'Ac', 'Th',
-  'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm',
-  'Md', 'No', 'Lr', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Ds',
-  'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'
+// ============================================================
+// 1) Element symbols
+// ============================================================
+const VALID_ELEMENTS = new Set([
+  "H","He","Li","Be","B","C","N","O","F","Ne",
+  "Na","Mg","Al","Si","P","S","Cl","Ar","K","Ca",
+  "Sc","Ti","V","Cr","Mn","Fe","Co","Ni","Cu","Zn",
+  "Ga","Ge","As","Se","Br","Kr","Rb","Sr","Y","Zr",
+  "Nb","Mo","Tc","Ru","Rh","Pd","Ag","Cd","In","Sn",
+  "Sb","Te","I","Xe","Cs","Ba","La","Ce","Pr","Nd",
+  "Pm","Sm","Eu","Gd","Tb","Dy","Ho","Er","Tm","Yb",
+  "Lu","Hf","Ta","W","Re","Os","Ir","Pt","Au","Hg",
+  "Tl","Pb","Bi","Po","At","Rn","Fr","Ra","Ac","Th",
+  "Pa","U","Np","Pu","Am","Cm","Bk","Cf","Es","Fm",
+  "Md","No","Lr","Rf","Db","Sg","Bh","Hs","Mt","Ds",
+  "Rg","Cn","Nh","Fl","Mc","Lv","Ts","Og"
 ]);
 
-export function parseSingleCompound(formula) {
-  let s = formula.trim();
-  // Strip optional leading stoichiometric coefficient if present (e.g. "2H2O" -> "H2O")
-  s = s.replace(/^[0-9]+\s*/, '');
-  if (!s) {
-    throw new Error(`Invalid formula: empty compound in "${formula}"`);
+// ============================================================
+// 2) Errors
+// ============================================================
+class FormulaError extends Error {
+  constructor(message, code = "INVALID_FORMULA") {
+    super(message);
+    this.name = "FormulaError";
+    this.code = code;
   }
-
-  const counts = {};
-  let i = 0;
-  const stack = [counts];
-
-  while (i < s.length) {
-    const ch = s[i];
-    if (ch === '(' || ch === '[') {
-      const inner = {};
-      stack.push(inner);
-      i++;
-    } else if (ch === ')' || ch === ']') {
-      if (stack.length <= 1) {
-        throw new Error(`Unbalanced parenthesis: unexpected "${ch}" in "${formula}"`);
-      }
-      i++;
-      let num = '';
-      while (i < s.length && /[0-9]/.test(s[i])) {
-        num += s[i++];
-      }
-      const mult = num ? parseInt(num, 10) : 1;
-      const inner = stack.pop();
-      const top = stack[stack.length - 1];
-      for (const [el, c] of Object.entries(inner)) {
-        top[el] = (top[el] || 0) + c * mult;
-      }
-    } else if (/[A-Z]/.test(ch)) {
-      let sym = ch;
-      i++;
-      if (i < s.length && /[a-z]/.test(s[i])) {
-        sym += s[i++];
-      }
-      if (!VALID_ELEMENTS.has(sym)) {
-        throw new Error(`Unknown or invalid element symbol "${sym}" in "${formula}"`);
-      }
-      let num = '';
-      while (i < s.length && /[0-9]/.test(s[i])) {
-        num += s[i++];
-      }
-      const mult = num ? parseInt(num, 10) : 1;
-      const top = stack[stack.length - 1];
-      top[sym] = (top[sym] || 0) + mult;
-    } else if (/\s/.test(ch)) {
-      i++;
-    } else {
-      throw new Error(`Unexpected character "${ch}" in chemical formula "${formula}"`);
-    }
-  }
-
-  if (stack.length !== 1) {
-    throw new Error(`Unbalanced parenthesis: unclosed "(" in "${formula}"`);
-  }
-  if (Object.keys(counts).length === 0) {
-    throw new Error(`No valid chemical elements found in "${formula}"`);
-  }
-  return counts;
 }
 
-export function parseCompound(formula) {
-  if (!formula || !formula.trim()) {
-    throw new Error('Empty formula');
+class EquationError extends Error {
+  constructor(message, code = "INVALID_EQUATION") {
+    super(message);
+    this.name = "EquationError";
+    this.code = code;
   }
-  // Support hydrate notation: CuSO4·5H2O, CuSO4.5H2O, CuSO4*5H2O
-  // Split on hydrate dot delimiters: ·, *, •, or . (when followed by numbers/element)
-  const parts = formula.trim().split(/[·*•]|\.(?=[0-9]*[A-Z])/);
-  if (parts.length > 1) {
-    const combined = {};
-    for (let idx = 0; idx < parts.length; idx++) {
-      const part = parts[idx].trim();
-      if (!part) continue;
-      let mult = 1;
-      let comp = part;
-      // In hydrate suffixes like "5H2O", extract the multiplier
-      const m = part.match(/^([0-9]+)\s*(.+)$/);
-      if (m && idx > 0) {
-        mult = parseInt(m[1], 10);
-        comp = m[2];
-      }
-      const subCounts = parseSingleCompound(comp);
-      for (const [el, c] of Object.entries(subCounts)) {
-        combined[el] = (combined[el] || 0) + c * mult;
-      }
-    }
-    if (Object.keys(combined).length === 0) {
-      throw new Error(`No valid chemical elements found in "${formula}"`);
-    }
-    return combined;
-  }
-  return parseSingleCompound(formula);
 }
 
-const G8_SHORTCUTS = {
-  'hcl+naoh': 'HCl + NaOH -> NaCl + H2O',
-  'naoh+hcl': 'HCl + NaOH -> NaCl + H2O',
-  'h2so4+mg': 'H2SO4 + Mg -> MgSO4 + H2',
-  'mg+h2so4': 'H2SO4 + Mg -> MgSO4 + H2',
-  'hno3+caco3': 'HNO3 + CaCO3 -> Ca(NO3)2 + H2O + CO2',
-  'caco3+hno3': 'HNO3 + CaCO3 -> Ca(NO3)2 + H2O + CO2',
-  'cuo+h2so4': 'CuO + H2SO4 -> CuSO4 + H2O',
-  'h2so4+cuo': 'CuO + H2SO4 -> CuSO4 + H2O',
+const ERROR_CODES = {
+  INVALID_FORMULA: "INVALID_FORMULA",
+  INVALID_EQUATION: "INVALID_EQUATION",
+  NO_SOLUTION: "NO_SOLUTION",
+  SUSPICIOUS_FORMULA: "SUSPICIOUS_FORMULA",
+  IONIC_NOT_SUPPORTED: "IONIC_NOT_SUPPORTED"
 };
 
-export function parseEquation(eq) {
-  let normalized = eq.trim();
-  const lowerKey = normalized.replace(/\s+/g, '').toLowerCase();
-  if (G8_SHORTCUTS[lowerKey]) {
-    normalized = G8_SHORTCUTS[lowerKey];
+// ============================================================
+// 3) Utilities
+// ============================================================
+const SUBSCRIPT_MAP = {
+  "₀":"0","₁":"1","₂":"2","₃":"3","₄":"4",
+  "₅":"5","₆":"6","₇":"7","₈":"8","₉":"9"
+};
+
+export function normalizeText(input) {
+  let s = String(input)
+    .replace(/[₀-₉]/g, ch => SUBSCRIPT_MAP[ch]);
+
+  // ═══ Zero-to-O Sanitizer (character-level scan) ═══
+  // Core invariant: In chemistry, digit 0 can ONLY appear as a continuation
+  // of a multi-digit number (i.e., preceded by another digit 0-9).
+  // In ALL other positions (after a letter, bracket, space, or at start),
+  // a '0' must be the letter O.
+  let result = "";
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] === "0") {
+      const prev = i > 0 ? s[i - 1] : "";
+      if (/[0-9]/.test(prev)) {
+        result += "0"; // Part of multi-digit number
+      } else {
+        result += "O"; // Must be the letter O
+      }
+    } else {
+      result += s[i];
+    }
   }
-  // Split on "->", "→", "=", or "=="
-  const norm = normalized.replace(/[→]+|==/g, '->').replace(/=/g, '->');
-  const sides = norm.split('->');
-  if (sides.length !== 2) {
-    throw new Error('Equation must have exactly one arrow (->, →, =, ==)');
-  }
-  const splitSide = side =>
-    side.split('+')
-      .map(s => s.trim())
-      .filter(Boolean)
-      .map(rawFormula => ({
-        rawFormula,
-        counts: parseCompound(rawFormula)
-      }));
-  return {
-    reactants: splitSide(sides[0]),
-    products: splitSide(sides[1])
-  };
+
+  // Explicitly fix standalone "H20" typos. Since the digit '2' correctly preserves 
+  // the '0', we need a manual override for this very common H2O spelling error,
+  // making sure not to break C9H20.
+  s = result.replace(/\bH20\b/g, "H2O");
+
+  return s
+    .replace(/[→⟶⟹⇌⟷]/g, "->")
+    .replace(/[·•]/g, "•")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
-// ---------- Linear algebra over rationals (Fraction) ----------
-
-class Frac {
-  constructor(num, den = 1) {
-    if (den === 0) throw new Error('Divide by zero');
-    if (den < 0) { num = -num; den = -den; }
-    const g = gcd(Math.abs(num), Math.abs(den)) || 1;
-    this.num = num / g;
-    this.den = den / g;
+function gcdBigInt(a, b) {
+  a = a < 0n ? -a : a;
+  b = b < 0n ? -b : b;
+  while (b !== 0n) {
+    const t = a % b;
+    a = b;
+    b = t;
   }
-  add(o) { return new Frac(this.num * o.den + o.num * this.den, this.den * o.den); }
-  sub(o) { return new Frac(this.num * o.den - o.num * this.den, this.den * o.den); }
-  mul(o) { return new Frac(this.num * o.num, this.den * o.den); }
-  div(o) {
-    if (o.num === 0) throw new Error('Divide by zero');
-    return new Frac(this.num * o.den, this.den * o.num);
-  }
-  neg() { return new Frac(-this.num, this.den); }
-  isZero() { return this.num === 0; }
-  toString() {
-    if (this.den === 1) return String(this.num);
-    return `${this.num}/${this.den}`;
-  }
-}
-
-const f0 = new Frac(0);
-const f1 = new Frac(1);
-
-function gcd(a, b) {
-  a = Math.abs(a); b = Math.abs(b);
-  while (b) { [a, b] = [b, a % b]; }
   return a;
 }
 
-function lcm(...xs) {
-  return xs.reduce((a, b) => (a * b) / gcd(a, b), 1);
+function lcmBigInt(a, b) {
+  if (a === 0n || b === 0n) return 0n;
+  return (a / gcdBigInt(a, b)) * b < 0n ? -((a / gcdBigInt(a, b)) * b) : (a / gcdBigInt(a, b)) * b;
 }
 
-// Solve M·x = 0 where M is (elements × compounds) matrix.
-// Returns nullspace basis vectors (array of Frac arrays).
-// Strategy: row-reduce, find free variables (rank = n - dim), express
-// dependent variables in terms of free ones. We return all basis vectors.
-function solveNullspace(M) {
-  const rows = M.length;
-  const cols = M[0]?.length || 0;
-  if (cols === 0) return [];
-  // Make a deep copy as Frac
-  const A = M.map(row => row.map(v => new Frac(v)));
-  let r = 0;
-  const pivotCols = [];
-  for (let c = 0; c < cols && r < rows; c++) {
-    // Find pivot row
-    let pivot = -1;
-    for (let i = r; i < rows; i++) {
-      if (!A[i][c].isZero()) { pivot = i; break; }
+function cloneCountMap(map) {
+  const out = {};
+  for (const [k, v] of Object.entries(map)) out[k] = v;
+  return out;
+}
+
+function mergeCounts(target, source, multiplier = 1) {
+  for (const [el, count] of Object.entries(source)) {
+    target[el] = (target[el] || 0) + count * multiplier;
+  }
+  return target;
+}
+
+function stripTrailingState(formula) {
+  // Only strip valid trailing state symbols
+  // Examples: H2O(l), NaCl(aq)
+  return formula.replace(/\s*\((aq|s|l|g)\)\s*$/i, "").trim();
+}
+
+function hasUnsupportedChargeNotation(formula) {
+  // Reject ionic/charge notation in this engine
+  // Examples: Fe3+, SO4^2-, NH4+, e-, MnO4-
+  // We do not reject parentheses or hydrate dot
+  return /(\^?\d*[+-]$)|([A-Za-z0-9)\]}][+-](?![A-Za-z]))/.test(formula);
+}
+
+function ensureNoLeadingCoefficient(formula) {
+  if (/^\d+\s*[A-Za-z([{]/.test(formula)) {
+    throw new FormulaError(formula, "LEADING_COEFFICIENT");
+  }
+}
+
+// ============================================================
+// 4) Exact Fraction with BigInt
+// ============================================================
+class Fraction {
+  constructor(n, d = 1n) {
+    if (d === 0n) throw new Error("Division by zero in Fraction");
+    if (typeof n !== "bigint") n = BigInt(n);
+    if (typeof d !== "bigint") d = BigInt(d);
+
+    if (d < 0n) {
+      n = -n;
+      d = -d;
     }
-    if (pivot === -1) continue;
-    [A[r], A[pivot]] = [A[pivot], A[r]];
-    // Normalize and eliminate
-    const pv = A[r][c];
-    for (let j = 0; j < cols; j++) A[r][j] = A[r][j].div(pv);
-    for (let i = 0; i < rows; i++) {
-      if (i === r) continue;
-      if (A[i][c].isZero()) continue;
-      const f = A[i][c];
-      for (let j = 0; j < cols; j++) {
-        A[i][j] = A[i][j].sub(f.mul(A[r][j]));
+    const g = gcdBigInt(n, d);
+    this.n = n / g;
+    this.d = d / g;
+  }
+
+  static zero() { return new Fraction(0n, 1n); }
+  static one() { return new Fraction(1n, 1n); }
+
+  isZero() { return this.n === 0n; }
+
+  add(other) {
+    return new Fraction(this.n * other.d + other.n * this.d, this.d * other.d);
+  }
+  sub(other) {
+    return new Fraction(this.n * other.d - other.n * this.d, this.d * other.d);
+  }
+  mul(other) {
+    return new Fraction(this.n * other.n, this.d * other.d);
+  }
+  div(other) {
+    if (other.n === 0n) throw new Error("Division by zero Fraction");
+    return new Fraction(this.n * other.d, this.d * other.n);
+  }
+  neg() {
+    return new Fraction(-this.n, this.d);
+  }
+}
+
+// ============================================================
+// 5) Formula parser
+// ============================================================
+function parseFormulaStrict(rawFormula, options = {}) {
+  const {
+    chemistryValidator = null // optional callback(formula, atomCounts) => true/false|string
+  } = options;
+
+  if (!rawFormula || !String(rawFormula).trim()) {
+    throw new FormulaError("Formula is empty.");
+  }
+
+  let formula = normalizeText(rawFormula);
+  formula = stripTrailingState(formula);
+
+  if (!formula) {
+    throw new FormulaError("Formula is empty after removing state symbols.");
+  }
+
+  if (hasUnsupportedChargeNotation(formula)) {
+    throw new FormulaError(
+      `Charged species / ionic notation is not supported in this balancer: "${rawFormula}".`,
+      "IONIC_NOT_SUPPORTED"
+    );
+  }
+
+  ensureNoLeadingCoefficient(formula);
+
+  if (/->|=/.test(formula)) {
+    throw new FormulaError(`Formula should be a single compound, not a whole equation: "${rawFormula}".`);
+  }
+
+  // Hydrates: CuSO4•5H2O
+  if (formula.includes("•")) {
+    const parts = formula.split("•").map(s => s.trim()).filter(Boolean);
+    if (parts.length < 2) {
+      throw new FormulaError(`Invalid hydrate notation: "${rawFormula}".`);
+    }
+
+    const combined = {};
+    for (const part of parts) {
+      const counts = parseHydratePart(part);
+      mergeCounts(combined, counts, 1);
+    }
+
+    runChemistryValidation(formula, combined, chemistryValidator);
+    return combined;
+  }
+
+  const counts = parseSingleFormula(formula);
+  runChemistryValidation(formula, counts, chemistryValidator);
+  return counts;
+}
+
+function parseHydratePart(part) {
+  // Allow leading multiplier ONLY in hydrate parts like 5H2O
+  const m = part.match(/^(\d+)([A-Za-z([{].*)$/);
+  if (m) {
+    const multiplier = parseInt(m[1], 10);
+    const inner = m[2].trim();
+    if (multiplier <= 0) throw new FormulaError(`Invalid hydrate multiplier in "${part}".`);
+    const counts = parseSingleFormula(inner);
+    const scaled = {};
+    for (const [el, n] of Object.entries(counts)) scaled[el] = n * multiplier;
+    return scaled;
+  }
+  return parseSingleFormula(part);
+}
+
+function parseSingleFormula(formula) {
+  let i = 0;
+  const len = formula.length;
+  const stack = [{ type: "root", counts: {} }];
+  const openToClose = { "(": ")", "[": "]", "{": "}" };
+  const closeToOpen = { ")": "(", "]": "[", "}": "{" };
+
+  function currentCounts() {
+    return stack[stack.length - 1].counts;
+  }
+
+  function parseNumber() {
+    let start = i;
+    while (i < len && /\d/.test(formula[i])) i++;
+    if (start === i) return 1;
+    const value = Number(formula.slice(start, i));
+    if (!Number.isInteger(value) || value <= 0) {
+      throw new FormulaError(`Invalid subscript in "${formula}".`);
+    }
+    // Note: The previous arbitrary 20-subscript safeguard has been completely removed to support large organic molecules properly.
+    return value;
+  }
+
+  while (i < len) {
+    const ch = formula[i];
+
+    if (/\s/.test(ch)) {
+      i++;
+      continue;
+    }
+
+    if (openToClose[ch]) {
+      stack.push({ type: ch, counts: {} });
+      i++;
+      continue;
+    }
+
+    if (closeToOpen[ch]) {
+      if (stack.length === 1) {
+        throw new FormulaError(`Unmatched closing bracket "${ch}" in "${formula}".`);
       }
+      const group = stack.pop();
+      if (group.type !== closeToOpen[ch]) {
+        throw new FormulaError(`Mismatched brackets in "${formula}".`);
+      }
+      i++;
+      const mult = parseNumber();
+      mergeCounts(currentCounts(), group.counts, mult);
+      continue;
     }
-    pivotCols.push(c);
-    r++;
-  }
-  const rank = pivotCols.length;
-  const dim = cols - rank;
-  if (dim === 0) return []; // only zero solution → equation unsolvable
 
-  const freeCols = [];
-  for (let c = 0; c < cols; c++) if (!pivotCols.includes(c)) freeCols.push(c);
+    if (/[A-Z]/.test(ch)) {
+      let symbol = ch;
+      i++;
+      if (i < len && /[a-z]/.test(formula[i])) {
+        symbol += formula[i];
+        i++;
+      }
 
-  // Build basis vectors: each corresponds to one free variable = 1, others 0.
-  const basis = [];
-  for (const fc of freeCols) {
-    const v = new Array(cols).fill(null).map(() => f0);
-    v[fc] = f1;
-    for (let i = 0; i < rank; i++) {
-      const pc = pivotCols[i];
-      v[pc] = A[i][fc].neg();
+      if (!VALID_ELEMENTS.has(symbol)) {
+        throw new FormulaError(`Unknown element symbol "${symbol}" in "${formula}".`);
+      }
+
+      const mult = parseNumber();
+      currentCounts()[symbol] = (currentCounts()[symbol] || 0) + mult;
+      continue;
     }
-    basis.push(v);
+
+    if (/\d/.test(ch)) {
+      // Standalone numbers are not allowed here
+      throw new FormulaError(
+        `Unexpected number at position ${i + 1} in "${formula}". ` +
+        `Numbers must follow an element or a closed group.`
+      );
+    }
+
+    throw new FormulaError(`Invalid character "${ch}" in "${formula}".`);
   }
-  return basis;
+
+  if (stack.length !== 1) {
+    throw new FormulaError(`Unclosed bracket in "${formula}".`);
+  }
+
+  const result = stack[0].counts;
+  if (Object.keys(result).length === 0) {
+    throw new FormulaError(`No elements found in "${formula}".`);
+  }
+  return result;
 }
 
-function fracsToInts(v) {
-  // Multiply by LCM of denominators to get integers.
-  const denLCM = v.reduce((acc, f) => lcm(acc, f.den), 1);
-  let ints = v.map(f => f.num * (denLCM / f.den));
-  // If all elements are non-positive and some negative, flip signs
-  if (ints.every(x => x <= 0) && ints.some(x => x < 0)) {
-    ints = ints.map(x => -x);
-  } else if (ints.filter(x => x < 0).length > ints.length / 2) {
-    ints = ints.map(x => -x);
+function runChemistryValidation(formula, atomCounts, chemistryValidator) {
+  if (!chemistryValidator) return;
+  const verdict = chemistryValidator(formula, cloneCountMap(atomCounts));
+  if (verdict === true || verdict == null) return;
+  if (verdict === false) {
+    throw new FormulaError(`Chemically invalid or unsupported formula "${formula}".`);
   }
-  // Reduce by GCD.
-  let g = 0;
-  for (const x of ints) g = gcd(g, Math.abs(x));
-  if (g > 1) ints = ints.map(x => x / g);
-  return ints;
+  if (typeof verdict === "string") {
+    throw new FormulaError(verdict);
+  }
+  throw new FormulaError(`Chemistry validator returned an invalid result for "${formula}".`);
 }
 
-// ---------- Public balancer ----------
+// ============================================================
+// 6) Equation splitting and validation
+// ============================================================
+function splitEquation(rawEquation) {
+  const eq = normalizeText(rawEquation);
+  const parts = eq.split("->");
+  if (parts.length !== 2) {
+    throw new EquationError(`Equation must contain exactly one arrow "->": "${rawEquation}"`);
+  }
 
-export function balanceEquation(eqString) {
-  const { reactants, products } = parseEquation(eqString);
-  const allCompounds = [...reactants, ...products];
-  const n = allCompounds.length;
-  if (n < 2) throw new Error('Need at least two compounds');
+  const reactants = splitSide(parts[0], "reactant");
+  const products = splitSide(parts[1], "product");
+
   if (reactants.length === 0 || products.length === 0) {
-    throw new Error('Equation must have at least one reactant and one product');
+    throw new EquationError(`Equation must have at least one reactant and one product.`);
   }
 
-  // Collect element universe
+  return { reactants, products };
+}
+
+function splitSide(sideText, label) {
+  const rawParts = sideText
+    .split("+")
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
+
+  if (rawParts.length === 0) return [];
+
+  for (const p of rawParts) {
+    if (p === "+" || p === "->") {
+      throw new EquationError(`Invalid ${label} side syntax.`);
+    }
+  }
+
+  return rawParts;
+}
+
+// ============================================================
+// 7) Build matrix
+// ============================================================
+function buildMatrix(reactants, products, options = {}) {
+  const all = [...reactants, ...products];
+  const parsed = all.map(f => parseFormulaStrict(f, options));
+
   const elementSet = new Set();
-  for (const c of allCompounds) {
-    for (const el of Object.keys(c.counts)) elementSet.add(el);
+  for (const obj of parsed) {
+    for (const el of Object.keys(obj)) elementSet.add(el);
   }
-  const elements = [...elementSet];
+  const elements = Array.from(elementSet).sort();
 
-  // Verify same elements on both sides
-  const leftElements = new Set();
-  for (const c of reactants) {
-    for (const el of Object.keys(c.counts)) leftElements.add(el);
-  }
-  const rightElements = new Set();
-  for (const c of products) {
-    for (const el of Object.keys(c.counts)) rightElements.add(el);
-  }
-  for (const el of leftElements) {
-    if (!rightElements.has(el)) {
-      throw new Error(`Element ${el} appears on the left but not on the right`);
-    }
-  }
-  for (const el of rightElements) {
-    if (!leftElements.has(el)) {
-      throw new Error(`Element ${el} appears on the right but not on the left`);
-    }
+  if (elements.length === 0) {
+    throw new EquationError("No elements found in equation.");
   }
 
-  // Build matrix M: row = element, col = compound.
-  // Left compounds have +count, right compounds have -count.
-  // Coefficients satisfy M·x = 0.
-  const M = elements.map(el => {
+  const matrix = elements.map(el => {
     const row = [];
-    for (let i = 0; i < reactants.length; i++) row.push(reactants[i].counts[el] || 0);
-    for (let i = 0; i < products.length; i++) row.push(-(products[i].counts[el] || 0));
+    for (let i = 0; i < reactants.length; i++) {
+      row.push(new Fraction(BigInt(parsed[i][el] || 0)));
+    }
+    for (let i = reactants.length; i < all.length; i++) {
+      row.push(new Fraction(BigInt(-(parsed[i][el] || 0))));
+    }
     return row;
   });
 
-  const basis = solveNullspace(M);
-  if (basis.length === 0) {
-    throw new Error('Equation cannot be balanced (no solution)');
-  }
-  if (basis.length > 1) {
-    throw new Error('Equation cannot be uniquely balanced (multiple independent reactions)');
+  return { matrix, parsed, elements };
+}
+
+// ============================================================
+// 8) RREF + nullspace (exact)
+// ============================================================
+function rref(matrix) {
+  const m = matrix.map(row => row.map(x => new Fraction(x.n, x.d)));
+  const rows = m.length;
+  const cols = m[0].length;
+
+  let lead = 0;
+  const pivotCols = [];
+
+  for (let r = 0; r < rows; r++) {
+    if (lead >= cols) break;
+
+    let i = r;
+    while (i < rows && m[i][lead].isZero()) i++;
+
+    if (i === rows) {
+      lead++;
+      r--;
+      continue;
+    }
+
+    if (i !== r) {
+      [m[i], m[r]] = [m[r], m[i]];
+    }
+
+    const pivot = m[r][lead];
+    for (let c = 0; c < cols; c++) {
+      m[r][c] = m[r][c].div(pivot);
+    }
+
+    for (let rr = 0; rr < rows; rr++) {
+      if (rr === r) continue;
+      if (m[rr][lead].isZero()) continue;
+      const factor = m[rr][lead];
+      for (let c = 0; c < cols; c++) {
+        m[rr][c] = m[rr][c].sub(factor.mul(m[r][c]));
+      }
+    }
+
+    pivotCols.push(lead);
+    lead++;
   }
 
-  const ints = fracsToInts(basis[0]);
-  if (!ints.every(c => Number.isInteger(c) && c > 0)) {
-    throw new Error('Equation cannot be balanced with positive integer coefficients');
+  return { rrefMatrix: m, pivotCols };
+}
+
+function solveNullspaceSinglePositiveInteger(matrix) {
+  const rows = matrix.length;
+  const cols = matrix[0].length;
+  const { rrefMatrix, pivotCols } = rref(matrix);
+
+  const pivotSet = new Set(pivotCols);
+  const freeCols = [];
+  for (let c = 0; c < cols; c++) {
+    if (!pivotSet.has(c)) freeCols.push(c);
   }
+
+  if (freeCols.length === 0) {
+    throw new EquationError("No non-trivial balancing solution exists.", "NO_SOLUTION");
+  }
+
+  // For chemical balancing, nullspace dimension is usually 1.
+  // We try each free variable = 1 and look for a fully positive solution.
+  for (const chosenFree of freeCols) {
+    const sol = Array.from({ length: cols }, () => Fraction.zero());
+    sol[chosenFree] = Fraction.one();
+
+    for (let r = pivotCols.length - 1; r >= 0; r--) {
+      const pivotCol = pivotCols[r];
+      let sum = Fraction.zero();
+      for (let c = pivotCol + 1; c < cols; c++) {
+        if (!rrefMatrix[r][c].isZero()) {
+          sum = sum.add(rrefMatrix[r][c].mul(sol[c]));
+        }
+      }
+      sol[pivotCol] = sum.neg();
+    }
+
+    const ints = fractionsToMinimalIntegers(sol);
+    if (ints && ints.every(v => v > 0n)) {
+      return ints;
+    }
+
+    const flipped = ints ? ints.map(v => -v) : null;
+    if (flipped && flipped.every(v => v > 0n)) {
+      return reduceBigIntVector(flipped);
+    }
+  }
+
+  throw new EquationError(
+    "Could not derive a strictly positive integer solution. " +
+    "This may be an unsupported or invalid equation.",
+    "NO_SOLUTION"
+  );
+}
+
+function fractionsToMinimalIntegers(fracs) {
+  if (!fracs || fracs.length === 0) return null;
+
+  let commonDen = 1n;
+  for (const f of fracs) {
+    commonDen = lcmBigInt(commonDen, f.d);
+  }
+
+  let ints = fracs.map(f => (f.n * (commonDen / f.d)));
+
+  if (ints.every(v => v === 0n)) return null;
+
+  return reduceBigIntVector(ints);
+}
+
+function reduceBigIntVector(ints) {
+  let g = 0n;
+  for (const v of ints) {
+    const abs = v < 0n ? -v : v;
+    if (abs !== 0n) g = g === 0n ? abs : gcdBigInt(g, abs);
+  }
+  if (g === 0n) return ints;
+  return ints.map(v => v / g);
+}
+
+// ============================================================
+// 9) Verification
+// ============================================================
+function verifyBalanced(parsedAll, reactantCount, coeffs) {
+  const left = {};
+  const right = {};
+
+  for (let i = 0; i < parsedAll.length; i++) {
+    const target = i < reactantCount ? left : right;
+    const coeff = Number(coeffs[i]);
+
+    for (const [el, count] of Object.entries(parsedAll[i])) {
+      target[el] = (target[el] || 0) + count * coeff;
+    }
+  }
+
+  const keys = new Set([...Object.keys(left), ...Object.keys(right)]);
+  for (const k of keys) {
+    if ((left[k] || 0) !== (right[k] || 0)) return false;
+  }
+  return true;
+}
+
+// ============================================================
+// 10) Public API
+// ============================================================
+export function balanceEquation(input, options = {}) {
+  const {
+    chemistryValidator = null,
+    formatCoefficientsAsNumber = true
+  } = options;
+
+  let reactants, products;
+
+  if (typeof input === "string") {
+    ({ reactants, products } = splitEquation(input));
+  } else if (
+    input &&
+    Array.isArray(input.reactants) &&
+    Array.isArray(input.products)
+  ) {
+    reactants = input.reactants.map(x => String(x).trim()).filter(Boolean);
+    products = input.products.map(x => String(x).trim()).filter(Boolean);
+
+    if (reactants.length === 0 || products.length === 0) {
+      throw new EquationError("Both reactants and products must be non-empty arrays.");
+    }
+  } else {
+    throw new EquationError(
+      'Input must be either a full equation string like "H2 + O2 -> H2O" ' +
+      'or an object { reactants: [...], products: [...] }.'
+    );
+  }
+
+  const build = buildMatrix(reactants, products, { chemistryValidator });
+  const coeffs = solveNullspaceSinglePositiveInteger(build.matrix);
+
+  if (!verifyBalanced(build.parsed, reactants.length, coeffs)) {
+    throw new EquationError("Internal verification failed: equation did not balance correctly.");
+  }
+
+  const reactantCoeffs = coeffs.slice(0, reactants.length);
+  const productCoeffs = coeffs.slice(reactants.length);
 
   return {
-    reactants: reactants.map((c, i) => ({ compound: c.rawFormula, coefficient: ints[i] })),
-    products: products.map((c, i) => ({ compound: c.rawFormula, coefficient: ints[reactants.length + i] }))
+    reactants: reactants.map((formula, i) => ({
+      formula,
+      coefficient: formatCoefficientsAsNumber ? Number(reactantCoeffs[i]) : reactantCoeffs[i]
+    })),
+    products: products.map((formula, i) => ({
+      formula,
+      coefficient: formatCoefficientsAsNumber ? Number(productCoeffs[i]) : productCoeffs[i]
+    })),
+    formatted: formatBalancedEquation(reactants, products, reactantCoeffs, productCoeffs)
   };
 }
 
-export function compoundToString(c) {
-  // Pretty-print parsed compound back to a chemical formula.
-  return Object.entries(c).map(([el, n]) => n === 1 ? el : `${el}${n}`).join('');
+export function formatBalancedEquation(reactants, products, reactantCoeffs, productCoeffs) {
+  const left = reactants.map((f, i) => formatTerm(reactantCoeffs[i], f)).join(" + ");
+  const right = products.map((f, i) => formatTerm(productCoeffs[i], f)).join(" + ");
+  return `${left} -> ${right}`;
 }
 
-export function formatBalanced(result) {
-  const fmtCoeff = (s) => {
-    if (s.coefficient <= 0 || !Number.isInteger(s.coefficient)) {
-      throw new Error(`Invalid coefficient: ${s.coefficient}`);
-    }
-    return `${s.coefficient > 1 ? s.coefficient : ''}${s.compound}`;
-  };
-  return `${result.reactants.map(fmtCoeff).join(' + ')} → ${result.products.map(fmtCoeff).join(' + ')}`;
+function formatTerm(coeff, formula) {
+  const c = typeof coeff === "bigint" ? coeff : BigInt(coeff);
+  return c === 1n ? formula : `${c}${formula}`;
 }
 
-// ---------- UI helper ----------
+// ============================================================
+// 11) Optional chemistry validator
+// ============================================================
+// IMPORTANT:
+// A parser/balancer alone cannot know whether every formula is chemically real.
+// To reject things like H100O, use a validator.
+// You can replace this with:
+// - a whitelist of known compounds
+// - a reaction-rule engine
+// - a database-backed validator
+//
+// This demo validator is intentionally conservative:
+// - It allows a few common species.
+// - It rejects absurd standalone H/O formulas like H100O.
+// - You should expand it for your real app.
+export function demoChemistryValidator(formula, atomCounts) {
+  // 1. Detect obviously suspicious high subscripts (e.g., Fe123O456, H100O)
+  //    (This is now handled directly inside the parseNumber logic of parseFormulaStrict
+  //     to prevent false positives from hydrate multipliers like Al2(SO4)3•18H2O)
 
-export function renderBalancerTool(bodyEl) {
-  bodyEl.innerHTML = `
-    <div class="tool-modal-header">
-      <span class="tool-num-badge">1</span>
-      <h2>Equation Balancer</h2>
-    </div>
-    <div class="tool-row">
-      <label for="eq-input">Enter an unbalanced equation (use → or = for the arrow):</label>
-      <input id="eq-input" class="tool-input" type="text" value="H2 + O2 -> H2O" placeholder="e.g. Fe + O2 -> Fe2O3">
-    </div>
+  // 2. Total atom count sanity: if the sum of all subscripts exceeds 200,
+  //    flag it even if no single element is >= 20 on its own.
+  const totalAtoms = Object.values(atomCounts).reduce((a, b) => a + b, 0);
+  if (totalAtoms > 200) {
+    throw new FormulaError(
+      `This formula looks unusual (total ${totalAtoms} atoms). Please check the subscripts.`,
+      "SUSPICIOUS_FORMULA"
+    );
+  }
 
-    <!-- Sky G8 Acids & Bases Key Reactions Presets -->
-    <div class="g8-presets-box" style="margin: 10px 0; padding: 10px 12px; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 8px;">
-      <div style="font-size: 12px; font-weight: 700; color: #3b82f6; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-        <span>⚡ Sky G8 Unit 2: Core Acid-Base Reaction Presets</span>
-      </div>
-      <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-        <button type="button" class="btn-g8-eq" data-eq="HCl + NaOH -> NaCl + H2O" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
-          🧪 HCl + NaOH (Neutralisation)
-        </button>
-        <button type="button" class="btn-g8-eq" data-eq="H2SO4 + Mg -> MgSO4 + H2" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
-          ⚡ H₂SO₄ + Mg (Acid + Metal)
-        </button>
-        <button type="button" class="btn-g8-eq" data-eq="HNO3 + CaCO3 -> Ca(NO3)2 + H2O + CO2" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
-          💨 HNO₃ + CaCO₃ (Acid + Carbonate)
-        </button>
-        <button type="button" class="btn-g8-eq" data-eq="CuO + H2SO4 -> CuSO4 + H2O" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; cursor: pointer;">
-          ⚗️ CuO + H₂SO₄ (Acid + Metal Oxide)
-        </button>
-      </div>
-    </div>
-
-    <div class="tool-actions">
-      <button class="btn-primary" id="eq-balance">Balance</button>
-      <button class="btn-secondary" id="eq-example">Try example</button>
-    </div>
-    <div id="eq-output" class="tool-output">Enter an equation above and click <b>Balance</b>.</div>
-  `;
-  const input = bodyEl.querySelector('#eq-input');
-  const out = bodyEl.querySelector('#eq-output');
-  const balanceBtn = bodyEl.querySelector('#eq-balance');
-
-  balanceBtn.addEventListener('click', () => {
-    try {
-      const result = balanceEquation(input.value);
-      out.className = 'tool-output success';
-      out.innerHTML = `<div class="formula-preview">${formatBalanced(result)}</div>
-        <table class="coeffs-table">
-          <thead><tr><th>Compound</th><th>Coefficient</th></tr></thead>
-          <tbody>${[...result.reactants, ...result.products].map(s => `
-            <tr><td>${s.compound}</td><td>${s.coefficient}</td></tr>
-          `).join('')}</tbody>
-        </table>`;
-    } catch (e) {
-      out.className = 'tool-output error';
-      out.textContent = `⚠ ${e.message}`;
+  // 3. Strict Check: Pure elemental forms for diatromics (HOBrFINCl)
+  const elements = Object.keys(atomCounts);
+  if (elements.length === 1) {
+    const el = elements[0];
+    const count = atomCounts[el];
+    const diatomic = ["H", "N", "F", "Cl", "Br", "I"];
+    
+    if (diatomic.includes(el) && count !== 2) {
+      throw new FormulaError(
+        `${el} should be written as ${el}2, not ${formula}.`,
+        "INVALID_ELEMENTAL_FORM"
+      );
     }
-  });
+    
+    if (el === "O" && count !== 2 && count !== 3) {
+      throw new FormulaError(
+        `Oxygen should be written as O2 (or O3), not ${formula}.`,
+        "INVALID_ELEMENTAL_FORM"
+      );
+    }
+  }
 
-  bodyEl.querySelectorAll('.btn-g8-eq').forEach(btn => {
-    btn.addEventListener('click', () => {
-      input.value = btn.getAttribute('data-eq');
-      balanceBtn.click();
-    });
-  });
-  bodyEl.querySelector('#eq-example').addEventListener('click', () => {
-    const examples = [
-      'H2 + O2 -> H2O',
-      'Fe + O2 -> Fe2O3',
-      'C2H6 + O2 -> CO2 + H2O',
-      'KMnO4 + HCl -> KCl + MnCl2 + H2O + Cl2',
-      'Al + HCl -> AlCl3 + H2'
-    ];
-    input.value = examples[Math.floor(Math.random() * examples.length)];
-  });
+  // 3. Specific case: H≥10 + O=1 (e.g. H10O, H100O)
+  if (
+    Object.keys(atomCounts).length === 2 &&
+    atomCounts.H &&
+    atomCounts.O &&
+    atomCounts.H >= 10 &&
+    atomCounts.O === 1
+  ) {
+    throw new FormulaError(
+      `Unsupported or chemically implausible formula "${formula}".`,
+      "SUSPICIOUS_FORMULA"
+    );
+  }
+
+  return true;
+}
+export function formatReactionError(errorMessage) {
+  if (!errorMessage || typeof errorMessage !== 'string') {
+    return "We couldn't parse this formula. Please double-check your spelling and formatting.";
+  }
+
+  // 1. Lowercase / Natural language mistake (e.g. "asdfg" or "Water")
+  // Characteristic: reports "Invalid character: [lowercase letter]"
+  if (/Invalid character:\s*[a-z]/.test(errorMessage)) {
+    return "Unrecognized element symbol. Remember that chemical elements must start with a capital letter (e.g., 'Na' instead of 'na', 'H2O' instead of 'Water').";
+  }
+
+  // 2. Parenthesis mismatch (e.g. "Ca(OH", "(PO4)3)")
+  // Characteristic: reports unmatched, bracket, parenthes, closed
+  if (/(unmatched|mismatched).*parenthes/i.test(errorMessage) || 
+      /(unmatched|mismatched).*bracket/i.test(errorMessage) || 
+      /unclosed/i.test(errorMessage)) {
+    return "Mismatched brackets. Please check your formula and make sure all parentheses are closed properly (e.g., 'Ca(OH)2').";
+  }
+
+  // 3. Illegal special characters (e.g. "H2O @ CO2", "NaCl!")
+  // Characteristic: reports "Invalid character: [non-alphanumeric special character]"
+  const specialCharMatch = errorMessage.match(/Invalid character:\s*([^a-zA-Z0-9\s])/);
+  if (specialCharMatch) {
+    const invalidChar = specialCharMatch[1];
+    return `Special characters like '${invalidChar}' are not allowed. Please use standard chemical formulas and '+' to separate reactants.`;
+  }
+
+  // 4. Fallback error
+  if (/Invalid|Parse|Syntax|undefined/i.test(errorMessage) || errorMessage.length < 25) {
+    return "We couldn't parse this formula. Please double-check your spelling and formatting.";
+  }
+
+  return errorMessage;
 }

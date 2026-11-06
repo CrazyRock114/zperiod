@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://zperiod.app/sitemap.xml
