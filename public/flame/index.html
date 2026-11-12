@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Flame Studio | Zperiod Spectroscopic Lab</title>
+    <meta name="description" content="Interactive 3D spectroscopic flame test simulator for Cambridge IGCSE 0620 Chemistry with Bunsen burner controls, cobalt glass filter, and emission spectrum analysis.">
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+
+    <!-- Ecosystem Navigation -->
+    <script src="https://www.igcse.xyz/ecosystem-nav.js" defer></script>
+
+    <!-- Studio Stylesheet -->
+    <link rel="stylesheet" href="css/studio.css">
+</head>
+<body>
+    <!-- Top Ecosystem Navigation -->
+    <igcse-nav active="zperiod" sticky></igcse-nav>
+
+    <div class="studio-container">
+        <!-- 1. Glass Top Navigation Bar -->
+        <header class="studio-top-nav">
+            <div class="nav-brand">
+                <a href="/" class="nav-back-btn" title="Back to Periodic Table" data-i18n-title="nav.back">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    <span data-i18n="nav.back">Zperiod</span>
+                </a>
+                <div class="nav-title-group">
+                    <h1 class="nav-main-title">
+                        <span data-i18n="nav.title">Flame Studio</span>
+                        <span class="badge-beta">PRO</span>
+                    </h1>
+                    <span class="nav-subtitle" data-i18n="nav.subtitle">Spectroscopic Flame Test Simulator</span>
+                </div>
+            </div>
+
+            <div class="nav-actions">
+                <!-- Cobalt Blue Glass Filter -->
+                <button id="cobalt-glass-toggle" class="studio-btn cobalt-btn" aria-pressed="false" title="Toggle Cobalt Blue Glass Filter (Press C)" data-i18n-title="nav.cobaltGlass">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="9" y1="3" x2="9" y2="21"></line>
+                    </svg>
+                    <span data-i18n="nav.cobaltGlass">Cobalt Blue Glass</span>
+                </button>
+
+                <!-- Spectroscope Panel Toggle -->
+                <button id="spectroscope-toggle" class="studio-btn" aria-pressed="false" title="Toggle Optical Spectroscope (Press S)" data-i18n-title="nav.spectroscope">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 2 22 22 22 12 2"></polygon>
+                    </svg>
+                    <span data-i18n="nav.spectroscope">Spectroscope</span>
+                </button>
+
+                <!-- Sound Toggle -->
+                <button id="audio-toggle" class="studio-btn" aria-pressed="true" title="Toggle Burner Sound (Press M)" data-i18n-title="nav.audio">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    </svg>
+                </button>
+
+                <!-- Language Toggle -->
+                <button id="lang-toggle" class="studio-btn" title="Switch Language">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    <span data-i18n="nav.langToggle">EN / ZH</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 2. Main Stage (Canvas Viewport) -->
+        <main class="stage-section">
+            <canvas id="stage"></canvas>
+
+            <!-- Floating Stage HUD -->
+            <div class="stage-hud">
+                <div class="hud-pill">
+                    <span class="hud-dot"></span>
+                    <span id="loop-status-text">Clean (No residue)</span>
+                </div>
+            </div>
+
+            <!-- Quick Action Buttons on Stage -->
+            <div class="stage-quick-actions">
+                <button id="auto-sequence-btn" class="studio-btn primary-action-btn" title="Automated Clean -> Dip -> Burn Sequence">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span data-i18n="bench.quickTest">Auto Sequence</span>
+                </button>
+                <button id="burn-flame-btn" class="studio-btn" title="Hold Loop in Flame (Press Space)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>
+                    </svg>
+                    <span data-i18n="bench.burnAction">Hold in Flame</span>
+                </button>
+            </div>
+        </main>
+
+        <!-- 3. Laboratory Workbench -->
+        <section class="studio-workbench">
+            <!-- Left Card: Bunsen Burner Controls -->
+            <div class="bench-card">
+                <div class="bench-card-header">
+                    <h2 class="bench-card-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        <span data-i18n="burner.title">Bunsen Burner Control</span>
+                    </h2>
+                </div>
+
+                <div class="burner-controls-box">
+                    <div class="control-row">
+                        <div class="control-label-row">
+                            <span data-i18n="burner.airCollar">Air Collar (Vent)</span>
+                            <span id="flame-state-text" data-i18n="burner.roaring">Roaring (Hot Blue)</span>
+                        </div>
+                        <input type="range" id="air-collar-slider" class="control-slider" min="0" max="1" step="0.01" value="1.0">
+                    </div>
+
+                    <div class="control-row">
+                        <div class="control-label-row">
+                            <span data-i18n="burner.tempEst">Est. Temp</span>
+                            <span id="flame-temp-text">1350 °C (Roaring Blue)</span>
+                        </div>
+                    </div>
+
+                    <div class="preset-buttons-row">
+                        <button class="flame-preset-btn" data-preset="safety" data-i18n="burner.safety">Safety (Yellow)</button>
+                        <button class="flame-preset-btn" data-preset="gentle" data-i18n="burner.gentle">Medium (Blue)</button>
+                        <button class="flame-preset-btn active" data-preset="roaring" data-i18n="burner.roaring">Roaring (Hot Blue)</button>
+                    </div>
+
+                    <div class="control-row" style="margin-top: 6px;">
+                        <button id="clean-loop-btn" class="studio-btn" style="width: 100%; justify-content: center;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                            <span data-i18n="nav.reset">Clean Wire Loop in HCl</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Card: Reagent Watch Glasses & Samples -->
+            <div class="bench-card">
+                <div class="bench-card-header">
+                    <div>
+                        <h2 class="bench-card-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <circle cx="12" cy="12" r="4"></circle>
+                            </svg>
+                            <span data-i18n="bench.title">Reagents & Watch Glasses</span>
+                        </h2>
+                        <span class="bench-card-subtitle" data-i18n="bench.subtitle">Dip platinum/nichrome loop into salt sample and test in flame</span>
+                    </div>
+                </div>
+
+                <div class="reagent-grid">
+                    <!-- Concentrated HCl Dish -->
+                    <div id="hcl-dish" class="dish-card" title="Concentrated Hydrochloric Acid (Cleaning)">
+                        <div class="dish-glass">
+                            <div class="salt-powder" style="background: rgba(148, 163, 184, 0.4); box-shadow: 0 0 6px #94a3b8;"></div>
+                        </div>
+                        <span class="dish-formula">HCl (6M)</span>
+                        <span class="dish-ion" data-i18n="bench.hclDip">Clean Loop</span>
+                    </div>
+
+                    <!-- LiCl (Crimson) -->
+                    <div class="dish-card" data-metal="li">
+                        <div class="dish-glass">
+                            <div class="salt-powder" style="background: #ffffff; color: #ff1744;"></div>
+                        </div>
+                        <span class="dish-formula">LiCl</span>
+                        <span class="dish-ion">Li+</span>
+                        <span class="dish-color-tag" style="color: #ff5252;" data-i18n="flameColors.crimson">Crimson</span>
+                    </div>
+
+                    <!-- NaCl (Yellow) -->
+                    <div class="dish-card selected" data-metal="na">
+                        <div class="dish-glass">
+                            <div class="salt-powder" style="background: #ffffff; color: #ffb703;"></div>
+                        </div>
+                        <span class="dish-formula">NaCl</span>
+                        <span class="dish-ion">Na+</span>
+                        <span class="dish-color-tag" style="color: #ffb703;" data-i18n="flameColors.yellow">Yellow</span>
+                    </div>
+
+                    <!-- KCl (Lilac) -->
+                    <div class="dish-card" data-metal="k">
+                        <div class="dish-glass">
+                            <div class="salt-powder" style="background: #ffffff; color: #c084fc;"></div>
+                        </div>
+                        <span class="dish-formula">KCl</span>
+                        <span class="dish-ion">K+</span>
+                        <span class="dish-color-tag" style="color: #c084fc;" data-i18n="flameColors.lilac">Lilac</span>
+                    </div>
+
+                    <!-- CaCl2 (Brick red) -->
+                    <div class="dish-card" data-metal="ca">
+                        <div class="dish-glass">
+                            <div class="salt-powder" style="background: #ffffff; color: #ff5400;"></div>
+                        </div>
+                        <span class="dish-formula">CaCl2</span>
+                        <span class="dish-ion">Ca2+</span>
+                        <span class="dish-color-tag" style="color: #ff7b00;" data-i18n="flameColors.brickRed">Brick red</span>
+                    </div>
+
+                    <!-- BaCl2 (Apple green) -->
+                    <div class="dish-card" data-metal="ba">
+                        <div class="dish-glass">
+                            <div class="salt-powder" style="background: #ffffff; color: #84cc16;"></div>
+                        </div>
+                        <span class="dish-formula">BaCl2</span>
+                        <span class="dish-ion">Ba2+</span>
+                        <span class="dish-color-tag" style="color: #a3e635;" data-i18n="flameColors.appleGreen">Apple green</span>
+                    </div>
+
+                    <!-- CuCl2 (Blue-green) -->
+                    <div class="dish-card" data-metal="cu">
+                        <div class="dish-glass">
+                            <div class="salt-powder" style="background: #10b981; color: #06b6d4;"></div>
+                        </div>
+                        <span class="dish-formula">CuCl2</span>
+                        <span class="dish-ion">Cu2+</span>
+                        <span class="dish-color-tag" style="color: #06b6d4;" data-i18n="flameColors.blueGreen">Blue-green</span>
+                    </div>
+
+                    <!-- SrCl2 (Scarlet) -->
+                    <div class="dish-card" data-metal="sr">
+                        <div class="dish-glass">
+                            <div class="salt-powder" style="background: #ffffff; color: #e11d48;"></div>
+                        </div>
+                        <span class="dish-formula">SrCl2</span>
+                        <span class="dish-ion">Sr2+</span>
+                        <span class="dish-color-tag" style="color: #f43f5e;" data-i18n="flameColors.scarlet">Scarlet red</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Optical Spectroscope Panel (Slide-in Drawer) -->
+        <aside id="spectroscope-panel" class="spectroscope-panel">
+            <div class="spectroscope-header">
+                <h3 class="spectroscope-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 2 22 22 22 12 2"></polygon>
+                    </svg>
+                    <span data-i18n="spectroscope.title">Optical Spectrometer</span>
+                </h3>
+                <button class="spectroscope-close" onclick="document.getElementById('spectroscope-toggle').click();">&times;</button>
+            </div>
+
+            <p class="bench-card-subtitle" data-i18n="spectroscope.subtitle">Atomic Emission Spectral Lines (Wavelength in nm)</p>
+
+            <canvas id="spectrum-canvas" width="420" height="90"></canvas>
+
+            <div class="spectral-lines-box" id="spectrum-lines-list">
+                <!-- Populated dynamically by app.js -->
+            </div>
+
+            <div class="spectrum-note-card">
+                <p id="spectrum-note">Examiner note loading...</p>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Application Script -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

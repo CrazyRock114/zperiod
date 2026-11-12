@@ -1,0 +1,522 @@
+/**
+ * Flame Studio - Stylesheet
+ * Dark Laboratory Glassmorphism UI Theme
+ * Zero-CJK compliant.
+ */
+
+:root {
+  --bg-deep: #050811;
+  --bg-card: rgba(15, 23, 42, 0.78);
+  --bg-glass: rgba(30, 41, 59, 0.55);
+  --border-glass: rgba(255, 255, 255, 0.12);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --primary-accent: #f97316;
+  --primary-glow: rgba(249, 115, 22, 0.35);
+  --cobalt-tint: #1e3a8a;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-deep);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ecosystem Nav Integration */
+igcse-nav {
+  z-index: 99999;
+}
+
+.studio-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+  background: radial-gradient(circle at 50% 30%, #0d1527 0%, #030712 100%);
+}
+
+/* 1. Glass Top Navigation */
+.studio-top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 24px;
+  background: rgba(10, 15, 30, 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.nav-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-glass);
+  color: var(--text-main);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.nav-back-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateX(-2px);
+}
+
+.nav-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-main-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge-beta {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.nav-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.studio-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-glass);
+  color: var(--text-main);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.studio-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.studio-btn.active {
+  background: rgba(249, 115, 22, 0.2);
+  border-color: rgba(249, 115, 22, 0.6);
+  color: #ffedd5;
+  box-shadow: 0 0 16px var(--primary-glow);
+}
+
+.studio-btn.cobalt-btn.active {
+  background: rgba(30, 58, 138, 0.4);
+  border-color: #3b82f6;
+  color: #bfdbfe;
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.4);
+}
+
+/* 2. Main Stage (Canvas) */
+.stage-section {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 440px;
+  width: 100%;
+  overflow: hidden;
+}
+
+#stage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+/* Floating Status HUD */
+.stage-hud {
+  position: absolute;
+  top: 18px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.hud-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glass);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.hud-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+}
+
+/* Quick Action Overlay (Center-Right) */
+.stage-quick-actions {
+  position: absolute;
+  right: 24px;
+  top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.primary-action-btn {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 14px var(--primary-glow);
+}
+
+.primary-action-btn:hover {
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+  transform: translateY(-1px);
+}
+
+/* 3. Laboratory Workbench (Bottom Area) */
+.studio-workbench {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 18px;
+  padding: 18px 24px 28px;
+  background: rgba(10, 15, 28, 0.85);
+  backdrop-filter: blur(24px);
+  border-top: 1px solid var(--border-glass);
+  z-index: 100;
+}
+
+@media (max-width: 900px) {
+  .studio-workbench {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bench-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.bench-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bench-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bench-card-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Controls inside Burner Card */
+.burner-controls-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.control-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.control-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.control-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  outline: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.control-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary-accent);
+  box-shadow: 0 0 10px var(--primary-glow);
+  cursor: pointer;
+  border: 2px solid #fff;
+}
+
+.preset-buttons-row {
+  display: flex;
+  gap: 6px;
+}
+
+.flame-preset-btn {
+  flex: 1;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-glass);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.flame-preset-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+}
+
+.flame-preset-btn.active {
+  background: rgba(249, 115, 22, 0.18);
+  border-color: rgba(249, 115, 22, 0.5);
+  color: #ffedd5;
+}
+
+/* Reagent Watch Glasses Grid */
+.reagent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.dish-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-glass);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dish-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.22);
+  transform: translateY(-2px);
+}
+
+.dish-card.selected {
+  background: rgba(249, 115, 22, 0.12);
+  border-color: var(--primary-accent);
+  box-shadow: 0 0 16px var(--primary-glow);
+}
+
+.dish-glass {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.04) 70%, rgba(255, 255, 255, 0.12) 100%);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.2), 0 4px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.salt-powder {
+  width: 22px;
+  height: 18px;
+  border-radius: 50%;
+  filter: blur(0.5px);
+  box-shadow: 0 0 6px currentColor;
+}
+
+.dish-formula {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.dish-ion {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.dish-color-tag {
+  font-size: 10px;
+  font-weight: 600;
+  margin-top: 4px;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* 4. Optical Spectroscope Panel (Slide-in Drawer) */
+.spectroscope-panel {
+  position: fixed;
+  top: 60px;
+  right: -480px;
+  width: 460px;
+  max-width: 90vw;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(28px) saturate(200%);
+  border-left: 1px solid var(--border-glass);
+  border-bottom: 1px solid var(--border-glass);
+  border-bottom-left-radius: 20px;
+  box-shadow: -10px 10px 40px rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 2000;
+  transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spectroscope-panel.open {
+  right: 0;
+}
+
+.spectroscope-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.spectroscope-title {
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spectroscope-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.spectroscope-close:hover {
+  color: #fff;
+}
+
+#spectrum-canvas {
+  width: 100%;
+  height: 90px;
+  border-radius: 8px;
+  background: #020617;
+  border: 1px solid var(--border-glass);
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.spectral-lines-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.spectral-line-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 11px;
+}
+
+.line-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.spectrum-note-card {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(249, 115, 22, 0.1);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  font-size: 11px;
+  line-height: 1.5;
+  color: #ffedd5;
+}

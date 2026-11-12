@@ -101,7 +101,9 @@ export const enUI = {
     "virtualLabName": "Virtual Lab",
     "virtualLabDesc": "Tilt a beaker and play with particle water inside a simple lab scene.",
     "orbitalGalleryName": "SPDF Orbital Atlas",
-    "orbitalGalleryDesc": "Explore 3D electron orbital probability clouds (s, p, d, f) with quantum numbers."
+    "orbitalGalleryDesc": "Explore 3D electron orbital probability clouds (s, p, d, f) with quantum numbers.",
+    "flameStudioName": "Flame Studio",
+    "flameStudioDesc": "Simulate metal ion flame tests with Bunsen burner controls and emission spectra."
   },
   "worksheet": {
     "title": "Worksheet Generator",
@@ -730,7 +732,8 @@ export const enUI = {
     "nextIon": "Next Ion"
   },
   "dock": {
-    "customizeCards": "Card Customizer"
+    "customizeCards": "Card Customizer",
+    "flameStudio": "Flame Studio"
   },
   "customizer": {
     "title": "Periodic Card Customizer",

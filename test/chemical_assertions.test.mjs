@@ -256,6 +256,69 @@ async function run() {
     assert.ok(gridCss.includes("--card-custom-font-weight"), "Must support --card-custom-font-weight in grid.css");
   });
 
+  // 10. Flame Studio (/flame/) Independent Sub-app & Parity Verification
+  test("Flame Studio - Static files completeness in public/flame/", () => {
+    const flameDir = path.join(rootDir, "public/flame");
+    const requiredFiles = [
+      "index.html",
+      "css/studio.css",
+      "js/data.js",
+      "js/i18n.js",
+      "js/renderer.js",
+      "js/audio.js",
+      "js/app.js"
+    ];
+
+    for (const rel of requiredFiles) {
+      const full = path.join(flameDir, rel);
+      assert.ok(fs.existsSync(full), `Missing Flame Studio file: public/flame/${rel}`);
+    }
+
+    const html = fs.readFileSync(path.join(flameDir, "index.html"), "utf-8");
+    assert.ok(html.includes('id="stage"'), "Flame index.html must have canvas #stage");
+    assert.ok(html.includes('<igcse-nav active="zperiod" sticky>'), "Flame index.html must mount ecosystem-nav");
+    assert.ok(html.includes('href="/"'), "Flame index.html must provide back button to root /");
+  });
+
+  test("Flame Studio - IGCSE 0620 Flame Test metal ions and emission colors", async () => {
+    const { METAL_DATA } = await import("../public/flame/js/data.js");
+    assert.ok(METAL_DATA.li && METAL_DATA.li.flameColor === "Crimson", "Li+ must be Crimson (0620)");
+    assert.ok(METAL_DATA.na && METAL_DATA.na.flameColor === "Yellow", "Na+ must be Yellow (0620)");
+    assert.ok(METAL_DATA.k && METAL_DATA.k.flameColor === "Lilac", "K+ must be Lilac (0620)");
+    assert.ok(METAL_DATA.ca && METAL_DATA.ca.flameColor === "Brick red", "Ca2+ must be Brick red (0620)");
+    assert.ok(METAL_DATA.ba && METAL_DATA.ba.flameColor === "Apple green", "Ba2+ must be Apple green (0620)");
+    assert.ok(METAL_DATA.cu && METAL_DATA.cu.flameColor === "Blue-green", "Cu2+ must be Blue-green (0620)");
+
+    for (const [key, ion] of Object.entries(METAL_DATA)) {
+      assert.ok(Array.isArray(ion.spectralLines) && ion.spectralLines.length > 0, `${key} must have spectral lines`);
+      assert.ok(Array.isArray(ion.rgb) && ion.rgb.length === 3, `${key} must have RGB values`);
+    }
+  });
+
+  test("Flame Studio - Main site integrations and Zero-CJK gate", () => {
+    const mainHtml = fs.readFileSync(path.join(rootDir, "index.html"), "utf-8");
+    assert.ok(mainHtml.includes('id="flame-studio-dock-btn"'), "Must mount #flame-studio-dock-btn in #bottom-dock");
+    assert.ok(mainHtml.includes('href="/flame/"'), "Must have hyperlink pointing to /flame/");
+    assert.ok(mainHtml.includes('data-tool="flame-studio"'), "Must have Flame Studio tool card in chem-tools-grid");
+
+    // Zero-CJK check on flame files (excluding i18n.js)
+    const flameFiles = [
+      "public/flame/index.html",
+      "public/flame/css/studio.css",
+      "public/flame/js/data.js",
+      "public/flame/js/renderer.js",
+      "public/flame/js/audio.js",
+      "public/flame/js/app.js"
+    ];
+
+    const cjkRegex = /[\u4e00-\u9fa5\u3400-\u4dbf\uf900-\ufaff]/g;
+    for (const f of flameFiles) {
+      const content = fs.readFileSync(path.join(rootDir, f), "utf-8");
+      const matches = content.match(cjkRegex);
+      assert.equal(matches, null, `Found CJK characters in ${f}: ${matches?.join(", ")}`);
+    }
+  });
+
   console.log(`\n========================================`);
   console.log(`✓ Passed: ${passedCount}, Failed: 0`);
   console.log(`========================================\n`);

@@ -101,7 +101,9 @@ export const zhHantUI = {
     "virtualLabName": "虛擬實驗室",
     "virtualLabDesc": "傾斜燒杯，並在一個簡潔的實驗場景裡玩顆粒水。",
     "orbitalGalleryName": "SPDF 軌域圖譜",
-    "orbitalGalleryDesc": "探索真實的 3D 電子軌域機率雲 (s, p, d, f) 與量子數分布。"
+    "orbitalGalleryDesc": "探索真實的 3D 電子軌域機率雲 (s, p, d, f) 與量子數分布。",
+    "flameStudioName": "焰色反應實驗室",
+    "flameStudioDesc": "模擬金屬陽離子焰色反應，含本生燈調節、鈷玻璃濾光與特徵發射光譜。"
   },
   "worksheet": {
     "title": "練習單生成器",
@@ -725,7 +727,8 @@ export const zhHantUI = {
     "nextIon": "下一個離子"
   },
   "dock": {
-    "customizeCards": "自訂卡片"
+    "customizeCards": "自訂卡片",
+    "flameStudio": "焰色實驗室"
   },
   "customizer": {
     "title": "週期表卡片自訂",

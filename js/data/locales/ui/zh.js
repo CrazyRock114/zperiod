@@ -101,7 +101,9 @@ export const zhUI = {
     "virtualLabName": "虚拟实验室",
     "virtualLabDesc": "倾斜烧杯，并在一个简洁的实验场景里玩颗粒水。",
     "orbitalGalleryName": "SPDF 轨道图谱",
-    "orbitalGalleryDesc": "探索真实的 3D 电子轨道概率云 (s, p, d, f) 与量子数分布。"
+    "orbitalGalleryDesc": "探索真实的 3D 电子轨道概率云 (s, p, d, f) 与量子数分布。",
+    "flameStudioName": "焰色反应实验室",
+    "flameStudioDesc": "模拟金属阳离子焰色反应，含本生灯调节、钴玻璃滤光与特征发射光谱。"
   },
   "worksheet": {
     "title": "练习单生成器",
@@ -731,7 +733,8 @@ export const zhUI = {
     "nextIon": "下一个离子"
   },
   "dock": {
-    "customizeCards": "自定义卡片"
+    "customizeCards": "自定义卡片",
+    "flameStudio": "焰色实验室"
   },
   "customizer": {
     "title": "周期表卡片自定义",

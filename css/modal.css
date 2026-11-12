@@ -3715,6 +3715,34 @@ html.dark-theme .dock-btn:hover {
   background: rgba(38, 39, 48, 0.95);
 }
 
+.dock-beta-btn {
+  text-decoration: none;
+  background: linear-gradient(135deg, rgba(255, 237, 213, 0.95) 0%, rgba(254, 215, 170, 0.9) 100%);
+  border-color: rgba(249, 115, 22, 0.35);
+  color: #c2410c;
+}
+
+.dock-beta-btn:hover {
+  background: linear-gradient(135deg, rgba(254, 215, 170, 1) 0%, rgba(253, 186, 116, 0.95) 100%);
+  border-color: rgba(249, 115, 22, 0.6);
+  color: #9a3412;
+}
+
+html.dark-theme .dock-beta-btn {
+  background: linear-gradient(135deg, rgba(67, 20, 7, 0.85) 0%, rgba(124, 45, 18, 0.75) 100%);
+  border-color: rgba(249, 115, 22, 0.4);
+  color: #fed7aa;
+}
+
+html.dark-theme .dock-beta-btn:hover {
+  background: linear-gradient(135deg, rgba(124, 45, 18, 0.9) 0%, rgba(154, 52, 18, 0.85) 100%);
+  color: #fff7ed;
+}
+
+.chem-tool-link-card {
+  cursor: pointer;
+}
+
 .customizer-modal-content {
   max-width: 620px;
   width: 90%;

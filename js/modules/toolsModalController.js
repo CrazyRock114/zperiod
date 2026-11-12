@@ -182,6 +182,11 @@ export function createToolsModalController(options = {}) {
   }
 
   function activateToolCard(card) {
+    const href = card?.getAttribute("href");
+    if (href) {
+      window.location.href = href;
+      return;
+    }
     const toolType = card?.dataset.tool;
     if (!toolType) return;
     openToolModal(toolType);
