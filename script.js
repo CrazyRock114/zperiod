@@ -555,9 +555,211 @@ function initNavResponsive() {
 // Global Data Version State
 window.zperiodVersion = 'old';
 
+function initNavControls() {
+  const darkModeBtn = document.getElementById("dark-mode-toggle");
+  const fullscreenBtn = document.getElementById("fullscreen-mode-toggle");
+
+  function applyDarkMode(isDark) {
+    document.documentElement.classList.toggle("dark-theme", isDark);
+    if (darkModeBtn) {
+      darkModeBtn.setAttribute("aria-pressed", isDark ? "true" : "false");
+      const moon = darkModeBtn.querySelector(".icon-moon");
+      const sun = darkModeBtn.querySelector(".icon-sun");
+      if (moon && sun) {
+        moon.style.display = isDark ? "none" : "block";
+        sun.style.display = isDark ? "block" : "none";
+      }
+    }
+  }
+
+  const savedTheme = localStorage.getItem("zperiod_dark_mode");
+  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const initialDark = savedTheme !== null ? savedTheme === "true" : prefersDark;
+  applyDarkMode(initialDark);
+
+  if (darkModeBtn) {
+    darkModeBtn.addEventListener("click", () => {
+      const isCurrentlyDark = document.documentElement.classList.contains("dark-theme");
+      const nextDark = !isCurrentlyDark;
+      applyDarkMode(nextDark);
+      localStorage.setItem("zperiod_dark_mode", String(nextDark));
+    });
+  }
+
+  function updateFullscreenBtn() {
+    if (!fullscreenBtn) return;
+    const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    fullscreenBtn.setAttribute("aria-pressed", isFullscreen ? "true" : "false");
+    const enterIcon = fullscreenBtn.querySelector(".icon-fullscreen-enter");
+    const exitIcon = fullscreenBtn.querySelector(".icon-fullscreen-exit");
+    if (enterIcon && exitIcon) {
+      enterIcon.style.display = isFullscreen ? "none" : "block";
+      exitIcon.style.display = isFullscreen ? "block" : "none";
+    }
+  }
+
+  if (fullscreenBtn) {
+    fullscreenBtn.addEventListener("click", () => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        const root = document.documentElement;
+        if (root.requestFullscreen) {
+          root.requestFullscreen().catch(() => {});
+        } else if (root.webkitRequestFullscreen) {
+          root.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    });
+
+    document.addEventListener("fullscreenchange", updateFullscreenBtn);
+    document.addEventListener("webkitfullscreenchange", updateFullscreenBtn);
+    updateFullscreenBtn();
+  }
+}
+
+function initCardCustomizer() {
+  const openBtn = document.getElementById("open-card-customizer-btn");
+  const modal = document.getElementById("card-customizer-modal");
+  const closeBtn = document.getElementById("card-customizer-close");
+
+  const opacitySlider = document.getElementById("customizer-opacity-slider");
+  const saturationSlider = document.getElementById("customizer-saturation-slider");
+  const weightSlider = document.getElementById("customizer-weight-slider");
+
+  const opacityVal = document.getElementById("customizer-opacity-val");
+  const saturationVal = document.getElementById("customizer-saturation-val");
+  const weightVal = document.getElementById("customizer-weight-val");
+
+  const resetBtn = document.getElementById("customizer-reset-btn");
+  const previewCell = document.getElementById("customizer-preview-cell");
+
+  const STORAGE_KEY = "zperiod_card_customizer";
+  const DEFAULT_CONFIG = {
+    opacity: 100,
+    saturation: 100,
+    weight: 700,
+  };
+
+  function applyConfig(cfg) {
+    const op = cfg.opacity / 100;
+    const sat = `${cfg.saturation}%`;
+    const wt = String(cfg.weight);
+
+    document.documentElement.style.setProperty("--card-custom-opacity", String(op));
+    document.documentElement.style.setProperty("--card-custom-saturation", sat);
+    document.documentElement.style.setProperty("--card-custom-font-weight", wt);
+
+    if (opacitySlider) opacitySlider.value = cfg.opacity;
+    if (saturationSlider) saturationSlider.value = cfg.saturation;
+    if (weightSlider) weightSlider.value = cfg.weight;
+
+    if (opacityVal) opacityVal.textContent = `${cfg.opacity}%`;
+    if (saturationVal) saturationVal.textContent = `${cfg.saturation}%`;
+    if (weightVal) {
+      const weightLabels = {
+        300: "Light (300)",
+        400: "Regular (400)",
+        500: "Medium (500)",
+        600: "Semibold (600)",
+        700: "Bold (700)",
+        800: "Extrabold (800)",
+        900: "Black (900)",
+      };
+      weightVal.textContent = weightLabels[cfg.weight] || String(cfg.weight);
+    }
+
+    if (previewCell) {
+      previewCell.style.opacity = String(op);
+      previewCell.style.filter = `saturate(${sat})`;
+      const sym = previewCell.querySelector(".symbol");
+      if (sym) sym.style.fontWeight = wt;
+    }
+  }
+
+  function saveConfig(cfg) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
+    } catch {}
+  }
+
+  function loadConfig() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return { ...DEFAULT_CONFIG, ...JSON.parse(raw) };
+    } catch {}
+    return { ...DEFAULT_CONFIG };
+  }
+
+  let currentConfig = loadConfig();
+  applyConfig(currentConfig);
+
+  function openCustomizer() {
+    if (!modal) return;
+    modal.style.display = "flex";
+    requestAnimationFrame(() => modal.classList.add("active"));
+    document.body.classList.add("hide-nav");
+  }
+
+  function closeCustomizer() {
+    if (!modal) return;
+    modal.classList.remove("active");
+    document.body.classList.remove("hide-nav");
+    setTimeout(() => {
+      if (!modal.classList.contains("active")) modal.style.display = "none";
+    }, 200);
+  }
+
+  if (openBtn) openBtn.addEventListener("click", openCustomizer);
+  if (closeBtn) closeBtn.addEventListener("click", closeCustomizer);
+
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeCustomizer();
+    });
+  }
+
+  if (opacitySlider) {
+    opacitySlider.addEventListener("input", (e) => {
+      currentConfig.opacity = parseInt(e.target.value, 10);
+      applyConfig(currentConfig);
+      saveConfig(currentConfig);
+    });
+  }
+
+  if (saturationSlider) {
+    saturationSlider.addEventListener("input", (e) => {
+      currentConfig.saturation = parseInt(e.target.value, 10);
+      applyConfig(currentConfig);
+      saveConfig(currentConfig);
+    });
+  }
+
+  if (weightSlider) {
+    weightSlider.addEventListener("input", (e) => {
+      currentConfig.weight = parseInt(e.target.value, 10);
+      applyConfig(currentConfig);
+      saveConfig(currentConfig);
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      currentConfig = { ...DEFAULT_CONFIG };
+      applyConfig(currentConfig);
+      saveConfig(currentConfig);
+    });
+  }
+}
+
 function bootstrapApp() {
   initLangController();
   initMobileBypassHandlers();
+  initNavControls();
 
   if (isRealMobileDevice()) {
     // Keep real mobile users on the dedicated landing and avoid desktop onboarding/welcome flows.
@@ -720,6 +922,9 @@ function bootstrapApp() {
     l3UnitState,
     setGlobalUnit,
   });
+
+  // Initialize card customizer in bottom dock
+  initCardCustomizer();
 
   // Initialize mascot chemistry assistant
   initMascotController();

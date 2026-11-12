@@ -12,6 +12,7 @@ import {
 import { formatReactionError } from "./equationBalancer.js";
 import { predictReaction } from "./reactionPredictor.js";
 import { t } from "./langController.js";
+import { ensureThreeLibLoaded } from "./threeRenderer.js";
 
 const TOOL_LISTENER_MAP = {
   balancer: attachBalancerListeners,
@@ -19,6 +20,7 @@ const TOOL_LISTENER_MAP = {
   "virtual-lab": attachVirtualLabListeners,
   empirical: attachEmpiricalListeners,
   solubility: attachSolubilityListeners,
+  "orbital-gallery": attachOrbitalGalleryListeners,
 };
 
 let virtualLabCleanup = null;
@@ -3784,4 +3786,295 @@ function printReceipt(result) {
     items.innerHTML = html;
     total.textContent = result.total + " g/mol";
   }
+}
+
+let orbitalGalleryCleanup = null;
+
+function attachOrbitalGalleryListeners() {
+  if (orbitalGalleryCleanup) {
+    orbitalGalleryCleanup();
+    orbitalGalleryCleanup = null;
+  }
+
+  const mount = document.getElementById("orbital-canvas-mount");
+  if (!mount) return;
+
+  const ORBITAL_DEFS = {
+    "1s": { n: 1, l: 0, m: 0, sym: "1s", title: "1s Spherical Orbital", sub: "Ground state electron probability density", nodes: 0, desc: "Spherically symmetric ground state with zero nodes. The probability density is greatest at the center nucleus.", color: 0xa78bfa },
+    "2s": { n: 2, l: 0, m: 0, sym: "2s", title: "2s Spherical Orbital", sub: "First excited s-state with radial node", nodes: 1, desc: "Spherical orbital with 1 internal spherical radial node separating two concentric shells.", color: 0xa78bfa },
+    "2px": { n: 2, l: 1, m: 1, sym: "2p_x", title: "2p_x Dumbbell Orbital", sub: "Oriented along Cartesian X axis", nodes: 1, desc: "Two opposing lobes along the x-axis with an angular nodal plane lying directly in the yz plane (x=0).", color: 0x60a5fa },
+    "2py": { n: 2, l: 1, m: -1, sym: "2p_y", title: "2p_y Dumbbell Orbital", sub: "Oriented along Cartesian Y axis", nodes: 1, desc: "Two opposing lobes along the y-axis with an angular nodal plane lying directly in the xz plane (y=0).", color: 0x60a5fa },
+    "2pz": { n: 2, l: 1, m: 0, sym: "2p_z", title: "2p_z Dumbbell Orbital", sub: "Oriented along Cartesian Z axis", nodes: 1, desc: "Two opposing lobes along the z-axis with an angular nodal plane lying directly in the xy plane (z=0).", color: 0x60a5fa },
+    "3dz2": { n: 3, l: 2, m: 0, sym: "3d_z²", title: "3d_z² Hybrid Toroid Orbital", sub: "Z-axis lobes with equatorial donut ring", nodes: 2, desc: "Elongated vertical lobes along the z-axis surrounded by a distinctive donut-shaped probability ring in the xy plane.", color: 0x34d399 },
+    "3dxz": { n: 3, l: 2, m: 1, sym: "3d_xz", title: "3d_xz Cloverleaf Orbital", sub: "Four lobes in the XZ plane", nodes: 2, desc: "Four alternating cloverleaf lobes in the xz plane with perpendicular planar nodes at x=0 and z=0.", color: 0x34d399 },
+    "3dyz": { n: 3, l: 2, m: -1, sym: "3d_yz", title: "3d_yz Cloverleaf Orbital", sub: "Four lobes in the YZ plane", nodes: 2, desc: "Four alternating cloverleaf lobes in the yz plane with perpendicular planar nodes at y=0 and z=0.", color: 0x34d399 },
+    "3dxy": { n: 3, l: 2, m: 2, sym: "3d_xy", title: "3d_xy Cloverleaf Orbital", sub: "Four lobes between X and Y axes", nodes: 2, desc: "Four alternating cloverleaf lobes in the xy plane with perpendicular planar nodes at x=0 and y=0.", color: 0x34d399 },
+    "3dx2y2": { n: 3, l: 2, m: -2, sym: "3d_x²-y²", title: "3d_x²-y² Cloverleaf Orbital", sub: "Four lobes centered directly on X and Y axes", nodes: 2, desc: "Four cloverleaf lobes lying directly along the x and y axes with planar nodes rotated 45 degrees.", color: 0x34d399 },
+    "4fz3": { n: 4, l: 3, m: 0, sym: "4f_z³", title: "4f_z³ Complex Multi-lobe Orbital", sub: "Octupole symmetry along Z axis", nodes: 3, desc: "Complex 3D f-orbital configuration featuring two vertical axial lobes and two horizontal toroid collars.", color: 0xfbbf24 },
+    "4fxyz": { n: 4, l: 3, m: -2, sym: "4f_xyz", title: "4f_xyz Octant Orbital", sub: "Eight lobes occupying all eight spatial octants", nodes: 3, desc: "Eight symmetrical probability lobes positioned cleanly in each of the eight octants of 3D Cartesian space.", color: 0xfbbf24 },
+  };
+
+  ensureThreeLibLoaded().then((THREE) => {
+    if (!THREE || !mount.isConnected) return;
+
+    const width = mount.clientWidth || 480;
+    const height = mount.clientHeight || 380;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    camera.position.set(0, 0, 18);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    mount.innerHTML = "";
+    mount.appendChild(renderer.domElement);
+
+    const orbitalGroup = new THREE.Group();
+    scene.add(orbitalGroup);
+
+    const axesGroup = new THREE.Group();
+    const axisMat = new THREE.LineBasicMaterial({ color: 0x334155, transparent: true, opacity: 0.4 });
+    const createAxis = (from, to) => {
+      const g = new THREE.BufferGeometry().setFromPoints([from, to]);
+      return new THREE.Line(g, axisMat);
+    };
+    axesGroup.add(createAxis(new THREE.Vector3(-12, 0, 0), new THREE.Vector3(12, 0, 0)));
+    axesGroup.add(createAxis(new THREE.Vector3(0, -12, 0), new THREE.Vector3(0, 12, 0)));
+    axesGroup.add(createAxis(new THREE.Vector3(0, 0, -12), new THREE.Vector3(0, 0, 12)));
+    scene.add(axesGroup);
+
+    function Y(l, m, theta, phi) {
+      const ct = Math.cos(theta), st = Math.sin(theta);
+      const cp = Math.cos(phi), sp = Math.sin(phi);
+      switch (l) {
+        case 0:
+          return 0.5 * Math.sqrt(1 / Math.PI);
+        case 1:
+          if (m === 0) return Math.sqrt(3 / (4 * Math.PI)) * ct;
+          if (m === 1) return Math.sqrt(3 / (4 * Math.PI)) * st * cp;
+          if (m === -1) return Math.sqrt(3 / (4 * Math.PI)) * st * sp;
+          break;
+        case 2:
+          if (m === 0) return Math.sqrt(5 / (16 * Math.PI)) * (3 * ct * ct - 1);
+          if (m === 1) return Math.sqrt(15 / (16 * Math.PI)) * st * ct * cp;
+          if (m === -1) return Math.sqrt(15 / (16 * Math.PI)) * st * ct * sp;
+          if (m === 2) return Math.sqrt(15 / (16 * Math.PI)) * st * st * sp * cp;
+          if (m === -2) return Math.sqrt(15 / (16 * Math.PI)) * st * st * (cp * cp - sp * sp);
+          break;
+        case 3:
+          const ct2 = ct * ct, st2 = st * st;
+          if (m === 0) return Math.sqrt(7 / (16 * Math.PI)) * (5 * ct2 * ct - 3 * ct);
+          if (m === 1) return Math.sqrt(21 / (32 * Math.PI)) * st * (5 * ct2 - 1) * cp;
+          if (m === -1) return Math.sqrt(21 / (32 * Math.PI)) * st * (5 * ct2 - 1) * sp;
+          if (m === 2) return Math.sqrt(105 / (16 * Math.PI)) * st2 * ct * cp * cp;
+          if (m === -2) return Math.sqrt(105 / (16 * Math.PI)) * st2 * ct * sp * cp;
+          if (m === 3) return Math.sqrt(35 / (32 * Math.PI)) * st2 * st * (cp * cp * cp);
+          if (m === -3) return Math.sqrt(35 / (32 * Math.PI)) * st2 * st * (sp * sp * sp);
+          break;
+      }
+      return 0;
+    }
+
+    function R(n, l, r) {
+      switch (n) {
+        case 1:
+          return (l === 0) ? 2 * Math.exp(-r) : 0;
+        case 2:
+          if (l === 0) return (1 / (2 * Math.sqrt(2))) * (2 - r) * Math.exp(-r / 2);
+          if (l === 1) return (1 / (2 * Math.sqrt(6))) * r * Math.exp(-r / 2);
+          break;
+        case 3:
+          if (l === 0) return (2 / (81 * Math.sqrt(3))) * (27 - 18 * r + 2 * r * r) * Math.exp(-r / 3);
+          if (l === 1) return (4 / (81 * Math.sqrt(6))) * (6 - r) * r * Math.exp(-r / 3);
+          if (l === 2) return (4 / (81 * Math.sqrt(30))) * r * r * Math.exp(-r / 3);
+          break;
+        case 4:
+          if (l === 0) return 0.1 * Math.exp(-r / 4);
+          if (l === 1) return 0.05 * r * Math.exp(-r / 4);
+          if (l === 2) return 0.02 * r * r * Math.exp(-r / 4);
+          if (l === 3) return 0.005 * r * r * r * Math.exp(-r / 4);
+          break;
+      }
+      return 0;
+    }
+
+    function psi2(n, l, m, r, theta, phi) {
+      const Rnl = R(n, l, r);
+      const Ylm = Y(l, m, theta, phi);
+      return Rnl * Rnl * Ylm * Ylm;
+    }
+
+    function buildOrbitalPoints(n, l, m, color, pointCount = 3500) {
+      const box = n * 4.2;
+      const positions = new Float32Array(pointCount * 3);
+      let count = 0;
+      let maxP = 1e-4;
+
+      for (let i = 0; i < 600; i++) {
+        const x = (Math.random() * 2 - 1) * box;
+        const y = (Math.random() * 2 - 1) * box;
+        const z = (Math.random() * 2 - 1) * box;
+        const r = Math.hypot(x, y, z);
+        if (r < 1e-6) continue;
+        const p = psi2(n, l, m, r, Math.acos(z / r), Math.atan2(y, x));
+        if (p > maxP) maxP = p;
+      }
+
+      for (let i = 0; i < pointCount; i++) {
+        for (let attempt = 0; attempt < 40; attempt++) {
+          const x = (Math.random() * 2 - 1) * box;
+          const y = (Math.random() * 2 - 1) * box;
+          const z = (Math.random() * 2 - 1) * box;
+          const r = Math.hypot(x, y, z);
+          if (r < 1e-6 || r > box) continue;
+          const p = psi2(n, l, m, r, Math.acos(z / r), Math.atan2(y, x));
+          if (Math.random() < p / maxP) {
+            positions[count * 3] = x;
+            positions[count * 3 + 1] = y;
+            positions[count * 3 + 2] = z;
+            count++;
+            break;
+          }
+        }
+      }
+
+      const geom = new THREE.BufferGeometry();
+      geom.setAttribute("position", new THREE.BufferAttribute(positions.subarray(0, count * 3), 3));
+      const mat = new THREE.PointsMaterial({
+        color,
+        size: 0.12,
+        sizeAttenuation: true,
+        transparent: true,
+        opacity: 0.85,
+        depthWrite: false,
+      });
+      return new THREE.Points(geom, mat);
+    }
+
+    let currentPoints = null;
+    function setOrbital(key) {
+      const def = ORBITAL_DEFS[key] || ORBITAL_DEFS["1s"];
+      if (currentPoints) {
+        orbitalGroup.remove(currentPoints);
+        currentPoints.geometry.dispose();
+        currentPoints.material.dispose();
+      }
+
+      currentPoints = buildOrbitalPoints(def.n, def.l, def.m, def.color);
+      orbitalGroup.add(currentPoints);
+
+      const symEl = document.getElementById("orbital-badge-sym");
+      const titleEl = document.getElementById("orbital-meta-title");
+      const subEl = document.getElementById("orbital-meta-subtitle");
+      const statN = document.getElementById("orbital-stat-n");
+      const statL = document.getElementById("orbital-stat-l");
+      const statM = document.getElementById("orbital-stat-m");
+      const statNodes = document.getElementById("orbital-stat-nodes");
+      const descEl = document.getElementById("orbital-wave-desc");
+
+      const lNames = ["s", "p", "d", "f"];
+      if (symEl) symEl.textContent = def.sym;
+      if (titleEl) titleEl.textContent = def.title;
+      if (subEl) subEl.textContent = def.sub;
+      if (statN) statN.textContent = def.n;
+      if (statL) statL.textContent = `${def.l} (${lNames[def.l] || ""})`;
+      if (statM) statM.textContent = def.m;
+      if (statNodes) statNodes.textContent = def.nodes;
+      if (descEl) descEl.textContent = def.desc;
+    }
+
+    setOrbital("1s");
+
+    const pills = mount.closest(".orbital-tool-wrapper")?.querySelectorAll(".orbital-pill-btn") || [];
+    pills.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        pills.forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+        setOrbital(btn.dataset.orbital);
+      });
+    });
+
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+    let autoRotate = true;
+
+    mount.addEventListener("pointerdown", (e) => {
+      isDragging = true;
+      previousMousePosition = { x: e.clientX, y: e.clientY };
+    });
+
+    const onPointerMove = (e) => {
+      if (!isDragging) return;
+      const deltaX = e.clientX - previousMousePosition.x;
+      const deltaY = e.clientY - previousMousePosition.y;
+
+      orbitalGroup.rotation.y += deltaX * 0.008;
+      orbitalGroup.rotation.x += deltaY * 0.008;
+      previousMousePosition = { x: e.clientX, y: e.clientY };
+    };
+
+    const onPointerUp = () => {
+      isDragging = false;
+    };
+
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+
+    mount.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      camera.position.z = Math.max(8, Math.min(32, camera.position.z + e.deltaY * 0.02));
+    }, { passive: false });
+
+    const autoRotateBtn = document.getElementById("orbital-autorotate-btn");
+    if (autoRotateBtn) {
+      autoRotateBtn.addEventListener("click", () => {
+        autoRotate = !autoRotate;
+        autoRotateBtn.style.background = autoRotate ? "rgba(109, 40, 217, 0.5)" : "rgba(255, 255, 255, 0.16)";
+      });
+    }
+
+    const resetViewBtn = document.getElementById("orbital-reset-view-btn");
+    if (resetViewBtn) {
+      resetViewBtn.addEventListener("click", () => {
+        orbitalGroup.rotation.set(0, 0, 0);
+        camera.position.set(0, 0, 18);
+      });
+    }
+
+    let animId = null;
+    function animate() {
+      animId = requestAnimationFrame(animate);
+      if (autoRotate && !isDragging) {
+        orbitalGroup.rotation.y += 0.006;
+      }
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    const onResize = () => {
+      if (!mount.isConnected) return;
+      const w = mount.clientWidth;
+      const h = mount.clientHeight;
+      if (w > 0 && h > 0) {
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      }
+    };
+    window.addEventListener("resize", onResize);
+
+    orbitalGalleryCleanup = () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("resize", onResize);
+      if (currentPoints) {
+        currentPoints.geometry.dispose();
+        currentPoints.material.dispose();
+      }
+      renderer.dispose();
+      mount.innerHTML = "";
+    };
+  });
 }

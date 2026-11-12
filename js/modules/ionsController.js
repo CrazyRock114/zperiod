@@ -188,6 +188,50 @@ function bindIonTableInteractions(container) {
     if (ion) openIonModal(ion);
   });
 
+  const ionPrevBtn = document.getElementById("ion-nav-prev");
+  const ionNextBtn = document.getElementById("ion-nav-next");
+
+  function navigateIon(direction) {
+    if (!activeIonId || !ionsData || ionsData.length === 0) return;
+    const currentIndex = ionsData.findIndex((i) => i.id === activeIonId);
+    if (currentIndex === -1) return;
+    let nextIndex;
+    if (direction === "prev") {
+      nextIndex = (currentIndex - 1 + ionsData.length) % ionsData.length;
+    } else {
+      nextIndex = (currentIndex + 1) % ionsData.length;
+    }
+    openIonModal(ionsData[nextIndex]);
+  }
+
+  if (ionPrevBtn && !ionPrevBtn.dataset.bound) {
+    ionPrevBtn.dataset.bound = "true";
+    ionPrevBtn.addEventListener("click", () => navigateIon("prev"));
+  }
+  if (ionNextBtn && !ionNextBtn.dataset.bound) {
+    ionNextBtn.dataset.bound = "true";
+    ionNextBtn.addEventListener("click", () => navigateIon("next"));
+  }
+
+  if (!window._ionKeyboardBound) {
+    window._ionKeyboardBound = true;
+    document.addEventListener("keydown", (e) => {
+      if (document.activeElement && ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) {
+        return;
+      }
+      const ionModal = document.getElementById("ion-modal");
+      if (ionModal && ionModal.classList.contains("active")) {
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          navigateIon("prev");
+        } else if (e.key === "ArrowRight") {
+          e.preventDefault();
+          navigateIon("next");
+        }
+      }
+    });
+  }
+
   container.dataset.ionInteractionsBound = "true";
 }
 

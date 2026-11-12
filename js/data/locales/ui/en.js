@@ -6,7 +6,9 @@ export const enUI = {
     "worksheet": "Worksheet",
     "settings": "Settings",
     "standard": "Standard",
-    "advanced": "Advanced"
+    "advanced": "Advanced",
+    "darkMode": "Toggle Dark Mode",
+    "fullscreen": "Toggle Fullscreen"
   },
   "search": {
     "placeholder": "Search...",
@@ -97,7 +99,9 @@ export const enUI = {
     "solubilityGrade": "Reference",
     "solubilityTag": "Grid",
     "virtualLabName": "Virtual Lab",
-    "virtualLabDesc": "Tilt a beaker and play with particle water inside a simple lab scene."
+    "virtualLabDesc": "Tilt a beaker and play with particle water inside a simple lab scene.",
+    "orbitalGalleryName": "SPDF Orbital Atlas",
+    "orbitalGalleryDesc": "Explore 3D electron orbital probability clouds (s, p, d, f) with quantum numbers."
   },
   "worksheet": {
     "title": "Worksheet Generator",
@@ -718,5 +722,36 @@ export const enUI = {
   "discord": {
     "join": "Join Discord",
     "link": "https://discord.gg/xfKQD65udk"
+  },
+  "modal": {
+    "prevElement": "Previous Element",
+    "nextElement": "Next Element",
+    "prevIon": "Previous Ion",
+    "nextIon": "Next Ion"
+  },
+  "dock": {
+    "customizeCards": "Card Customizer"
+  },
+  "customizer": {
+    "title": "Periodic Card Customizer",
+    "subtitle": "Adjust table cell opacity, color saturation, and font weight in real time.",
+    "opacity": "Card Opacity",
+    "saturation": "Color Saturation",
+    "fontWeight": "Symbol Font Weight",
+    "reset": "Reset to Defaults",
+    "livePreview": "Live Card Preview"
+  },
+  "orbital": {
+    "title": "SPDF Orbital Atlas",
+    "subtitle": "3D electron probability density wavefunctions |ψ(r,θ,φ)|²",
+    "quantumNumbers": "Quantum Numbers",
+    "principal": "Principal (n)",
+    "azimuthal": "Azimuthal (l)",
+    "magnetic": "Magnetic (m)",
+    "nodes": "Total Nodes",
+    "orbitals": "Orbitals",
+    "dragHint": "Drag to rotate · Scroll to zoom",
+    "autoRotate": "Auto Rotate",
+    "resetView": "Reset View"
   }
 };

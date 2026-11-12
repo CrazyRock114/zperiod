@@ -219,6 +219,43 @@ async function run() {
     assert.ok(sections.has("special"), "ionsData must have special/organic ions");
   });
 
+  // 9. v3.4.0 Phase 1 Alignment Vaccine
+  test("Nav controls - fullscreen and dark mode toggles in nav-right-section", () => {
+    const html = fs.readFileSync(path.join(rootDir, "index.html"), "utf-8");
+    assert.ok(html.includes('id="dark-mode-toggle"'), "Must include #dark-mode-toggle");
+    assert.ok(html.includes('id="fullscreen-mode-toggle"'), "Must include #fullscreen-mode-toggle");
+    const scriptJs = fs.readFileSync(path.join(rootDir, "script.js"), "utf-8");
+    assert.ok(scriptJs.includes("zperiod_dark_mode"), "Must persist dark mode to localStorage");
+  });
+
+  test("Modal carousel navigation - element & ion prev/next buttons", () => {
+    const html = fs.readFileSync(path.join(rootDir, "index.html"), "utf-8");
+    assert.ok(html.includes('id="elem-nav-prev"'), "Must include #elem-nav-prev");
+    assert.ok(html.includes('id="elem-nav-next"'), "Must include #elem-nav-next");
+    assert.ok(html.includes('id="ion-nav-prev"'), "Must include #ion-nav-prev");
+    assert.ok(html.includes('id="ion-nav-next"'), "Must include #ion-nav-next");
+    const uiCtrl = fs.readFileSync(path.join(rootDir, "js/modules/uiController.js"), "utf-8");
+    assert.ok(uiCtrl.includes("ArrowLeft") && uiCtrl.includes("ArrowRight"), "Must handle keyboard ArrowLeft/ArrowRight navigation");
+  });
+
+  test("SPDF Orbital Atlas - tool card and content factory", async () => {
+    const html = fs.readFileSync(path.join(rootDir, "index.html"), "utf-8");
+    assert.ok(html.includes('data-tool="orbital-gallery"'), "Must mount SPDF Orbital Atlas card in chem-tools-grid");
+    const { getChemToolContent } = await import("../js/modules/toolContentFactories.js");
+    const content = getChemToolContent("orbital-gallery");
+    assert.ok(content && content.includes("orbital-tool-wrapper"), "Must generate orbital-gallery tool content");
+  });
+
+  test("Card Customizer - modal, trigger button, and live styles", () => {
+    const html = fs.readFileSync(path.join(rootDir, "index.html"), "utf-8");
+    assert.ok(html.includes('id="card-customizer-modal"'), "Must include #card-customizer-modal");
+    assert.ok(html.includes('id="open-card-customizer-btn"'), "Must include #open-card-customizer-btn");
+    const gridCss = fs.readFileSync(path.join(rootDir, "css/grid.css"), "utf-8");
+    assert.ok(gridCss.includes("--card-custom-opacity"), "Must support --card-custom-opacity in grid.css");
+    assert.ok(gridCss.includes("--card-custom-saturation"), "Must support --card-custom-saturation in grid.css");
+    assert.ok(gridCss.includes("--card-custom-font-weight"), "Must support --card-custom-font-weight in grid.css");
+  });
+
   console.log(`\n========================================`);
   console.log(`✓ Passed: ${passedCount}, Failed: 0`);
   console.log(`========================================\n`);

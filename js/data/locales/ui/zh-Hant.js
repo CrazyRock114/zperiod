@@ -6,7 +6,9 @@ export const zhHantUI = {
     "worksheet": "練習",
     "settings": "設定",
     "standard": "標準版",
-    "advanced": "進階版"
+    "advanced": "進階版",
+    "darkMode": "切換深色模式",
+    "fullscreen": "切換全螢幕"
   },
   "search": {
     "placeholder": "搜尋...",
@@ -97,7 +99,9 @@ export const zhHantUI = {
     "solubilityGrade": "參考",
     "solubilityTag": "表格",
     "virtualLabName": "虛擬實驗室",
-    "virtualLabDesc": "傾斜燒杯，並在一個簡潔的實驗場景裡玩顆粒水。"
+    "virtualLabDesc": "傾斜燒杯，並在一個簡潔的實驗場景裡玩顆粒水。",
+    "orbitalGalleryName": "SPDF 軌域圖譜",
+    "orbitalGalleryDesc": "探索真實的 3D 電子軌域機率雲 (s, p, d, f) 與量子數分布。"
   },
   "worksheet": {
     "title": "練習單生成器",
@@ -713,5 +717,36 @@ export const zhHantUI = {
       "分子之美"
     ],
     "start": "開始"
+  },
+  "modal": {
+    "prevElement": "上一個元素",
+    "nextElement": "下一個元素",
+    "prevIon": "上一個離子",
+    "nextIon": "下一個離子"
+  },
+  "dock": {
+    "customizeCards": "自訂卡片"
+  },
+  "customizer": {
+    "title": "週期表卡片自訂",
+    "subtitle": "即時調節卡片透明度、色彩飽和度與字重。",
+    "opacity": "卡片透明度",
+    "saturation": "色彩飽和度",
+    "fontWeight": "符號字重",
+    "reset": "恢復預設",
+    "livePreview": "即時預覽"
+  },
+  "orbital": {
+    "title": "SPDF 軌域圖譜",
+    "subtitle": "3D 電子機率密度波函數 |ψ(r,θ,φ)|²",
+    "quantumNumbers": "量子數",
+    "principal": "主量子數 (n)",
+    "azimuthal": "角量子數 (l)",
+    "magnetic": "磁量子數 (m)",
+    "nodes": "總節面數",
+    "orbitals": "軌域",
+    "dragHint": "拖曳旋轉 · 滾輪縮放",
+    "autoRotate": "自動旋轉",
+    "resetView": "重設視角"
   }
 };

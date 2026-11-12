@@ -3045,6 +3045,46 @@ export function initModalUI() {
     closeElementModal();
   });
 
+  const prevBtn = document.getElementById("elem-nav-prev");
+  const nextBtn = document.getElementById("elem-nav-next");
+
+  function navigateElement(direction) {
+    if (!window.currentAtomElement) return;
+    const currentNum = window.currentAtomElement.number;
+    let nextNum;
+    if (direction === "prev") {
+      nextNum = currentNum <= 1 ? 118 : currentNum - 1;
+    } else {
+      nextNum = currentNum >= 118 ? 1 : currentNum + 1;
+    }
+    const nextEl = elements.find((el) => el.number === nextNum);
+    if (nextEl) {
+      showModal(nextEl);
+    }
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener("click", () => navigateElement("prev"));
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => navigateElement("next"));
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (document.activeElement && ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) {
+      return;
+    }
+    if (modal && modal.classList.contains("active")) {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        navigateElement("prev");
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        navigateElement("next");
+      }
+    }
+  });
+
 
   const tutorialBtn = document.getElementById("element-tutorial-btn");
   if (tutorialBtn) {

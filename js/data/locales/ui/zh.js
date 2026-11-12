@@ -6,7 +6,9 @@ export const zhUI = {
     "worksheet": "练习",
     "settings": "设置",
     "standard": "标准版",
-    "advanced": "高级版"
+    "advanced": "高级版",
+    "darkMode": "切换深色模式",
+    "fullscreen": "切换全屏"
   },
   "search": {
     "placeholder": "搜索...",
@@ -97,7 +99,9 @@ export const zhUI = {
     "solubilityGrade": "参考",
     "solubilityTag": "表格",
     "virtualLabName": "虚拟实验室",
-    "virtualLabDesc": "倾斜烧杯，并在一个简洁的实验场景里玩颗粒水。"
+    "virtualLabDesc": "倾斜烧杯，并在一个简洁的实验场景里玩颗粒水。",
+    "orbitalGalleryName": "SPDF 轨道图谱",
+    "orbitalGalleryDesc": "探索真实的 3D 电子轨道概率云 (s, p, d, f) 与量子数分布。"
   },
   "worksheet": {
     "title": "练习单生成器",
@@ -719,5 +723,36 @@ export const zhUI = {
   "discord": {
     "join": "加入discord",
     "link": "https://discord.gg/xfKQD65udk"
+  },
+  "modal": {
+    "prevElement": "上一个元素",
+    "nextElement": "下一个元素",
+    "prevIon": "上一个离子",
+    "nextIon": "下一个离子"
+  },
+  "dock": {
+    "customizeCards": "自定义卡片"
+  },
+  "customizer": {
+    "title": "周期表卡片自定义",
+    "subtitle": "实时调节卡片透明度、色彩饱和度与字重。",
+    "opacity": "卡片透明度",
+    "saturation": "色彩饱和度",
+    "fontWeight": "符号字重",
+    "reset": "恢复默认",
+    "livePreview": "实时预览"
+  },
+  "orbital": {
+    "title": "SPDF 轨道图谱",
+    "subtitle": "3D 电子概率密度波函数 |ψ(r,θ,φ)|²",
+    "quantumNumbers": "量子数",
+    "principal": "主量子数 (n)",
+    "azimuthal": "角量子数 (l)",
+    "magnetic": "磁量子数 (m)",
+    "nodes": "总节面数",
+    "orbitals": "轨道",
+    "dragHint": "拖拽旋转 · 滚轮缩放",
+    "autoRotate": "自动旋转",
+    "resetView": "重置视角"
   }
 };

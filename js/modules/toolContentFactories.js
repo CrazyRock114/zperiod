@@ -8,6 +8,7 @@ const TOOL_CONTENT_FACTORIES = {
   "virtual-lab": generateVirtualLabToolContent,
   empirical: generateEmpiricalToolContent,
   solubility: generateSolubilityToolContent,
+  "orbital-gallery": generateOrbitalGalleryToolContent,
 };
 
 export function getChemToolContent(toolType) {
@@ -2634,4 +2635,276 @@ function generateSolubilityToolContent() {
             </div>
         </div>
     `;
+}
+
+function generateOrbitalGalleryToolContent() {
+  return `
+    <style>
+      .orbital-tool-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        flex: 1;
+        min-height: 520px;
+      }
+      .orbital-subshell-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 6px;
+        background: rgba(0, 0, 0, 0.03);
+        border-radius: 16px;
+      }
+      html.dark-theme .orbital-subshell-nav {
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .orbital-pill-btn {
+        padding: 6px 14px;
+        border-radius: 12px;
+        border: 1px solid transparent;
+        background: transparent;
+        color: #4b5563;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .orbital-pill-btn:hover {
+        background: rgba(0, 0, 0, 0.05);
+        color: #111827;
+      }
+      .orbital-pill-btn.active {
+        background: #6d28d9;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(109, 40, 217, 0.25);
+      }
+      html.dark-theme .orbital-pill-btn {
+        color: #9ca3af;
+      }
+      html.dark-theme .orbital-pill-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #f3f4f6;
+      }
+      html.dark-theme .orbital-pill-btn.active {
+        background: #8b5cf6;
+        color: #ffffff;
+      }
+      .orbital-view-grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 18px;
+        flex: 1;
+        min-height: 440px;
+      }
+      @media (max-width: 768px) {
+        .orbital-view-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .orbital-stage-card {
+        position: relative;
+        border-radius: 20px;
+        background: #090d16;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 400px;
+        box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
+      }
+      #orbital-canvas-mount {
+        width: 100%;
+        height: 100%;
+        flex: 1;
+        min-height: 380px;
+        cursor: grab;
+      }
+      #orbital-canvas-mount:active {
+        cursor: grabbing;
+      }
+      .orbital-stage-overlay {
+        position: absolute;
+        bottom: 12px;
+        left: 14px;
+        right: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        pointer-events: none;
+      }
+      .orbital-stage-hint {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.7);
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(8px);
+        padding: 5px 12px;
+        border-radius: 12px;
+      }
+      .orbital-stage-controls {
+        display: flex;
+        gap: 6px;
+        pointer-events: auto;
+      }
+      .orbital-control-btn {
+        padding: 5px 12px;
+        border-radius: 10px;
+        border: none;
+        background: rgba(255, 255, 255, 0.16);
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 500;
+        cursor: pointer;
+        backdrop-filter: blur(8px);
+        transition: all 0.2s;
+      }
+      .orbital-control-btn:hover {
+        background: rgba(255, 255, 255, 0.28);
+      }
+      .orbital-info-card {
+        background: rgba(0, 0, 0, 0.02);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        border-radius: 20px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      html.dark-theme .orbital-info-card {
+        background: rgba(255, 255, 255, 0.03);
+        border-color: rgba(255, 255, 255, 0.08);
+      }
+      .orbital-badge-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .orbital-hero-sym {
+        font-size: 30px;
+        font-weight: 800;
+        color: #6d28d9;
+        background: rgba(109, 40, 217, 0.1);
+        padding: 8px 18px;
+        border-radius: 16px;
+        font-family: serif;
+      }
+      html.dark-theme .orbital-hero-sym {
+        color: #a78bfa;
+        background: rgba(139, 92, 246, 0.15);
+      }
+      .orbital-meta-title {
+        font-size: 18px;
+        font-weight: 700;
+      }
+      .orbital-meta-subtitle {
+        font-size: 12px;
+        color: #6b7280;
+      }
+      html.dark-theme .orbital-meta-subtitle {
+        color: #9ca3af;
+      }
+      .orbital-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .orbital-stat-box {
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        border-radius: 12px;
+        padding: 10px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      html.dark-theme .orbital-stat-box {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.08);
+      }
+      .orbital-stat-name {
+        font-size: 11px;
+        color: #6b7280;
+        font-weight: 500;
+      }
+      html.dark-theme .orbital-stat-name {
+        color: #9ca3af;
+      }
+      .orbital-stat-val {
+        font-size: 16px;
+        font-weight: 700;
+        color: #111827;
+      }
+      html.dark-theme .orbital-stat-val {
+        color: #f3f4f6;
+      }
+      .orbital-wave-desc {
+        font-size: 12px;
+        line-height: 1.6;
+        color: #4b5563;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(0, 0, 0, 0.03);
+      }
+      html.dark-theme .orbital-wave-desc {
+        color: #9ca3af;
+        background: rgba(255, 255, 255, 0.03);
+      }
+    </style>
+    <div class="orbital-tool-wrapper">
+      <div class="orbital-subshell-nav" id="orbital-subshell-nav">
+        <button class="orbital-pill-btn active" data-orbital="1s">1s</button>
+        <button class="orbital-pill-btn" data-orbital="2s">2s</button>
+        <button class="orbital-pill-btn" data-orbital="2px">2px</button>
+        <button class="orbital-pill-btn" data-orbital="2py">2py</button>
+        <button class="orbital-pill-btn" data-orbital="2pz">2pz</button>
+        <button class="orbital-pill-btn" data-orbital="3dz2">3dz²</button>
+        <button class="orbital-pill-btn" data-orbital="3dxz">3dxz</button>
+        <button class="orbital-pill-btn" data-orbital="3dyz">3dyz</button>
+        <button class="orbital-pill-btn" data-orbital="3dxy">3dxy</button>
+        <button class="orbital-pill-btn" data-orbital="3dx2y2">3dx²-y²</button>
+        <button class="orbital-pill-btn" data-orbital="4fz3">4fz³</button>
+        <button class="orbital-pill-btn" data-orbital="4fxyz">4fxyz</button>
+      </div>
+      <div class="orbital-view-grid">
+        <div class="orbital-stage-card">
+          <div id="orbital-canvas-mount"></div>
+          <div class="orbital-stage-overlay">
+            <span class="orbital-stage-hint">${t("orbital.dragHint") || "Drag to rotate · Scroll to zoom"}</span>
+            <div class="orbital-stage-controls">
+              <button class="orbital-control-btn" id="orbital-autorotate-btn" type="button">${t("orbital.autoRotate") || "Auto Rotate"}</button>
+              <button class="orbital-control-btn" id="orbital-reset-view-btn" type="button">${t("orbital.resetView") || "Reset View"}</button>
+            </div>
+          </div>
+        </div>
+        <div class="orbital-info-card">
+          <div class="orbital-badge-header">
+            <div class="orbital-hero-sym" id="orbital-badge-sym">1s</div>
+            <div>
+              <div class="orbital-meta-title" id="orbital-meta-title">1s Spherical Orbital</div>
+              <div class="orbital-meta-subtitle" id="orbital-meta-subtitle">Ground state electron probability density</div>
+            </div>
+          </div>
+          <div class="orbital-stats-grid">
+            <div class="orbital-stat-box">
+              <span class="orbital-stat-name">${t("orbital.principal") || "Principal (n)"}</span>
+              <span class="orbital-stat-val" id="orbital-stat-n">1</span>
+            </div>
+            <div class="orbital-stat-box">
+              <span class="orbital-stat-name">${t("orbital.azimuthal") || "Azimuthal (l)"}</span>
+              <span class="orbital-stat-val" id="orbital-stat-l">0 (s)</span>
+            </div>
+            <div class="orbital-stat-box">
+              <span class="orbital-stat-name">${t("orbital.magnetic") || "Magnetic (m)"}</span>
+              <span class="orbital-stat-val" id="orbital-stat-m">0</span>
+            </div>
+            <div class="orbital-stat-box">
+              <span class="orbital-stat-name">${t("orbital.nodes") || "Total Nodes"}</span>
+              <span class="orbital-stat-val" id="orbital-stat-nodes">0</span>
+            </div>
+          </div>
+          <div class="orbital-wave-desc" id="orbital-wave-desc">
+            Spherically symmetric wavefunction with no angular nodes. Highest probability density is at the center nucleus.
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 }
