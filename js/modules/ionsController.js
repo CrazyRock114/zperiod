@@ -957,8 +957,14 @@ function openIonModal(ion) {
         }
 
         // Use new animation system
-        if (typeof IonAnimations !== "undefined" && ion.id) {
-          const animHTML = IonAnimations.getAnimation(ion.id, slot);
+        const animSys =
+          typeof IonAnimations !== "undefined"
+            ? IonAnimations
+            : typeof window !== "undefined" && window.IonAnimations
+              ? window.IonAnimations
+              : null;
+        if (animSys && ion.id) {
+          const animHTML = animSys.getAnimation(ion.id, slot);
           if (animHTML && titleEl) {
             const wrapper = document.createElement("div");
             wrapper.innerHTML = animHTML;

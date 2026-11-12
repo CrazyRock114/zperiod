@@ -198,6 +198,27 @@ async function run() {
     assert.ok(html.includes('data-i18n="ionModal.charge"'), "Must correct charge label to data-i18n='ionModal.charge'");
   });
 
+  // 8. Ion Table & Classic Scripts Bundling Vaccine
+  test("Ions & Worksheet classic scripts staged in public/js for Vite production build", () => {
+    assert.ok(fs.existsSync(path.join(rootDir, "public/js/ion-animations.js")), "public/js/ion-animations.js must exist");
+    assert.ok(fs.existsSync(path.join(rootDir, "public/js/worksheet-generator.js")), "public/js/worksheet-generator.js must exist");
+    const scriptJs = fs.readFileSync(path.join(rootDir, "script.js"), "utf-8");
+    assert.ok(
+      scriptJs.includes("Ion animations failed to load, proceeding with static table"),
+      "ensureIonsTableReady must be resilient to script load failures"
+    );
+  });
+
+  test("Ions dataset completeness across all 4 sections", async () => {
+    const { ionsData } = await import("../js/data/ionsData.js");
+    assert.ok(Array.isArray(ionsData) && ionsData.length >= 30, "ionsData must contain at least 30 ions");
+    const sections = new Set(ionsData.map(i => i.section));
+    assert.ok(sections.has("basic"), "ionsData must have basic ions");
+    assert.ok(sections.has("core"), "ionsData must have core polyatomic ions");
+    assert.ok(sections.has("trans"), "ionsData must have transition metal ions");
+    assert.ok(sections.has("special"), "ionsData must have special/organic ions");
+  });
+
   console.log(`\n========================================`);
   console.log(`✓ Passed: ${passedCount}, Failed: 0`);
   console.log(`========================================\n`);

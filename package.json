@@ -6,6 +6,7 @@
   "description": "Interactive periodic table with 118 elements, 9 chemistry tools, and worksheet generator (full upstream Zhilips/Zperiod parity).",
   "scripts": {
     "dev": "vite",
+    "prebuild": "cp js/ion-animations.js public/js/ && cp js/worksheet-generator.js public/js/",
     "build": "vite build",
     "preview": "vite preview",
     "check": "npm run check:syntax && npm run build",

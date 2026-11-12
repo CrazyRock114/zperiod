@@ -589,6 +589,9 @@ const IonAnimations = {
 };
 
 // Export for use
+if (typeof window !== 'undefined') {
+    window.IonAnimations = IonAnimations;
+}
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = IonAnimations;
 }

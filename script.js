@@ -139,7 +139,11 @@ function loadClassicScriptOnce(src) {
 
 async function ensureIonsTableReady() {
   if (ionsTableReady) return;
-  await loadClassicScriptOnce("js/ion-animations.js");
+  try {
+    await loadClassicScriptOnce("js/ion-animations.js");
+  } catch (err) {
+    console.warn("Ion animations failed to load, proceeding with static table:", err);
+  }
   const { initIonsTable } = await import("./js/modules/ionsController.js");
   await initIonsTable();
   ionsTableReady = true;
@@ -147,7 +151,11 @@ async function ensureIonsTableReady() {
 
 async function ensureWorksheetReady() {
   if (worksheetReady) return;
-  await loadClassicScriptOnce("js/worksheet-generator.js");
+  try {
+    await loadClassicScriptOnce("js/worksheet-generator.js");
+  } catch (err) {
+    console.warn("Worksheet generator script failed to load:", err);
+  }
   worksheetReady = true;
 }
 
