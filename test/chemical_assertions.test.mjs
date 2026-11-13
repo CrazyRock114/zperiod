@@ -424,6 +424,8 @@ async function run() {
     assert.ok(mainHtml.includes('id="molecular-shapes-dock-btn"'), "Must mount #molecular-shapes-dock-btn in #bottom-dock");
     assert.ok(mainHtml.includes('href="/shape/"'), "Must have hyperlink pointing to /shape/");
     assert.ok(mainHtml.includes('data-tool="molecular-shapes"'), "Must have Molecular Shapes tool card in chem-tools-grid");
+    assert.ok(mainHtml.includes('data-tool="reactivity-series"'), "Must have Reactivity Series tool card in chem-tools-grid");
+    assert.ok(mainHtml.includes('href="https://sky.igcse.xyz/reactivity/"'), "Must link to sky.igcse.xyz/reactivity/");
 
     // Zero-CJK check on shape files (excluding i18n.js)
     const shapeFiles = [

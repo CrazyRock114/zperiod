@@ -105,7 +105,9 @@ export const enUI = {
     "flameStudioName": "Flame Studio",
     "flameStudioDesc": "Simulate metal ion flame tests with Bunsen burner controls and emission spectra.",
     "molecularShapesName": "Molecular Shapes",
-    "molecularShapesDesc": "Explore 3D VSEPR molecular geometry, bond angles, dipoles, and 44 real molecules."
+    "molecularShapesDesc": "Explore 3D VSEPR molecular geometry, bond angles, dipoles, and 44 real molecules.",
+    "reactivitySeriesName": "Reactivity Series Lab",
+    "reactivitySeriesDesc": "Interactive 25-metal activity sequence with virtual water and acid displacement reactions."
   },
   "worksheet": {
     "title": "Worksheet Generator",

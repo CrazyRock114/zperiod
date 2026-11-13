@@ -105,7 +105,9 @@ export const zhHantUI = {
     "flameStudioName": "焰色反應實驗室",
     "flameStudioDesc": "模擬金屬陽離子焰色反應，含本生燈調節、鈷玻璃濾光與特徵發射光譜。",
     "molecularShapesName": "分子空間構型",
-    "molecularShapesDesc": "探索 3D VSEPR 分子立體幾何、鍵角、偶極矩與 44 種真實分子圖鑑。"
+    "molecularShapesDesc": "探索 3D VSEPR 分子立體幾何、鍵角、偶極矩與 44 種真實分子圖鑑。",
+    "reactivitySeriesName": "金屬活動性順序實驗室",
+    "reactivitySeriesDesc": "全表 25 種金屬元素活動性遞變規律、與水/酸置換反應虛擬實驗及沉澱置換模擬。"
   },
   "worksheet": {
     "title": "練習單生成器",

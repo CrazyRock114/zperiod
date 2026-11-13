@@ -105,7 +105,9 @@ export const zhUI = {
     "flameStudioName": "焰色反应实验室",
     "flameStudioDesc": "模拟金属阳离子焰色反应，含本生灯调节、钴玻璃滤光与特征发射光谱。",
     "molecularShapesName": "分子空间构型",
-    "molecularShapesDesc": "探索 3D VSEPR 分子立体几何、键角、偶极矩与 44 种真实分子图鉴。"
+    "molecularShapesDesc": "探索 3D VSEPR 分子立体几何、键角、偶极矩与 44 种真实分子图鉴。",
+    "reactivitySeriesName": "金属活动性顺序实验室",
+    "reactivitySeriesDesc": "全表 25 种金属元素活动性递变规律、与水/酸置换反应虚拟实验及沉淀置换模拟。"
   },
   "worksheet": {
     "title": "练习单生成器",
