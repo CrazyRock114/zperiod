@@ -103,7 +103,9 @@ export const enUI = {
     "orbitalGalleryName": "SPDF Orbital Atlas",
     "orbitalGalleryDesc": "Explore 3D electron orbital probability clouds (s, p, d, f) with quantum numbers.",
     "flameStudioName": "Flame Studio",
-    "flameStudioDesc": "Simulate metal ion flame tests with Bunsen burner controls and emission spectra."
+    "flameStudioDesc": "Simulate metal ion flame tests with Bunsen burner controls and emission spectra.",
+    "molecularShapesName": "Molecular Shapes",
+    "molecularShapesDesc": "Explore 3D VSEPR molecular geometry, bond angles, dipoles, and 44 real molecules."
   },
   "worksheet": {
     "title": "Worksheet Generator",
@@ -733,7 +735,8 @@ export const enUI = {
   },
   "dock": {
     "customizeCards": "Card Customizer",
-    "flameStudio": "Flame Studio"
+    "flameStudio": "Flame Studio",
+    "molecularShapes": "Molecular Shapes"
   },
   "customizer": {
     "title": "Periodic Card Customizer",

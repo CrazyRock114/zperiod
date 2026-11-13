@@ -767,6 +767,37 @@
                             <p class="chem-tool-desc" data-i18n="tools.flameStudioDesc">Simulate metal ion flame tests with Bunsen burner controls and emission spectra.</p>
                         </div>
                     </a>
+
+                    <!-- Molecular Shapes (Position 7) -->
+                    <a href="/shape/" class="chem-tool-card chem-tool-link-card" data-tool="molecular-shapes" style="text-decoration:none; color:inherit;">
+                        <div class="chem-tool-header">
+                            <div class="chem-tool-icon-box shape-icon"
+                                style="background:linear-gradient(135deg, #ede9fe 0%, #ddd6fe 50%, #c4b5fd 100%); color:#7c3aed;">
+                                <span class="chem-tool-number">7</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="3" />
+                                    <circle cx="5" cy="5" r="2" />
+                                    <circle cx="19" cy="5" r="2" />
+                                    <circle cx="12" cy="20" r="2" />
+                                    <line x1="7" y1="7" x2="10" y2="10" />
+                                    <line x1="17" y1="7" x2="14" y2="10" />
+                                    <line x1="12" y1="15" x2="12" y2="18" />
+                                </svg>
+                            </div>
+                            <span class="chem-tool-arrow">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="chem-tool-info">
+                            <h3 class="chem-tool-name" data-i18n="tools.molecularShapesName">Molecular Shapes</h3>
+                            <p class="chem-tool-desc" data-i18n="tools.molecularShapesDesc">Explore 3D VSEPR molecular geometry, bond angles, dipoles, and 44 real molecules.</p>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -1903,8 +1934,20 @@
         </div>
     </div>
 
-    <!-- Bottom Dock with Card Customizer & Flame Studio Triggers -->
+    <!-- Bottom Dock with Card Customizer, Flame Studio & Molecular Shapes Triggers -->
     <div class="bottom-dock" id="bottom-dock">
+        <a href="/shape/" id="molecular-shapes-dock-btn" class="dock-btn" title="Molecular Shapes" data-i18n-title="dock.molecularShapes">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3" />
+                <circle cx="5" cy="5" r="2" />
+                <circle cx="19" cy="5" r="2" />
+                <circle cx="12" cy="20" r="2" />
+                <line x1="7" y1="7" x2="10" y2="10" />
+                <line x1="17" y1="7" x2="14" y2="10" />
+                <line x1="12" y1="15" x2="12" y2="18" />
+            </svg>
+            <span class="dock-btn-label" data-i18n="dock.molecularShapes">Molecular Shapes</span>
+        </a>
         <a href="/flame/" id="flame-studio-dock-btn" class="dock-btn dock-beta-btn" title="Flame Studio" data-i18n-title="dock.flameStudio">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>

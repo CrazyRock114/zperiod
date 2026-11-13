@@ -103,7 +103,9 @@ export const zhUI = {
     "orbitalGalleryName": "SPDF 轨道图谱",
     "orbitalGalleryDesc": "探索真实的 3D 电子轨道概率云 (s, p, d, f) 与量子数分布。",
     "flameStudioName": "焰色反应实验室",
-    "flameStudioDesc": "模拟金属阳离子焰色反应，含本生灯调节、钴玻璃滤光与特征发射光谱。"
+    "flameStudioDesc": "模拟金属阳离子焰色反应，含本生灯调节、钴玻璃滤光与特征发射光谱。",
+    "molecularShapesName": "分子空间构型",
+    "molecularShapesDesc": "探索 3D VSEPR 分子立体几何、键角、偶极矩与 44 种真实分子图鉴。"
   },
   "worksheet": {
     "title": "练习单生成器",
@@ -734,7 +736,8 @@ export const zhUI = {
   },
   "dock": {
     "customizeCards": "自定义卡片",
-    "flameStudio": "焰色实验室"
+    "flameStudio": "焰色实验室",
+    "molecularShapes": "分子构型"
   },
   "customizer": {
     "title": "周期表卡片自定义",

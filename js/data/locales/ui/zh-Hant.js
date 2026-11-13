@@ -103,7 +103,9 @@ export const zhHantUI = {
     "orbitalGalleryName": "SPDF 軌域圖譜",
     "orbitalGalleryDesc": "探索真實的 3D 電子軌域機率雲 (s, p, d, f) 與量子數分布。",
     "flameStudioName": "焰色反應實驗室",
-    "flameStudioDesc": "模擬金屬陽離子焰色反應，含本生燈調節、鈷玻璃濾光與特徵發射光譜。"
+    "flameStudioDesc": "模擬金屬陽離子焰色反應，含本生燈調節、鈷玻璃濾光與特徵發射光譜。",
+    "molecularShapesName": "分子空間構型",
+    "molecularShapesDesc": "探索 3D VSEPR 分子立體幾何、鍵角、偶極矩與 44 種真實分子圖鑑。"
   },
   "worksheet": {
     "title": "練習單生成器",
@@ -728,7 +730,8 @@ export const zhHantUI = {
   },
   "dock": {
     "customizeCards": "自訂卡片",
-    "flameStudio": "焰色實驗室"
+    "flameStudio": "焰色實驗室",
+    "molecularShapes": "分子構型"
   },
   "customizer": {
     "title": "週期表卡片自訂",

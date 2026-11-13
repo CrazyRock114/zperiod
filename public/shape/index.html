@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Molecular Shapes & VSEPR 3D Studio | Zperiod</title>
+    <meta name="description" content="Interactive 3D molecular geometry and VSEPR theory simulator with 44 real molecules, lone pairs visualization, and geometry practice quiz.">
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+
+    <!-- Ecosystem Navigation -->
+    <script src="https://www.igcse.xyz/ecosystem-nav.js" defer></script>
+
+    <!-- Three.js Engine -->
+    <script src="/three.min.js"></script>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/zperiod-shell.css">
+    <link rel="stylesheet" href="css/route.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Top Ecosystem Navigation -->
+    <igcse-nav active="zperiod" sticky></igcse-nav>
+
+    <div class="shell-container">
+        <!-- 1. Glass Top Navigation Bar -->
+        <header class="shell-top-nav">
+            <div class="nav-brand">
+                <a href="/" class="nav-back-btn" title="Back to Periodic Table" data-i18n-title="nav.back">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    <span data-i18n="nav.back">Zperiod</span>
+                </a>
+                <div class="nav-title-group">
+                    <h1 class="nav-main-title">
+                        <span data-i18n="nav.title">Molecular Shapes</span>
+                        <span class="badge-beta">3D VSEPR</span>
+                    </h1>
+                    <span class="nav-subtitle" data-i18n="nav.subtitle">3D VSEPR Molecular Geometry Studio</span>
+                </div>
+            </div>
+
+            <!-- Mode Segmented Controller (Center) -->
+            <nav class="mode-segmented-ctrl" aria-label="Mode selector">
+                <button class="mode-tab-btn active" data-tab="model" data-i18n="modes.model">Model</button>
+                <button class="mode-tab-btn" data-tab="real" data-i18n="modes.real">Real Molecules</button>
+                <button class="mode-tab-btn" data-tab="learn" data-i18n="modes.learn">VSEPR Guide</button>
+                <button class="mode-tab-btn" data-tab="practice" data-i18n="modes.practice">Quiz Mode</button>
+            </nav>
+
+            <!-- Actions (Right) -->
+            <div class="nav-actions">
+                <button id="reset-view-btn" class="shell-btn" title="Reset Camera View" data-i18n-title="nav.resetView">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                        <path d="M3 3v5h5"></path>
+                    </svg>
+                    <span data-i18n="nav.resetView">Reset View</span>
+                </button>
+
+                <button id="auto-rotate-btn" class="shell-btn" title="Toggle Auto Rotation" data-i18n-title="nav.autoRotate">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 6v6l4 2"></path>
+                    </svg>
+                    <span data-i18n="nav.autoRotate">Auto Rotate</span>
+                </button>
+
+                <button id="lang-toggle" class="shell-btn" title="Switch Language">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    <span data-i18n="nav.langToggle">EN / ZH</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 2. Main Studio Layout -->
+        <main class="shape-studio-layout">
+            <!-- 3D Canvas Stage -->
+            <section class="shape-stage-wrapper">
+                <div id="stage-container"></div>
+
+                <!-- Stage Floating HUD -->
+                <div class="stage-top-bar">
+                    <div class="stage-hud-badge">
+                        <span class="stage-hud-dot"></span>
+                        <span>Drag to rotate · Scroll to zoom</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Interactive Control Panels -->
+            <aside class="shape-sidebar">
+                <!-- Mode 1: Generic Model View -->
+                <div id="view-model" class="screen-view active sidebar-content-pane">
+                    <div class="panel-section-header">
+                        <h2 class="panel-title" data-i18n="model.title">VSEPR Generic Model</h2>
+                        <p class="panel-subtitle" data-i18n="model.subtitle">Dynamically adjust bonding pairs and lone pairs to observe geometry relaxation.</p>
+                    </div>
+
+                    <!-- Domain Adjust Counters -->
+                    <div class="model-counter-group">
+                        <!-- Bonding Pairs Counter -->
+                        <div class="counter-card">
+                            <span class="counter-label" data-i18n="model.bondingPairs">Bonding Atoms (B)</span>
+                            <div class="counter-actions">
+                                <button id="sub-bond-btn" class="counter-btn" title="Remove bonding atom">-</button>
+                                <span id="bond-count-val" class="counter-val">2</span>
+                                <button id="add-bond-btn" class="counter-btn" title="Add bonding atom">+</button>
+                            </div>
+                        </div>
+
+                        <!-- Lone Pairs Counter -->
+                        <div class="counter-card">
+                            <span class="counter-label" data-i18n="model.lonePairs">Lone Pairs (L)</span>
+                            <div class="counter-actions">
+                                <button id="sub-lp-btn" class="counter-btn" title="Remove lone pair">-</button>
+                                <span id="lp-count-val" class="counter-val">0</span>
+                                <button id="add-lp-btn" class="counter-btn" title="Add lone pair">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VSEPR Derived Specs -->
+                    <div class="vsepr-specs-grid">
+                        <div class="spec-cell">
+                            <span class="spec-label" data-i18n="model.stericNumber">Steric Number (SN)</span>
+                            <span id="model-sn-val" class="spec-val">2</span>
+                        </div>
+                        <div class="spec-cell">
+                            <span class="spec-label" data-i18n="model.axeFormula">AXE Formula</span>
+                            <span id="model-axe-val" class="spec-val">AX2</span>
+                        </div>
+                        <div class="spec-cell span-2">
+                            <span class="spec-label" data-i18n="model.electronGeo">Electron Geometry</span>
+                            <span id="model-eg-val" class="spec-val highlight">Linear</span>
+                        </div>
+                        <div class="spec-cell span-2">
+                            <span class="spec-label" data-i18n="model.molecularGeo">Molecule Geometry</span>
+                            <span id="model-mg-val" class="spec-val highlight">Linear</span>
+                        </div>
+                        <div class="spec-cell">
+                            <span class="spec-label" data-i18n="model.bondAngle">Ideal Bond Angle</span>
+                            <span id="model-angle-val" class="spec-val">180°</span>
+                        </div>
+                        <div class="spec-cell">
+                            <span class="spec-label" data-i18n="model.hybridization">Hybridization</span>
+                            <span id="model-hybrid-val" class="spec-val">sp</span>
+                        </div>
+                    </div>
+
+                    <!-- Visual Options -->
+                    <div class="options-box">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="toggle-lp-checkbox" checked>
+                            <span data-i18n="model.showLonePairs">Show Lone Pairs Cloud</span>
+                        </label>
+                        <label class="toggle-label">
+                            <input type="checkbox" id="toggle-angle-checkbox" checked>
+                            <span data-i18n="model.showAngles">Show Bond Angles</span>
+                        </label>
+                    </div>
+
+                    <button id="model-reset-btn" class="shell-btn" style="justify-content: center; width: 100%;">
+                        <span data-i18n="model.reset">Reset to AX2</span>
+                    </button>
+                </div>
+
+                <!-- Mode 2: Real Molecules View -->
+                <div id="view-real" class="screen-view sidebar-content-pane">
+                    <div class="panel-section-header">
+                        <h2 class="panel-title" data-i18n="real.title">Real Molecules Library</h2>
+                        <p class="panel-subtitle" data-i18n="real.subtitle">Explore 44 real molecules with authentic experimental angles and dipoles.</p>
+                    </div>
+
+                    <!-- Search Bar -->
+                    <div class="real-search-bar">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" id="real-search-input" placeholder="Search molecule (e.g. H2O, SF4)..." data-i18n-placeholder="real.searchPlaceholder">
+                    </div>
+
+                    <!-- Filter Pills -->
+                    <div class="real-filters-row">
+                        <button class="real-filter-pill active" data-filter="all" data-i18n="real.filterAll">All (44)</button>
+                        <button class="real-filter-pill" data-filter="linear" data-i18n="real.filterLinear">Linear</button>
+                        <button class="real-filter-pill" data-filter="planar" data-i18n="real.filterPlanar">Planar</button>
+                        <button class="real-filter-pill" data-filter="tetra" data-i18n="real.filterTetra">Tetrahedral</button>
+                        <button class="real-filter-pill" data-filter="bipyramid" data-i18n="real.filterBipyramid">Trigonal Bipyramidal</button>
+                        <button class="real-filter-pill" data-filter="octa" data-i18n="real.filterOcta">Octahedral</button>
+                        <button class="real-filter-pill" data-filter="polar" data-i18n="real.filterPolar">Polar</button>
+                        <button class="real-filter-pill" data-filter="nonpolar" data-i18n="real.filterNonpolar">Non-polar</button>
+                    </div>
+
+                    <!-- Scrollable Molecules List -->
+                    <div id="real-molecules-list" class="real-molecules-grid">
+                        <!-- Populated by screen-real.js -->
+                    </div>
+
+                    <!-- Selected Molecule Chemical Specs Card -->
+                    <div class="mol-detail-card">
+                        <h3 id="real-detail-title" class="panel-title">H2O - Water</h3>
+
+                        <div class="vsepr-specs-grid">
+                            <div class="spec-cell">
+                                <span class="spec-label" data-i18n="real.centralAtom">Central Atom</span>
+                                <span id="real-val-central" class="spec-val">O</span>
+                            </div>
+                            <div class="spec-cell">
+                                <span class="spec-label" data-i18n="model.stericNumber">Steric Number</span>
+                                <span id="real-val-sn" class="spec-val">4</span>
+                            </div>
+                            <div class="spec-cell span-2">
+                                <span class="spec-label" data-i18n="model.molecularGeo">Molecular Geometry</span>
+                                <span id="real-val-mg" class="spec-val highlight">Bent</span>
+                            </div>
+                            <div class="spec-cell">
+                                <span class="spec-label" data-i18n="real.expAngle">Exp. Angle</span>
+                                <span id="real-val-angle" class="spec-val">104.5°</span>
+                            </div>
+                            <div class="spec-cell">
+                                <span class="spec-label" data-i18n="real.bondLength">Bond Length</span>
+                                <span id="real-val-length" class="spec-val">95.8 pm</span>
+                            </div>
+                            <div class="spec-cell span-2">
+                                <span class="spec-label" data-i18n="real.dipole">Dipole Moment</span>
+                                <span id="real-val-dipole" class="spec-val highlight">1.85 Debye (Polar)</span>
+                            </div>
+                        </div>
+
+                        <p id="real-val-desc" class="panel-subtitle">Bent geometry (two lone pairs); strong hydrogen bonding life medium.</p>
+                    </div>
+
+                    <!-- Real Mode Toggles -->
+                    <div class="options-box">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="toggle-dipole-checkbox">
+                            <span data-i18n="real.showDipole">Show Net Dipole Vector Arrow</span>
+                        </label>
+                        <label class="toggle-label">
+                            <input type="checkbox" id="toggle-real-angle-checkbox" checked>
+                            <span data-i18n="real.showAngles">Show Bond Angles</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Mode 3: VSEPR Guide (Learn) View -->
+                <div id="view-learn" class="screen-view sidebar-content-pane">
+                    <div class="panel-section-header">
+                        <h2 class="panel-title" data-i18n="learn.title">VSEPR Theory Foundations</h2>
+                        <p class="panel-subtitle" data-i18n="learn.subtitle">Valence Shell Electron Pair Repulsion Rules & Molecular Symmetry</p>
+                    </div>
+
+                    <div class="learn-cards-stack">
+                        <div class="learn-card">
+                            <h3 class="learn-card-title" data-i18n="learn.card1Title">1. Electron Repulsion Hierarchy</h3>
+                            <p class="learn-card-text" data-i18n="learn.card1Text">Lone pairs possess greater spatial volume and spread, exerting stronger repulsion: Lone Pair - Lone Pair (LP-LP) > Lone Pair - Bond Pair (LP-BP) > Bond Pair - Bond Pair (BP-BP). This compresses adjacent bond angles.</p>
+                        </div>
+                        <div class="learn-card">
+                            <h3 class="learn-card-title" data-i18n="learn.card2Title">2. Steric Number (SN) & Hybridization</h3>
+                            <p class="learn-card-text" data-i18n="learn.card2Text">Steric number determines the electron geometry: SN=2 (sp, 180°), SN=3 (sp², 120°), SN=4 (sp³, 109.5°), SN=5 (sp³d, 90°/120°), SN=6 (sp³d², 90°).</p>
+                        </div>
+                        <div class="learn-card">
+                            <h3 class="learn-card-title" data-i18n="learn.card3Title">3. Expanded Octet Rules (SN = 5 & 6)</h3>
+                            <p class="learn-card-text" data-i18n="learn.card3Text">For SN=5 (Trigonal Bipyramidal), lone pairs always occupy EQUATORIAL positions (120° apart) to minimize 90° repulsions. For SN=6 (Octahedral), two lone pairs occupy TRANS positions (180° apart) to yield square planar geometry.</p>
+                        </div>
+                        <div class="learn-card">
+                            <h3 class="learn-card-title" data-i18n="learn.card4Title">4. Molecular Polarity & Dipole Moments</h3>
+                            <p class="learn-card-text" data-i18n="learn.card4Text">A molecule is polar only if polar bonds do NOT vectorially cancel out through molecular symmetry. Highly symmetric geometries (AX2, AX3, AX4, AX5, AX6, AX2E3, AX4E2) are non-polar when terminal atoms are identical.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode 4: Practice Quiz View -->
+                <div id="view-practice" class="screen-view sidebar-content-pane">
+                    <div class="panel-section-header">
+                        <h2 class="panel-title" data-i18n="practice.title">VSEPR Geometry Quiz</h2>
+                        <p class="panel-subtitle" data-i18n="practice.subtitle">Test your mastery of steric numbers, lone pairs, and 3D shapes.</p>
+                    </div>
+
+                    <div class="quiz-container">
+                        <!-- Score & Streak Pills -->
+                        <div class="quiz-score-row">
+                            <div class="score-pill">
+                                <span data-i18n="practice.score">Score:</span>
+                                <span id="quiz-score-val" style="color: #38bdf8; margin-left: 4px;">0</span>
+                            </div>
+                            <div class="score-pill">
+                                <span data-i18n="practice.streak">Streak:</span>
+                                <span id="quiz-streak-val" style="color: #f59e0b; margin-left: 4px;">0</span> 🔥
+                            </div>
+                        </div>
+
+                        <!-- Question Card -->
+                        <div class="quiz-prompt-card">
+                            <h3 id="quiz-prompt-text" class="quiz-prompt-text">What is the molecular geometry of SF4?</h3>
+                            <div id="quiz-options-container" class="quiz-options-grid">
+                                <!-- Options populated by screen-practice.js -->
+                            </div>
+                        </div>
+
+                        <!-- Feedback Card -->
+                        <div id="quiz-feedback-card" class="quiz-feedback-card success" style="display: none;">
+                            <strong id="quiz-feedback-title">Correct!</strong>
+                            <p id="quiz-feedback-text">Explanation...</p>
+                        </div>
+
+                        <!-- Next Button -->
+                        <button id="quiz-next-btn" class="shell-btn" style="display: none; justify-content: center; width: 100%;">
+                            <span data-i18n="practice.nextQuestion">Next Question</span>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Application Module Script -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1017 @@
+/**
+ * Chemical Molecular Database (44 Validated Real Molecules)
+ * Comprehensive VSEPR geometry, experimental bond lengths, bond angles,
+ * polarity, and dipole moments (Debye).
+ * Zero-CJK compliant.
+ */
+
+export const CPK_COLORS = {
+  H: "#ffffff",
+  C: "#334155",
+  N: "#2563eb",
+  O: "#dc2626",
+  F: "#22c55e",
+  Cl: "#84cc16",
+  Br: "#b91c1c",
+  I: "#7e22ce",
+  S: "#eab308",
+  P: "#f97316",
+  B: "#fb923c",
+  Be: "#06b6d4",
+  Si: "#94a3b8",
+  Xe: "#0284c7"
+};
+
+export const ATOM_RADII = {
+  H: 0.32,
+  C: 0.54,
+  N: 0.50,
+  O: 0.48,
+  F: 0.44,
+  Cl: 0.62,
+  Br: 0.68,
+  I: 0.76,
+  S: 0.62,
+  P: 0.64,
+  B: 0.52,
+  Be: 0.50,
+  Si: 0.66,
+  Xe: 0.74
+};
+
+export const REAL_MOLECULES = [
+  // 1-12: Linear Molecules (SN = 1 or 2)
+  {
+    id: "h2",
+    formula: "H2",
+    name: "Hydrogen",
+    centralAtom: "H",
+    stericNumber: 1,
+    bondingCount: 1,
+    lonePairCount: 0,
+    electronGeometry: "Linear",
+    molecularGeometry: "Linear",
+    bondAngle: "180°",
+    bondLength: "74 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Simplest homonuclear diatomic molecule with covalent single bond.",
+    atoms: [
+      { elem: "H", x: -0.65, y: 0, z: 0 },
+      { elem: "H", x: 0.65, y: 0, z: 0 }
+    ]
+  },
+  {
+    id: "o2",
+    formula: "O2",
+    name: "Oxygen",
+    centralAtom: "O",
+    stericNumber: 1,
+    bondingCount: 1,
+    lonePairCount: 2,
+    electronGeometry: "Linear",
+    molecularGeometry: "Linear",
+    bondAngle: "180°",
+    bondLength: "121 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Paramagnetic diatomic gas with double bond.",
+    atoms: [
+      { elem: "O", x: -0.85, y: 0, z: 0 },
+      { elem: "O", x: 0.85, y: 0, z: 0 }
+    ]
+  },
+  {
+    id: "n2",
+    formula: "N2",
+    name: "Nitrogen",
+    centralAtom: "N",
+    stericNumber: 1,
+    bondingCount: 1,
+    lonePairCount: 1,
+    electronGeometry: "Linear",
+    molecularGeometry: "Linear",
+    bondAngle: "180°",
+    bondLength: "110 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Extremely inert diatomic gas with triple covalent bond.",
+    atoms: [
+      { elem: "N", x: -0.8, y: 0, z: 0 },
+      { elem: "N", x: 0.8, y: 0, z: 0 }
+    ]
+  },
+  {
+    id: "hcl",
+    formula: "HCl",
+    name: "Hydrogen chloride",
+    centralAtom: "Cl",
+    stericNumber: 4,
+    bondingCount: 1,
+    lonePairCount: 3,
+    electronGeometry: "Tetrahedral",
+    molecularGeometry: "Linear",
+    bondAngle: "180°",
+    bondLength: "127 pm",
+    dipole: 1.08,
+    polarity: "Polar",
+    description: "Heteronuclear polar gas; forms hydrochloric acid in water.",
+    atoms: [
+      { elem: "Cl", x: 0.4, y: 0, z: 0 },
+      { elem: "H", x: -1.1, y: 0, z: 0 }
+    ]
+  },
+  {
+    id: "co",
+    formula: "CO",
+    name: "Carbon monoxide",
+    centralAtom: "C",
+    stericNumber: 2,
+    bondingCount: 1,
+    lonePairCount: 1,
+    electronGeometry: "Linear",
+    molecularGeometry: "Linear",
+    bondAngle: "180°",
+    bondLength: "113 pm",
+    dipole: 0.11,
+    polarity: "Polar",
+    description: "Toxic gas with a triple bond and dative coordinate interaction.",
+    atoms: [
+      { elem: "C", x: -0.7, y: 0, z: 0 },
+      { elem: "O", x: 0.7, y: 0, z: 0 }
+    ]
+  },
+  {
+    id: "no",
+    formula: "NO",
+    name: "Nitric oxide",
+    centralAtom: "N",
+    stericNumber: 2,
+    bondingCount: 1,
+    lonePairCount: 1,
+    electronGeometry: "Linear",
+    molecularGeometry: "Linear",
+    bondAngle: "180°",
+    bondLength: "115 pm",
+    dipole: 0.15,
+    polarity: "Polar",
+    description: "Free radical biological signaling gas molecule.",
+    atoms: [
+      { elem: "N", x: -0.75, y: 0, z: 0 },
+      { elem: "O", x: 0.75, y: 0, z: 0 }
+    ]
+  },
+  {
+    id: "co2",
+    formula: "CO2",
+    name: "Carbon dioxide",
+    centralAtom: "C",
+    stericNumber: 2,
+    bondingCount: 2,
+    lonePairCount: 0,
+    electronGeometry: "Linear",
+    molecularGeometry: "Linear",
+    bondAngle: "180°",
+    bondLength: "116 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Linear symmetric molecule; opposing bond dipoles cancel completely.",
+    atoms: [
+      { elem: "C", x: 0, y: 0, z: 0 },
+      { elem: "O", x: -1.5, y: 0, z: 0 },
+      { elem: "O", x: 1.5, y: 0, z: 0 }
+    ]
+  },
+  {
+    id: "cs2",
+    formula: "CS2",
+    name: "Carbon disulfide",
+    centralAtom: "C",
+    stericNumber: 2,
+    bondingCount: 2,
+    lonePairCount: 0,
+    electronGeometry: "Linear",
+    molecularGeometry: "Linear",
+    bondAngle: "180°",
+    bondLength: "155 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Linear solvent with two C=S double bonds.",
+    atoms: [
+      { elem: "C", x: 0, y: 0, z: 0 },
+      { elem: "S", x: -1.8, y: 0, z: 0 },
+      { elem: "S", x: 1.8, y: 0, z: 0 }
+    ]
+  },
+  {
+    id: "hcn",
+    formula: "HCN",
+    name: "Hydrogen cyanide",
+    centralAtom: "C",
+    stericNumber: 2,
+    bondingCount: 2,
+    lonePairCount: 0,
+    electronGeometry: "Linear",
+    molecularGeometry: "Linear",
+    bondAngle: "180°",
+    bondLength: "C-H: 106 pm, C#N: 115 pm",
+    dipole: 2.98,
+    polarity: "Polar",
+    description: "Strongly polar linear molecule with H-C single and C#N triple bonds.",
+    atoms: [
+      { elem: "C", x: 0, y: 0, z: 0 },
+      { elem: "H", x: -1.3, y: 0, z: 0 },
+      { elem: "N", x: 1.4, y: 0, z: 0 }
+    ]
+  },
+  {
+    id: "becl2",
+    formula: "BeCl2",
+    name: "Beryllium chloride",
+    centralAtom: "Be",
+    stericNumber: 2,
+    bondingCount: 2,
+    lonePairCount: 0,
+    electronGeometry: "Linear",
+    molecularGeometry: "Linear",
+    bondAngle: "180°",
+    bondLength: "175 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Gaseous monomer is linear with an electron-deficient central atom.",
+    atoms: [
+      { elem: "Be", x: 0, y: 0, z: 0 },
+      { elem: "Cl", x: -1.75, y: 0, z: 0 },
+      { elem: "Cl", x: 1.75, y: 0, z: 0 }
+    ]
+  },
+  {
+    id: "c2h2",
+    formula: "C2H2",
+    name: "Ethyne (Acetylene)",
+    centralAtom: "C",
+    stericNumber: 2,
+    bondingCount: 2,
+    lonePairCount: 0,
+    electronGeometry: "Linear",
+    molecularGeometry: "Linear",
+    bondAngle: "180°",
+    bondLength: "C#C: 120 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Simplest alkyne; all 4 atoms lie along a single straight line.",
+    atoms: [
+      { elem: "C", x: -0.65, y: 0, z: 0 },
+      { elem: "C", x: 0.65, y: 0, z: 0 },
+      { elem: "H", x: -1.75, y: 0, z: 0 },
+      { elem: "H", x: 1.75, y: 0, z: 0 }
+    ]
+  },
+  {
+    id: "n2o",
+    formula: "N2O",
+    name: "Nitrous oxide",
+    centralAtom: "N",
+    stericNumber: 2,
+    bondingCount: 2,
+    lonePairCount: 0,
+    electronGeometry: "Linear",
+    molecularGeometry: "Linear",
+    bondAngle: "180°",
+    bondLength: "N-N: 112 pm, N-O: 119 pm",
+    dipole: 0.17,
+    polarity: "Polar",
+    description: "Linear asymmetric laughing gas with N-N-O sequence.",
+    atoms: [
+      { elem: "N", x: 0, y: 0, z: 0 },
+      { elem: "N", x: -1.2, y: 0, z: 0 },
+      { elem: "O", x: 1.3, y: 0, z: 0 }
+    ]
+  },
+
+  // 13-19: Trigonal Planar & Bent (SN = 3)
+  {
+    id: "bf3",
+    formula: "BF3",
+    name: "Boron trifluoride",
+    centralAtom: "B",
+    stericNumber: 3,
+    bondingCount: 3,
+    lonePairCount: 0,
+    electronGeometry: "Trigonal Planar",
+    molecularGeometry: "Trigonal Planar",
+    bondAngle: "120°",
+    bondLength: "131 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Classic electron-deficient sp2 planar Lewis acid.",
+    atoms: [
+      { elem: "B", x: 0, y: 0, z: 0 },
+      { elem: "F", x: 0, y: 1.5, z: 0 },
+      { elem: "F", x: 1.3, y: -0.75, z: 0 },
+      { elem: "F", x: -1.3, y: -0.75, z: 0 }
+    ]
+  },
+  {
+    id: "bcl3",
+    formula: "BCl3",
+    name: "Boron trichloride",
+    centralAtom: "B",
+    stericNumber: 3,
+    bondingCount: 3,
+    lonePairCount: 0,
+    electronGeometry: "Trigonal Planar",
+    molecularGeometry: "Trigonal Planar",
+    bondAngle: "120°",
+    bondLength: "175 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Symmetric planar molecule; B-Cl dipoles vectorially cancel.",
+    atoms: [
+      { elem: "B", x: 0, y: 0, z: 0 },
+      { elem: "Cl", x: 0, y: 1.75, z: 0 },
+      { elem: "Cl", x: 1.52, y: -0.87, z: 0 },
+      { elem: "Cl", x: -1.52, y: -0.87, z: 0 }
+    ]
+  },
+  {
+    id: "so3",
+    formula: "SO3",
+    name: "Sulfur trioxide",
+    centralAtom: "S",
+    stericNumber: 3,
+    bondingCount: 3,
+    lonePairCount: 0,
+    electronGeometry: "Trigonal Planar",
+    molecularGeometry: "Trigonal Planar",
+    bondAngle: "120°",
+    bondLength: "142 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Planar anhydride of sulfuric acid with extensive pi delocalization.",
+    atoms: [
+      { elem: "S", x: 0, y: 0, z: 0 },
+      { elem: "O", x: 0, y: 1.55, z: 0 },
+      { elem: "O", x: 1.34, y: -0.77, z: 0 },
+      { elem: "O", x: -1.34, y: -0.77, z: 0 }
+    ]
+  },
+  {
+    id: "ch2o",
+    formula: "CH2O",
+    name: "Methanal (Formaldehyde)",
+    centralAtom: "C",
+    stericNumber: 3,
+    bondingCount: 3,
+    lonePairCount: 0,
+    electronGeometry: "Trigonal Planar",
+    molecularGeometry: "Trigonal Planar",
+    bondAngle: "H-C-H: 116°, H-C=O: 122°",
+    bondLength: "C=O: 121 pm",
+    dipole: 2.33,
+    polarity: "Polar",
+    description: "Polar planar aldehyde; electronegative oxygen draws electron density.",
+    atoms: [
+      { elem: "C", x: 0, y: 0, z: 0 },
+      { elem: "O", x: 0, y: 1.45, z: 0 },
+      { elem: "H", x: 1.05, y: -0.75, z: 0 },
+      { elem: "H", x: -1.05, y: -0.75, z: 0 }
+    ]
+  },
+  {
+    id: "so2",
+    formula: "SO2",
+    name: "Sulfur dioxide",
+    centralAtom: "S",
+    stericNumber: 3,
+    bondingCount: 2,
+    lonePairCount: 1,
+    electronGeometry: "Trigonal Planar",
+    molecularGeometry: "Bent",
+    bondAngle: "119.5°",
+    bondLength: "143 pm",
+    dipole: 1.63,
+    polarity: "Polar",
+    description: "Bent geometry (SN=3, 1 lone pair); strong permanent dipole moment.",
+    atoms: [
+      { elem: "S", x: 0, y: 0.35, z: 0 },
+      { elem: "O", x: -1.35, y: -0.45, z: 0 },
+      { elem: "O", x: 1.35, y: -0.45, z: 0 }
+    ]
+  },
+  {
+    id: "o3",
+    formula: "O3",
+    name: "Ozone",
+    centralAtom: "O",
+    stericNumber: 3,
+    bondingCount: 2,
+    lonePairCount: 1,
+    electronGeometry: "Trigonal Planar",
+    molecularGeometry: "Bent",
+    bondAngle: "116.8°",
+    bondLength: "128 pm",
+    dipole: 0.53,
+    polarity: "Polar",
+    description: "Bent allotrope of oxygen with resonance stabilization and net dipole.",
+    atoms: [
+      { elem: "O", x: 0, y: 0.4, z: 0 },
+      { elem: "O", x: -1.25, y: -0.4, z: 0 },
+      { elem: "O", x: 1.25, y: -0.4, z: 0 }
+    ]
+  },
+  {
+    id: "no2",
+    formula: "NO2",
+    name: "Nitrogen dioxide",
+    centralAtom: "N",
+    stericNumber: 3,
+    bondingCount: 2,
+    lonePairCount: 1,
+    electronGeometry: "Trigonal Planar",
+    molecularGeometry: "Bent",
+    bondAngle: "134.3°",
+    bondLength: "120 pm",
+    dipole: 0.32,
+    polarity: "Polar",
+    description: "Paramagnetic bent radical; single electron exerts less repulsion than pair.",
+    atoms: [
+      { elem: "N", x: 0, y: 0.35, z: 0 },
+      { elem: "O", x: -1.2, y: -0.4, z: 0 },
+      { elem: "O", x: 1.2, y: -0.4, z: 0 }
+    ]
+  },
+
+  // 20-34: Tetrahedral, Pyramidal & Bent (SN = 4)
+  {
+    id: "ch4",
+    formula: "CH4",
+    name: "Methane",
+    centralAtom: "C",
+    stericNumber: 4,
+    bondingCount: 4,
+    lonePairCount: 0,
+    electronGeometry: "Tetrahedral",
+    molecularGeometry: "Tetrahedral",
+    bondAngle: "109.5°",
+    bondLength: "109 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Benchmark tetrahedral hydrocarbon with perfect sp3 symmetry.",
+    atoms: [
+      { elem: "C", x: 0, y: 0, z: 0 },
+      { elem: "H", x: 0.75, y: 0.75, z: 0.75 },
+      { elem: "H", x: 0.75, y: -0.75, z: -0.75 },
+      { elem: "H", x: -0.75, y: 0.75, z: -0.75 },
+      { elem: "H", x: -0.75, y: -0.75, z: 0.75 }
+    ]
+  },
+  {
+    id: "cf4",
+    formula: "CF4",
+    name: "Tetrafluoromethane",
+    centralAtom: "C",
+    stericNumber: 4,
+    bondingCount: 4,
+    lonePairCount: 0,
+    electronGeometry: "Tetrahedral",
+    molecularGeometry: "Tetrahedral",
+    bondAngle: "109.5°",
+    bondLength: "132 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Highly stable greenhouse gas with four polar C-F bonds canceling out.",
+    atoms: [
+      { elem: "C", x: 0, y: 0, z: 0 },
+      { elem: "F", x: 0.9, y: 0.9, z: 0.9 },
+      { elem: "F", x: 0.9, y: -0.9, z: -0.9 },
+      { elem: "F", x: -0.9, y: 0.9, z: -0.9 },
+      { elem: "F", x: -0.9, y: -0.9, z: 0.9 }
+    ]
+  },
+  {
+    id: "ccl4",
+    formula: "CCl4",
+    name: "Carbon tetrachloride",
+    centralAtom: "C",
+    stericNumber: 4,
+    bondingCount: 4,
+    lonePairCount: 0,
+    electronGeometry: "Tetrahedral",
+    molecularGeometry: "Tetrahedral",
+    bondAngle: "109.5°",
+    bondLength: "177 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Symmetric tetrahedral non-polar solvent.",
+    atoms: [
+      { elem: "C", x: 0, y: 0, z: 0 },
+      { elem: "Cl", x: 1.15, y: 1.15, z: 1.15 },
+      { elem: "Cl", x: 1.15, y: -1.15, z: -1.15 },
+      { elem: "Cl", x: -1.15, y: 1.15, z: -1.15 },
+      { elem: "Cl", x: -1.15, y: -1.15, z: 1.15 }
+    ]
+  },
+  {
+    id: "sih4",
+    formula: "SiH4",
+    name: "Silane",
+    centralAtom: "Si",
+    stericNumber: 4,
+    bondingCount: 4,
+    lonePairCount: 0,
+    electronGeometry: "Tetrahedral",
+    molecularGeometry: "Tetrahedral",
+    bondAngle: "109.5°",
+    bondLength: "148 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Pyrophoric silicon analogue of methane.",
+    atoms: [
+      { elem: "Si", x: 0, y: 0, z: 0 },
+      { elem: "H", x: 0.95, y: 0.95, z: 0.95 },
+      { elem: "H", x: 0.95, y: -0.95, z: -0.95 },
+      { elem: "H", x: -0.95, y: 0.95, z: -0.95 },
+      { elem: "H", x: -0.95, y: -0.95, z: 0.95 }
+    ]
+  },
+  {
+    id: "sicl4",
+    formula: "SiCl4",
+    name: "Silicon tetrachloride",
+    centralAtom: "Si",
+    stericNumber: 4,
+    bondingCount: 4,
+    lonePairCount: 0,
+    electronGeometry: "Tetrahedral",
+    molecularGeometry: "Tetrahedral",
+    bondAngle: "109.5°",
+    bondLength: "202 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Tetrahedral precursor to ultra-pure polysilicon.",
+    atoms: [
+      { elem: "Si", x: 0, y: 0, z: 0 },
+      { elem: "Cl", x: 1.3, y: 1.3, z: 1.3 },
+      { elem: "Cl", x: 1.3, y: -1.3, z: -1.3 },
+      { elem: "Cl", x: -1.3, y: 1.3, z: -1.3 },
+      { elem: "Cl", x: -1.3, y: -1.3, z: 1.3 }
+    ]
+  },
+  {
+    id: "ch3cl",
+    formula: "CH3Cl",
+    name: "Chloromethane",
+    centralAtom: "C",
+    stericNumber: 4,
+    bondingCount: 4,
+    lonePairCount: 0,
+    electronGeometry: "Tetrahedral",
+    molecularGeometry: "Tetrahedral",
+    bondAngle: "H-C-H: 110.5°, C-Cl: 108°",
+    bondLength: "C-Cl: 178 pm",
+    dipole: 1.87,
+    polarity: "Polar",
+    description: "Asymmetric polar haloalkane with strong C-Cl dipole moment.",
+    atoms: [
+      { elem: "C", x: 0, y: 0, z: 0 },
+      { elem: "Cl", x: 0, y: 1.5, z: 0 },
+      { elem: "H", x: 0.95, y: -0.5, z: 0.55 },
+      { elem: "H", x: -0.95, y: -0.5, z: 0.55 },
+      { elem: "H", x: 0, y: -0.5, z: -1.05 }
+    ]
+  },
+  {
+    id: "ch2cl2",
+    formula: "CH2Cl2",
+    name: "Dichloromethane",
+    centralAtom: "C",
+    stericNumber: 4,
+    bondingCount: 4,
+    lonePairCount: 0,
+    electronGeometry: "Tetrahedral",
+    molecularGeometry: "Tetrahedral",
+    bondAngle: "Cl-C-Cl: 112°",
+    bondLength: "C-Cl: 177 pm",
+    dipole: 1.60,
+    polarity: "Polar",
+    description: "Common organic polar extraction solvent.",
+    atoms: [
+      { elem: "C", x: 0, y: 0, z: 0 },
+      { elem: "Cl", x: 1.1, y: 0.8, z: 0 },
+      { elem: "Cl", x: -1.1, y: 0.8, z: 0 },
+      { elem: "H", x: 0, y: -0.7, z: 0.95 },
+      { elem: "H", x: 0, y: -0.7, z: -0.95 }
+    ]
+  },
+  {
+    id: "chcl3",
+    formula: "CHCl3",
+    name: "Trichloromethane (Chloroform)",
+    centralAtom: "C",
+    stericNumber: 4,
+    bondingCount: 4,
+    lonePairCount: 0,
+    electronGeometry: "Tetrahedral",
+    molecularGeometry: "Tetrahedral",
+    bondAngle: "Cl-C-Cl: 110.4°",
+    bondLength: "C-Cl: 176 pm",
+    dipole: 1.04,
+    polarity: "Polar",
+    description: "Polar anesthetic with three chlorine atoms pulling electrons.",
+    atoms: [
+      { elem: "C", x: 0, y: 0, z: 0 },
+      { elem: "H", x: 0, y: 1.15, z: 0 },
+      { elem: "Cl", x: 1.25, y: -0.45, z: 0.72 },
+      { elem: "Cl", x: -1.25, y: -0.45, z: 0.72 },
+      { elem: "Cl", x: 0, y: -0.45, z: -1.45 }
+    ]
+  },
+  {
+    id: "nh3",
+    formula: "NH3",
+    name: "Ammonia",
+    centralAtom: "N",
+    stericNumber: 4,
+    bondingCount: 3,
+    lonePairCount: 1,
+    electronGeometry: "Tetrahedral",
+    molecularGeometry: "Trigonal Pyramidal",
+    bondAngle: "107.3°",
+    bondLength: "101 pm",
+    dipole: 1.47,
+    polarity: "Polar",
+    description: "Classic trigonal pyramid; lone pair compresses H-N-H angle to 107.3°.",
+    atoms: [
+      { elem: "N", x: 0, y: 0.3, z: 0 },
+      { elem: "H", x: 0, y: -0.35, z: 1.05 },
+      { elem: "H", x: 0.91, y: -0.35, z: -0.52 },
+      { elem: "H", x: -0.91, y: -0.35, z: -0.52 }
+    ]
+  },
+  {
+    id: "nf3",
+    formula: "NF3",
+    name: "Nitrogen trifluoride",
+    centralAtom: "N",
+    stericNumber: 4,
+    bondingCount: 3,
+    lonePairCount: 1,
+    electronGeometry: "Tetrahedral",
+    molecularGeometry: "Trigonal Pyramidal",
+    bondAngle: "102.5°",
+    bondLength: "136 pm",
+    dipole: 0.23,
+    polarity: "Polar",
+    description: "Small dipole because N lone pair opposes the polar N-F bond dipoles.",
+    atoms: [
+      { elem: "N", x: 0, y: 0.4, z: 0 },
+      { elem: "F", x: 0, y: -0.4, z: 1.3 },
+      { elem: "F", x: 1.12, y: -0.4, z: -0.65 },
+      { elem: "F", x: -1.12, y: -0.4, z: -0.65 }
+    ]
+  },
+  {
+    id: "pcl3",
+    formula: "PCl3",
+    name: "Phosphorus trichloride",
+    centralAtom: "P",
+    stericNumber: 4,
+    bondingCount: 3,
+    lonePairCount: 1,
+    electronGeometry: "Tetrahedral",
+    molecularGeometry: "Trigonal Pyramidal",
+    bondAngle: "100.3°",
+    bondLength: "204 pm",
+    dipole: 0.78,
+    polarity: "Polar",
+    description: "Trigonal pyramidal chloride; reacts violently with water.",
+    atoms: [
+      { elem: "P", x: 0, y: 0.5, z: 0 },
+      { elem: "Cl", x: 0, y: -0.5, z: 1.7 },
+      { elem: "Cl", x: 1.47, y: -0.5, z: -0.85 },
+      { elem: "Cl", x: -1.47, y: -0.5, z: -0.85 }
+    ]
+  },
+  {
+    id: "h3o_plus",
+    formula: "H3O+",
+    name: "Hydronium cation",
+    centralAtom: "O",
+    stericNumber: 4,
+    bondingCount: 3,
+    lonePairCount: 1,
+    electronGeometry: "Tetrahedral",
+    molecularGeometry: "Trigonal Pyramidal",
+    bondAngle: "113°",
+    bondLength: "98 pm",
+    dipole: 1.40,
+    polarity: "Polar",
+    description: "Hydrated proton in aqueous acid solutions.",
+    atoms: [
+      { elem: "O", x: 0, y: 0.25, z: 0 },
+      { elem: "H", x: 0, y: -0.3, z: 1.0 },
+      { elem: "H", x: 0.86, y: -0.3, z: -0.5 },
+      { elem: "H", x: -0.86, y: -0.3, z: -0.5 }
+    ]
+  },
+  {
+    id: "h2o",
+    formula: "H2O",
+    name: "Water",
+    centralAtom: "O",
+    stericNumber: 4,
+    bondingCount: 2,
+    lonePairCount: 2,
+    electronGeometry: "Tetrahedral",
+    molecularGeometry: "Bent",
+    bondAngle: "104.5°",
+    bondLength: "95.8 pm",
+    dipole: 1.85,
+    polarity: "Polar",
+    description: "Bent geometry (two lone pairs); strong hydrogen bonding life medium.",
+    atoms: [
+      { elem: "O", x: 0, y: 0.2, z: 0 },
+      { elem: "H", x: -0.85, y: -0.4, z: 0 },
+      { elem: "H", x: 0.85, y: -0.4, z: 0 }
+    ]
+  },
+  {
+    id: "h2s",
+    formula: "H2S",
+    name: "Hydrogen sulfide",
+    centralAtom: "S",
+    stericNumber: 4,
+    bondingCount: 2,
+    lonePairCount: 2,
+    electronGeometry: "Tetrahedral",
+    molecularGeometry: "Bent",
+    bondAngle: "92.1°",
+    bondLength: "134 pm",
+    dipole: 0.97,
+    polarity: "Polar",
+    description: "Nearly pure p-orbital bonding leads to acute 92.1° angle.",
+    atoms: [
+      { elem: "S", x: 0, y: 0.25, z: 0 },
+      { elem: "H", x: -1.0, y: -0.45, z: 0 },
+      { elem: "H", x: 1.0, y: -0.45, z: 0 }
+    ]
+  },
+  {
+    id: "of2",
+    formula: "OF2",
+    name: "Oxygen difluoride",
+    centralAtom: "O",
+    stericNumber: 4,
+    bondingCount: 2,
+    lonePairCount: 2,
+    electronGeometry: "Tetrahedral",
+    molecularGeometry: "Bent",
+    bondAngle: "103.1°",
+    bondLength: "140 pm",
+    dipole: 0.30,
+    polarity: "Polar",
+    description: "Highly oxidizing bent gas; fluorine has higher electronegativity than oxygen.",
+    atoms: [
+      { elem: "O", x: 0, y: 0.3, z: 0 },
+      { elem: "F", x: -1.1, y: -0.4, z: 0 },
+      { elem: "F", x: 1.1, y: -0.4, z: 0 }
+    ]
+  },
+
+  // 35-40: Trigonal Bipyramidal Family (SN = 5)
+  {
+    id: "pcl5",
+    formula: "PCl5",
+    name: "Phosphorus pentachloride",
+    centralAtom: "P",
+    stericNumber: 5,
+    bondingCount: 5,
+    lonePairCount: 0,
+    electronGeometry: "Trigonal Bipyramidal",
+    molecularGeometry: "Trigonal Bipyramidal",
+    bondAngle: "Ax-Eq: 90°, Eq-Eq: 120°",
+    bondLength: "Ax: 214 pm, Eq: 202 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Expanded octet molecule with longer, more crowded axial bonds.",
+    atoms: [
+      { elem: "P", x: 0, y: 0, z: 0 },
+      { elem: "Cl", x: 0, y: 0, z: 1.8 },
+      { elem: "Cl", x: 0, y: 0, z: -1.8 },
+      { elem: "Cl", x: 1.6, y: 0, z: 0 },
+      { elem: "Cl", x: -0.8, y: 1.38, z: 0 },
+      { elem: "Cl", x: -0.8, y: -1.38, z: 0 }
+    ]
+  },
+  {
+    id: "pf5",
+    formula: "PF5",
+    name: "Phosphorus pentafluoride",
+    centralAtom: "P",
+    stericNumber: 5,
+    bondingCount: 5,
+    lonePairCount: 0,
+    electronGeometry: "Trigonal Bipyramidal",
+    molecularGeometry: "Trigonal Bipyramidal",
+    bondAngle: "Ax-Eq: 90°, Eq-Eq: 120°",
+    bondLength: "Ax: 158 pm, Eq: 153 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Displays Berry pseudorotation (rapid axial/equatorial exchange).",
+    atoms: [
+      { elem: "P", x: 0, y: 0, z: 0 },
+      { elem: "F", x: 0, y: 0, z: 1.5 },
+      { elem: "F", x: 0, y: 0, z: -1.5 },
+      { elem: "F", x: 1.35, y: 0, z: 0 },
+      { elem: "F", x: -0.67, y: 1.17, z: 0 },
+      { elem: "F", x: -0.67, y: -1.17, z: 0 }
+    ]
+  },
+  {
+    id: "sf4",
+    formula: "SF4",
+    name: "Sulfur tetrafluoride",
+    centralAtom: "S",
+    stericNumber: 5,
+    bondingCount: 4,
+    lonePairCount: 1,
+    electronGeometry: "Trigonal Bipyramidal",
+    molecularGeometry: "See-saw",
+    bondAngle: "Ax-Ax: 173°, Eq-Eq: 102°",
+    bondLength: "Ax: 164 pm, Eq: 154 pm",
+    dipole: 0.63,
+    polarity: "Polar",
+    description: "Lone pair occupies equatorial position; creates see-saw geometry.",
+    atoms: [
+      { elem: "S", x: 0, y: 0, z: 0 },
+      { elem: "F", x: 0, y: 0, z: 1.6 },
+      { elem: "F", x: 0, y: 0, z: -1.6 },
+      { elem: "F", x: 1.25, y: 0.75, z: 0 },
+      { elem: "F", x: 1.25, y: -0.75, z: 0 }
+    ]
+  },
+  {
+    id: "clf3",
+    formula: "ClF3",
+    name: "Chlorine trifluoride",
+    centralAtom: "Cl",
+    stericNumber: 5,
+    bondingCount: 3,
+    lonePairCount: 2,
+    electronGeometry: "Trigonal Bipyramidal",
+    molecularGeometry: "T-shaped",
+    bondAngle: "87.5°",
+    bondLength: "Ax: 170 pm, Eq: 160 pm",
+    dipole: 0.60,
+    polarity: "Polar",
+    description: "Two equatorial lone pairs compress axial bonds into bent T-shape.",
+    atoms: [
+      { elem: "Cl", x: 0, y: 0, z: 0 },
+      { elem: "F", x: 0, y: 0, z: 1.6 },
+      { elem: "F", x: 0, y: 0, z: -1.6 },
+      { elem: "F", x: 1.45, y: 0, z: 0 }
+    ]
+  },
+  {
+    id: "brf3",
+    formula: "BrF3",
+    name: "Bromine trifluoride",
+    centralAtom: "Br",
+    stericNumber: 5,
+    bondingCount: 3,
+    lonePairCount: 2,
+    electronGeometry: "Trigonal Bipyramidal",
+    molecularGeometry: "T-shaped",
+    bondAngle: "86.2°",
+    bondLength: "Ax: 181 pm, Eq: 172 pm",
+    dipole: 1.19,
+    polarity: "Polar",
+    description: "Extremely reactive interhalogen fluorinating agent with T-shape.",
+    atoms: [
+      { elem: "Br", x: 0, y: 0, z: 0 },
+      { elem: "F", x: 0, y: 0, z: 1.7 },
+      { elem: "F", x: 0, y: 0, z: -1.7 },
+      { elem: "F", x: 1.55, y: 0, z: 0 }
+    ]
+  },
+  {
+    id: "xef2",
+    formula: "XeF2",
+    name: "Xenon difluoride",
+    centralAtom: "Xe",
+    stericNumber: 5,
+    bondingCount: 2,
+    lonePairCount: 3,
+    electronGeometry: "Trigonal Bipyramidal",
+    molecularGeometry: "Linear",
+    bondAngle: "180°",
+    bondLength: "197 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Three equatorial lone pairs cancel; two axial F atoms form linear axis.",
+    atoms: [
+      { elem: "Xe", x: 0, y: 0, z: 0 },
+      { elem: "F", x: 0, y: 0, z: 1.85 },
+      { elem: "F", x: 0, y: 0, z: -1.85 }
+    ]
+  },
+
+  // 41-44: Octahedral Family (SN = 6)
+  {
+    id: "sf6",
+    formula: "SF6",
+    name: "Sulfur hexafluoride",
+    centralAtom: "S",
+    stericNumber: 6,
+    bondingCount: 6,
+    lonePairCount: 0,
+    electronGeometry: "Octahedral",
+    molecularGeometry: "Octahedral",
+    bondAngle: "90°, 180°",
+    bondLength: "156 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "High-voltage dielectric gas with perfect octahedral Oh symmetry.",
+    atoms: [
+      { elem: "S", x: 0, y: 0, z: 0 },
+      { elem: "F", x: 1.5, y: 0, z: 0 },
+      { elem: "F", x: -1.5, y: 0, z: 0 },
+      { elem: "F", x: 0, y: 1.5, z: 0 },
+      { elem: "F", x: 0, y: -1.5, z: 0 },
+      { elem: "F", x: 0, y: 0, z: 1.5 },
+      { elem: "F", x: 0, y: 0, z: -1.5 }
+    ]
+  },
+  {
+    id: "brf5",
+    formula: "BrF5",
+    name: "Bromine pentafluoride",
+    centralAtom: "Br",
+    stericNumber: 6,
+    bondingCount: 5,
+    lonePairCount: 1,
+    electronGeometry: "Octahedral",
+    molecularGeometry: "Square Pyramidal",
+    bondAngle: "Basal-Apical: 84.8°",
+    bondLength: "178 pm",
+    dipole: 1.51,
+    polarity: "Polar",
+    description: "Square pyramidal; axial lone pair pushes basal fluorines upward.",
+    atoms: [
+      { elem: "Br", x: 0, y: -0.2, z: 0 },
+      { elem: "F", x: 0, y: 1.5, z: 0 },
+      { elem: "F", x: 1.25, y: -0.4, z: 0 },
+      { elem: "F", x: -1.25, y: -0.4, z: 0 },
+      { elem: "F", x: 0, y: -0.4, z: 1.25 },
+      { elem: "F", x: 0, y: -0.4, z: -1.25 }
+    ]
+  },
+  {
+    id: "if5",
+    formula: "IF5",
+    name: "Iodine pentafluoride",
+    centralAtom: "I",
+    stericNumber: 6,
+    bondingCount: 5,
+    lonePairCount: 1,
+    electronGeometry: "Octahedral",
+    molecularGeometry: "Square Pyramidal",
+    bondAngle: "82°",
+    bondLength: "186 pm",
+    dipole: 2.18,
+    polarity: "Polar",
+    description: "Dense interhalogen liquid with distinct square pyramidal geometry.",
+    atoms: [
+      { elem: "I", x: 0, y: -0.25, z: 0 },
+      { elem: "F", x: 0, y: 1.6, z: 0 },
+      { elem: "F", x: 1.35, y: -0.45, z: 0 },
+      { elem: "F", x: -1.35, y: -0.45, z: 0 },
+      { elem: "F", x: 0, y: -0.45, z: 1.35 },
+      { elem: "F", x: 0, y: -0.45, z: -1.35 }
+    ]
+  },
+  {
+    id: "xef4",
+    formula: "XeF4",
+    name: "Xenon tetrafluoride",
+    centralAtom: "Xe",
+    stericNumber: 6,
+    bondingCount: 4,
+    lonePairCount: 2,
+    electronGeometry: "Octahedral",
+    molecularGeometry: "Square Planar",
+    bondAngle: "90°, 180°",
+    bondLength: "195 pm",
+    dipole: 0.0,
+    polarity: "Non-polar",
+    description: "Two trans lone pairs at +/- z axis cancel out; four fluorines in flat square.",
+    atoms: [
+      { elem: "Xe", x: 0, y: 0, z: 0 },
+      { elem: "F", x: 1.6, y: 0, z: 0 },
+      { elem: "F", x: -1.6, y: 0, z: 0 },
+      { elem: "F", x: 0, y: 1.6, z: 0 },
+      { elem: "F", x: 0, y: -1.6, z: 0 }
+    ]
+  }
+];

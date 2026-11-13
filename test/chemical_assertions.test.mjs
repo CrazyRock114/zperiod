@@ -319,6 +319,135 @@ async function run() {
     }
   });
 
+  // 11. Molecular Shapes (/shape/) Independent Sub-app & VSEPR Verification
+  test("Molecular Shapes - Static files completeness in public/shape/", () => {
+    const shapeDir = path.join(rootDir, "public/shape");
+    const requiredFiles = [
+      "index.html",
+      "css/style.css",
+      "css/zperiod-shell.css",
+      "css/route.css",
+      "js/data.js",
+      "js/vsepr.js",
+      "js/stage.js",
+      "js/screen-model.js",
+      "js/screen-real.js",
+      "js/screen-practice.js",
+      "js/i18n.js",
+      "js/app.js"
+    ];
+
+    for (const rel of requiredFiles) {
+      const full = path.join(shapeDir, rel);
+      assert.ok(fs.existsSync(full), `Missing Molecular Shapes file: public/shape/${rel}`);
+    }
+
+    const html = fs.readFileSync(path.join(shapeDir, "index.html"), "utf-8");
+    assert.ok(html.includes('id="stage-container"'), "Shape index.html must have #stage-container");
+    assert.ok(html.includes('<igcse-nav active="zperiod" sticky>'), "Shape index.html must mount ecosystem-nav");
+    assert.ok(html.includes('href="/"'), "Shape index.html must provide back button to root /");
+  });
+
+  test("Molecular Shapes - VSEPR calculation engine & geometry deduction", async () => {
+    const { calculateVSEPR, getDomainCoordinates } = await import("../public/shape/js/vsepr.js");
+
+    // SN = 2
+    const sn2 = calculateVSEPR(2, 0);
+    assert.equal(sn2.molecularGeometry, "Linear");
+    assert.equal(sn2.hybridization, "sp");
+    assert.equal(sn2.idealAngle, 180);
+
+    // SN = 3
+    const sn3_0 = calculateVSEPR(3, 0);
+    assert.equal(sn3_0.molecularGeometry, "Trigonal Planar");
+    const sn3_1 = calculateVSEPR(2, 1);
+    assert.equal(sn3_1.molecularGeometry, "Bent");
+
+    // SN = 4
+    const sn4_0 = calculateVSEPR(4, 0);
+    assert.equal(sn4_0.molecularGeometry, "Tetrahedral");
+    assert.equal(sn4_0.idealAngle, 109.5);
+    const sn4_1 = calculateVSEPR(3, 1);
+    assert.equal(sn4_1.molecularGeometry, "Trigonal Pyramidal");
+    const sn4_2 = calculateVSEPR(2, 2);
+    assert.equal(sn4_2.molecularGeometry, "Bent");
+
+    // SN = 5
+    const sn5_0 = calculateVSEPR(5, 0);
+    assert.equal(sn5_0.molecularGeometry, "Trigonal Bipyramidal");
+    const sn5_1 = calculateVSEPR(4, 1);
+    assert.equal(sn5_1.molecularGeometry, "See-saw");
+    const sn5_2 = calculateVSEPR(3, 2);
+    assert.equal(sn5_2.molecularGeometry, "T-shaped");
+    const sn5_3 = calculateVSEPR(2, 3);
+    assert.equal(sn5_3.molecularGeometry, "Linear");
+
+    // SN = 6
+    const sn6_0 = calculateVSEPR(6, 0);
+    assert.equal(sn6_0.molecularGeometry, "Octahedral");
+    const sn6_1 = calculateVSEPR(5, 1);
+    assert.equal(sn6_1.molecularGeometry, "Square Pyramidal");
+    const sn6_2 = calculateVSEPR(4, 2);
+    assert.equal(sn6_2.molecularGeometry, "Square Planar");
+
+    // Domain Coordinates count check
+    for (let b = 1; b <= 6; b++) {
+      for (let l = 0; l <= 3; l++) {
+        if (b + l >= 2 && b + l <= 6) {
+          const doms = getDomainCoordinates(b, l);
+          assert.equal(doms.length, b + l, `Domain count must equal SN (${b}+${l})`);
+        }
+      }
+    }
+  });
+
+  test("Molecular Shapes - 44 Real molecules database integrity", async () => {
+    const { REAL_MOLECULES } = await import("../public/shape/js/data.js");
+    assert.equal(REAL_MOLECULES.length, 44, "REAL_MOLECULES must contain exactly 44 molecules");
+
+    const byId = Object.fromEntries(REAL_MOLECULES.map(m => [m.id, m]));
+    assert.ok(byId["h2o"] && byId["h2o"].molecularGeometry === "Bent" && byId["h2o"].polarity === "Polar");
+    assert.ok(byId["ch4"] && byId["ch4"].molecularGeometry === "Tetrahedral" && byId["ch4"].polarity === "Non-polar");
+    assert.ok(byId["co2"] && byId["co2"].molecularGeometry === "Linear" && byId["co2"].polarity === "Non-polar");
+    assert.ok(byId["sf4"] && byId["sf4"].molecularGeometry === "See-saw" && byId["sf4"].polarity === "Polar");
+    assert.ok(byId["sf6"] && byId["sf6"].molecularGeometry === "Octahedral" && byId["sf6"].polarity === "Non-polar");
+    assert.ok(byId["xef4"] && byId["xef4"].molecularGeometry === "Square Planar" && byId["xef4"].polarity === "Non-polar");
+
+    REAL_MOLECULES.forEach(m => {
+      assert.ok(m.formula && m.name && m.atoms && m.atoms.length > 0, `${m.id} must have formula, name, and atoms`);
+      assert.ok(typeof m.dipole === "number", `${m.id} must have numerical dipole`);
+    });
+  });
+
+  test("Molecular Shapes - Main site integrations and Zero-CJK gate", () => {
+    const mainHtml = fs.readFileSync(path.join(rootDir, "index.html"), "utf-8");
+    assert.ok(mainHtml.includes('id="molecular-shapes-dock-btn"'), "Must mount #molecular-shapes-dock-btn in #bottom-dock");
+    assert.ok(mainHtml.includes('href="/shape/"'), "Must have hyperlink pointing to /shape/");
+    assert.ok(mainHtml.includes('data-tool="molecular-shapes"'), "Must have Molecular Shapes tool card in chem-tools-grid");
+
+    // Zero-CJK check on shape files (excluding i18n.js)
+    const shapeFiles = [
+      "public/shape/index.html",
+      "public/shape/css/style.css",
+      "public/shape/css/zperiod-shell.css",
+      "public/shape/css/route.css",
+      "public/shape/js/data.js",
+      "public/shape/js/vsepr.js",
+      "public/shape/js/stage.js",
+      "public/shape/js/screen-model.js",
+      "public/shape/js/screen-real.js",
+      "public/shape/js/screen-practice.js",
+      "public/shape/js/app.js"
+    ];
+
+    const cjkRegex = /[\u4e00-\u9fa5\u3400-\u4dbf\uf900-\ufaff]/g;
+    for (const f of shapeFiles) {
+      const content = fs.readFileSync(path.join(rootDir, f), "utf-8");
+      const matches = content.match(cjkRegex);
+      assert.equal(matches, null, `Found CJK characters in ${f}: ${matches?.join(", ")}`);
+    }
+  });
+
   console.log(`\n========================================`);
   console.log(`✓ Passed: ${passedCount}, Failed: 0`);
   console.log(`========================================\n`);
