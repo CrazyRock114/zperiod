@@ -14,7 +14,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 3000;
+  z-index: 100000;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -3642,7 +3642,7 @@ body.tutorial-active .simplified-element-box .slider-controls {
   opacity: 1 !important;
   pointer-events: auto !important;
   transform: translateX(-50%) translateY(50%) !important;
-  z-index: 9999 !important;
+  z-index: 100020 !important;
 }
 
 body.tutorial-active .level-lock-btn {
@@ -3650,7 +3650,7 @@ body.tutorial-active .level-lock-btn {
   opacity: 1 !important;
   visibility: visible !important;
   pointer-events: auto !important;
-  z-index: 9999 !important;
+  z-index: 100020 !important;
 }
 
 /* =========================================

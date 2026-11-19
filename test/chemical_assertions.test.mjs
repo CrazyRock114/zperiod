@@ -450,6 +450,33 @@ async function run() {
     }
   });
 
+  // 12. Z-Index Stacking Context Vaccine (above <igcse-nav> z-index: 99990)
+  test("Z-index vaccine - .modal-overlay and tutorial controls exceed igcse-nav (99990)", () => {
+    const modalCss = fs.readFileSync(path.join(rootDir, "css/modal.css"), "utf-8");
+    const overlayMatch = modalCss.match(/\.modal-overlay\s*\{[^}]*?\bz-index\s*:\s*(\d+)/);
+    assert.ok(overlayMatch, "Must define numeric z-index on .modal-overlay in css/modal.css");
+    const overlayZ = parseInt(overlayMatch[1], 10);
+    assert.ok(overlayZ > 99990 && overlayZ >= 100000, `Expected .modal-overlay z-index >= 100000 (> 99990), got ${overlayZ}`);
+
+    const sliderMatch = modalCss.match(/body\.tutorial-active\s+\.simplified-element-box\s+\.slider-controls\s*\{[^}]*?\bz-index\s*:\s*(\d+)\s*!important/);
+    assert.ok(sliderMatch, "Must define !important z-index on tutorial .slider-controls in css/modal.css");
+    const sliderZ = parseInt(sliderMatch[1], 10);
+    assert.ok(sliderZ > overlayZ && sliderZ >= 100020, `Expected tutorial .slider-controls z-index >= 100020 (> .modal-overlay), got ${sliderZ}`);
+
+    const lockMatch = modalCss.match(/body\.tutorial-active\s+\.level-lock-btn\s*\{[^}]*?\bz-index\s*:\s*(\d+)\s*!important/);
+    assert.ok(lockMatch, "Must define !important z-index on tutorial .level-lock-btn in css/modal.css");
+    const lockZ = parseInt(lockMatch[1], 10);
+    assert.ok(lockZ > overlayZ && lockZ >= 100020, `Expected tutorial .level-lock-btn z-index >= 100020 (> .modal-overlay), got ${lockZ}`);
+  });
+
+  test("Z-index vaccine - .ion-detail-overlay exceeds igcse-nav (99990)", () => {
+    const ionsCss = fs.readFileSync(path.join(rootDir, "css/ions.css"), "utf-8");
+    const ionOverlayMatch = ionsCss.match(/\.ion-detail-overlay\s*\{[^}]*?\bz-index\s*:\s*(\d+)/);
+    assert.ok(ionOverlayMatch, "Must define numeric z-index on .ion-detail-overlay in css/ions.css");
+    const ionOverlayZ = parseInt(ionOverlayMatch[1], 10);
+    assert.ok(ionOverlayZ > 99990 && ionOverlayZ >= 100000, `Expected .ion-detail-overlay z-index >= 100000 (> 99990), got ${ionOverlayZ}`);
+  });
+
   console.log(`\n========================================`);
   console.log(`✓ Passed: ${passedCount}, Failed: 0`);
   console.log(`========================================\n`);
